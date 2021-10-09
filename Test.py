@@ -1,3 +1,6 @@
+from functools import partial
+from collections import namedtuple
+
 import OneMaxKnapSack;
 from typing import List, Optional, Callable, Tuple
 
@@ -29,3 +32,21 @@ def fitness(genome: OneMaxKnapSack.Genome) -> int:
 print(OneMaxKnapSack.population_fitness(Population10par10, fitness))
 
 print(OneMaxKnapSack.selection_pair(Population10par10, fitness))
+# OneMaxKnapSack.run_evolution(OneMaxKnapSack.generate_population, fitness, 8, OneMaxKnapSack.selection_pair, OneMaxKnapSack.single_point_crossover,  OneMaxKnapSack.mutation)
+
+weight_limit = 10
+population, generations = OneMaxKnapSack.run_evolution(
+    populate_func=partial(OneMaxKnapSack.generate_population, size=10, genome_length=10),
+    fitness_func=partial(fitness),
+    fitness_limit=10,
+    generation_limit=100
+)
+print(population);
+print(OneMaxKnapSack.population_fitness(population, fitness))
+
+# population, generations = OneMaxKnapSack.run_evolution(
+#     populate_func=partial(OneMaxKnapSack.generate_population, size=10, genome_length=len(things)),
+#     fitness_func=partial(fitness, things=things, weight_limit=weight_limit),
+#     fitness_limit=result[0],
+#     generation_limit=100
+# )
