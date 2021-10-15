@@ -22,11 +22,13 @@ from typing import List, Optional, Callable, Tuple
 def fitness(genome: OneMaxKnapSack.Genome) -> int:
     if len(genome) <= 0 :
         raise ValueError("Le genome doit être > 0 ")
-    count = 0
-    for i in range(0, len(genome)):
-        if genome[i] == 1:
-            count = count + 1
-    return count
+    # count = 0
+    return genome.count(1)
+    # for i in range(0, len(genome)):
+        # if genome[i] == 1:
+        #     count = count + 1
+    # return count
+# L'importance d'utiliser les fonctions de bases e Python
 
 # test d'une fonc de fitness ou il faut un 1 une fois sur 2
 # def fitness(genome: OneMaxKnapSack.Genome) -> int:
@@ -80,9 +82,9 @@ population, generations = OneMaxKnapSack.run_evolution(
     # crossover_func=(OneMaxKnapSack.uniform_crossover),
     crossover_func=(OneMaxKnapSack.single_point_crossover),
     # bridage de la fitness
-    fitness_limit=1000,
+    fitness_limit=5000,
     #nombre de générations
-    generation_limit=10000
+    generation_limit=9000
 )
 print("la meilleur solution " +
       str(OneMaxKnapSack.greatest(population, fitness))
