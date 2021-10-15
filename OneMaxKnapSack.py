@@ -2,6 +2,7 @@ from collections import namedtuple
 from functools import partial
 from random import choices, randint, randrange, random
 from typing import List, Optional, Callable, Tuple
+import numpy as np
 
 Genome = List[int]
 Population = List[Genome]
@@ -33,6 +34,25 @@ def single_point_crossover(a: Genome, b: Genome) -> Tuple[Genome, Genome]:
     p = randint(1, length - 1)
     return a[0:p] + b[p:], b[0:p] + a[p:]
 
+# uniform_point_crossover / https://www.researchgate.net/profile/Yousaf-Shad-Muhammad/publication/327435998/figure/fig2/AS:669547728232455@1536644026201/Uniform-crossover-operator.jpg
+# on a un masque de proba entre 0 et , et si c'est au dessous de 0.5 on swap
+def uniform_crossover(a: Genome, b: Genome) -> Tuple[Genome, Genome]:
+    if len(a) != len(b):
+        raise ValueError("Les génomes doivent être de la même taille")
+
+    length = len(a)
+    if length < 2:
+        return a, b
+    p = np.random.rand(length);
+    # p = randint(1, length - 1)
+    # return a[0:p] + b[p:], b[0:p] + a[p:]
+    for i in range(len(p)):
+        if p[i] < 0.5 :
+            temp = a[i]
+            a[i] = b[i]
+            b[i] = temp
+    return a, b
+
 # 50% de chance d'effectuer une mutation TODO comprendre mieux
 def mutation(genome: Genome, num: int = 1, probability: float = 0.5) -> Genome:
     for _ in range(num):
@@ -44,7 +64,7 @@ def mutation(genome: Genome, num: int = 1, probability: float = 0.5) -> Genome:
 def population_fitness(population: Population, fitness_func: FitnessFunc) -> int:
     return sum([fitness_func(genome) for genome in population])
 
-# TODO comprendre
+# selectionner 2 gênomes en vu d'un croisement
 def selection_pair(population: Population, fitness_func: FitnessFunc) -> Population:
     return choices(
         population=population,
@@ -55,6 +75,10 @@ def selection_pair(population: Population, fitness_func: FitnessFunc) -> Populat
 # trie de la population en fonction de sa fitness
 def sort_population(population: Population, fitness_func: FitnessFunc) -> Population:
     return sorted(population, key=fitness_func, reverse=True)
+
+# trie de la population en fonction de sa fitness
+def greatest(population: Population, fitness_func: FitnessFunc) -> Population:
+    return sorted(population, key=fitness_func, reverse=True)[0]
 
 
 def genome_to_string(genome: Genome) -> str:
