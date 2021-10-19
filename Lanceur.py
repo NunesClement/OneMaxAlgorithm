@@ -1,6 +1,6 @@
 from functools import partial
 from collections import namedtuple
-
+import numpy as np
 import Methods_Genetics;
 from typing import List, Optional, Callable, Tuple
 #
@@ -72,19 +72,31 @@ def fitness(genome: Methods_Genetics.Genome) -> int:
 #
 # print(OneMaxKnapSack.selection_pair(Population10par10, fitness))
 
-print("-----------")
+print("________________")
 
 weight_limit = 10
 population, generations = Methods_Genetics.run_evolution(
     #taille pop et taille de genome
-    populate_func=partial(Methods_Genetics.generate_population, size=11, genome_length=3000),
+    populate_func=partial(Methods_Genetics.generate_population, size=10, genome_length=5000),
     fitness_func=partial(fitness),
-    # crossover_func=(OneMaxKnapSack.uniform_crossover),
-    crossover_func=(Methods_Genetics.single_point_crossover),
+    #selectionner les deux meilleurs
+    # selection_func=partial(Methods_Genetics.selection_pair_better),
+    # selection_func=partial(Methods_Genetics.selection_pair_parmis_s_random, s=2),
+
+    # crossover_func=(Methods_Genetics.uniform_crossover),
+    # crossover_func=(Methods_Genetics.single_point_crossover),
+    # Flip avec proba 1/nb_pop
+    # mutation_func=partial(Methods_Genetics.mutationPop, sizePop=11),
+    # 1 flip / bitflip
+    mutation_func=partial(Methods_Genetics.mutation, num=1, probability=0.5),
+    # 3 flip
+    # mutation_func=partial(Methods_Genetics.mutation, num=3, probability=0.5),
+    # 5 flip
+    # mutation_func=partial(Methods_Genetics.mutation, num=5, probability=0.5),
     # bridage de la fitness
-    fitness_limit=10000,
+    fitness_limit=100000,
     #nombre de générations
-    generation_limit=18000
+    generation_limit=5000
 )
 print("la meilleur solution " +
       str(Methods_Genetics.greatest(population, fitness))
@@ -93,4 +105,4 @@ print("la meilleur solution " +
       )
 # print(population);
 # print(OneMaxKnapSack.population_fitness(population, fitness))
-
+# print(sorted(population, key=fitness, reverse=True))

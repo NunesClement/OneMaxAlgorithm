@@ -53,8 +53,16 @@ def uniform_crossover(a: Genome, b: Genome) -> Tuple[Genome, Genome]:
             b[i] = temp
     return a, b
 
-# 50% de chance d'effectuer une mutation TODO comprendre mieux
+# 50% de chance d'effectuer une mutation
 def mutation(genome: Genome, num: int = 1, probability: float = 0.5) -> Genome:
+    for _ in range(num):
+        index = randrange(len(genome))
+        genome[index] = genome[index] if random() > probability else abs(genome[index] - 1)
+    return genome
+
+# 1/taillePop de chance d'effectuer une mutation
+def mutationPop(genome: Genome, num: int = 1, sizePop = 10) -> Genome:
+    probability = 1/sizePop
     for _ in range(num):
         index = randrange(len(genome))
         genome[index] = genome[index] if random() > probability else abs(genome[index] - 1)
@@ -64,13 +72,37 @@ def mutation(genome: Genome, num: int = 1, probability: float = 0.5) -> Genome:
 def population_fitness(population: Population, fitness_func: FitnessFunc) -> int:
     return sum([fitness_func(genome) for genome in population])
 
-# selectionner 2 gênomes en vu d'un croisement
+# selectionner 2 gênomes en vu d'un croisement RANDOM
 def selection_pair(population: Population, fitness_func: FitnessFunc) -> Population:
     return choices(
         population=population,
         weights=[fitness_func(gene) for gene in population],
         k=2
     )
+# selectionner 2 meilleurs gênomes en vu d'un croisement RANDOM
+def selection_pair_better(population: Population, fitness_func: FitnessFunc) -> Population:
+    select_pop = sort_population(population, fitness_func)
+    # Test en gardant que les plus nuls
+    # return select_pop[len(select_pop) -1], select_pop[len(select_pop) -2]
+    return select_pop[0], select_pop[1]
+
+
+# selectionner 2 meilleurs génomes parmis S random
+def selection_pair_parmis_s_random(population: Population, fitness_func: FitnessFunc, s: int = 2) -> Population:
+    if s >= len(population) :
+        raise ValueError("L'ensemble S random doit etre < a la taille de la pop")
+    index_selection_aleatoire = np.unique(np.random.randint(len(population), size=(1, s)))
+    ensemble_pris_aleatoirement = []
+
+    #sécurité
+    while index_selection_aleatoire.size < 2 :
+        index_selection_aleatoire = np.unique(np.random.randint(len(population), size=(1, s)))
+
+    for i in range(0, index_selection_aleatoire.size):
+        ensemble_pris_aleatoirement.append(population[i])
+    ensemble_pris_aleatoirement = sort_population(ensemble_pris_aleatoirement, fitness_func)
+    # Test en gardant que les plus nuls
+    return ensemble_pris_aleatoirement[0], ensemble_pris_aleatoirement[1]
 
 # trie de la population en fonction de sa fitness
 def sort_population(population: Population, fitness_func: FitnessFunc) -> Population:
