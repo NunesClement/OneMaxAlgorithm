@@ -1,7 +1,7 @@
 from functools import partial
 from collections import namedtuple
 
-import OneMaxKnapSack;
+import Methods_Genetics;
 from typing import List, Optional, Callable, Tuple
 #
 # a = OneMaxKnapSack.generate_genome(10) #générer un génome de taille 10
@@ -19,7 +19,7 @@ from typing import List, Optional, Callable, Tuple
 # print(a)
 
 #fonction de fitness
-def fitness(genome: OneMaxKnapSack.Genome) -> int:
+def fitness(genome: Methods_Genetics.Genome) -> int:
     if len(genome) <= 0 :
         raise ValueError("Le genome doit être > 0 ")
     # count = 0
@@ -75,21 +75,21 @@ def fitness(genome: OneMaxKnapSack.Genome) -> int:
 print("-----------")
 
 weight_limit = 10
-population, generations = OneMaxKnapSack.run_evolution(
+population, generations = Methods_Genetics.run_evolution(
     #taille pop et taille de genome
-    populate_func=partial(OneMaxKnapSack.generate_population, size=10, genome_length=1000),
+    populate_func=partial(Methods_Genetics.generate_population, size=11, genome_length=3000),
     fitness_func=partial(fitness),
     # crossover_func=(OneMaxKnapSack.uniform_crossover),
-    crossover_func=(OneMaxKnapSack.single_point_crossover),
+    crossover_func=(Methods_Genetics.single_point_crossover),
     # bridage de la fitness
-    fitness_limit=5000,
+    fitness_limit=10000,
     #nombre de générations
-    generation_limit=9000
+    generation_limit=18000
 )
 print("la meilleur solution " +
-      str(OneMaxKnapSack.greatest(population, fitness))
+      str(Methods_Genetics.greatest(population, fitness))
       + " \n a pour fitness : " +
-      str(fitness(OneMaxKnapSack.greatest(population, fitness)))
+      str(fitness(Methods_Genetics.greatest(population, fitness)))
       )
 # print(population);
 # print(OneMaxKnapSack.population_fitness(population, fitness))
