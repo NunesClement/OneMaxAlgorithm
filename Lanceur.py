@@ -2,6 +2,8 @@ from functools import partial
 from collections import namedtuple
 import numpy as np
 import Methods_Genetics;
+import seed_env;
+
 from typing import List, Optional, Callable, Tuple
 #
 # a = OneMaxKnapSack.generate_genome(10) #générer un génome de taille 10
@@ -19,6 +21,8 @@ from typing import List, Optional, Callable, Tuple
 # print(a)
 
 #fonction de fitness
+
+
 def fitness(genome: Methods_Genetics.Genome) -> int:
     if len(genome) <= 0 :
         raise ValueError("Le genome doit être > 0 ")
@@ -77,14 +81,14 @@ print("________________")
 weight_limit = 10
 population, generations = Methods_Genetics.run_evolution(
     #taille pop et taille de genome
-    populate_func=partial(Methods_Genetics.generate_population, size=10, genome_length=5000),
+    populate_func=partial(Methods_Genetics.generate_population, size=10, genome_length=30000),
     fitness_func=partial(fitness),
     #selectionner les deux meilleurs
     # selection_func=partial(Methods_Genetics.selection_pair_better),
-    # selection_func=partial(Methods_Genetics.selection_pair_parmis_s_random, s=2),
+    selection_func=partial(Methods_Genetics.selection_pair_parmis_s_random, s=2),
 
     # crossover_func=(Methods_Genetics.uniform_crossover),
-    # crossover_func=(Methods_Genetics.single_point_crossover),
+    crossover_func=(Methods_Genetics.single_point_crossover),
     # Flip avec proba 1/nb_pop
     # mutation_func=partial(Methods_Genetics.mutationPop, sizePop=11),
     # 1 flip / bitflip
@@ -96,12 +100,13 @@ population, generations = Methods_Genetics.run_evolution(
     # bridage de la fitness
     fitness_limit=100000,
     #nombre de générations
-    generation_limit=5000
+    generation_limit=70000
 )
 print("la meilleur solution " +
       str(Methods_Genetics.greatest(population, fitness))
-      + " \n a pour fitness : " +
+      + " \n A pour fitness : " +
       str(fitness(Methods_Genetics.greatest(population, fitness)))
+      + "\n Avec une seed de " + str(seed_env.getSeed())
       )
 # print(population);
 # print(OneMaxKnapSack.population_fitness(population, fitness))

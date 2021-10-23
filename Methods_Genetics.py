@@ -1,8 +1,12 @@
 from collections import namedtuple
 from functools import partial
-from random import choices, randint, randrange, random
+from random import choices, randint, randrange, random, seed
 from typing import List, Optional, Callable, Tuple
 import numpy as np
+import seed_env;
+
+np.random.seed(seed_env.getSeed())
+seed(seed_env.getSeed())
 
 Genome = List[int]
 Population = List[Genome]
