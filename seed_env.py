@@ -1,4 +1,4 @@
 
 
 def getSeed() :
-    return 60;
+    return 60
