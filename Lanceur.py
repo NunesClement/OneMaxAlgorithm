@@ -77,11 +77,10 @@ def fitness(genome: Methods_Genetics.Genome) -> int:
 # print(OneMaxKnapSack.selection_pair(Population10par10, fitness))
 
 print("________________")
-
 weight_limit = 10
 population, generations = Methods_Genetics.run_evolution(
     #taille pop et taille de genome
-    populate_func=partial(Methods_Genetics.generate_population, size=10, genome_length=30000),
+    populate_func=partial(Methods_Genetics.generate_population, size=10, genome_length=50),
     fitness_func=partial(fitness),
     #selectionner les deux meilleurs
     # selection_func=partial(Methods_Genetics.selection_pair_better),
@@ -98,16 +97,18 @@ population, generations = Methods_Genetics.run_evolution(
     # 5 flip
     # mutation_func=partial(Methods_Genetics.mutation, num=5, probability=0.5),
     # bridage de la fitness
-    fitness_limit=100000,
+    fitness_limit=50,
     #nombre de générations
-    generation_limit=70000
+    generation_limit=500
 )
-print("la meilleur solution " +
+print("La meilleur solution " +
       str(Methods_Genetics.greatest(population, fitness))
-      + " \n A pour fitness : " +
+      + " \n A pour fitness " +
       str(fitness(Methods_Genetics.greatest(population, fitness)))
       + "\n Avec une seed de " + str(seed_env.getSeed())
       )
+print("________________")
+
 # print(population);
 # print(OneMaxKnapSack.population_fitness(population, fitness))
 # print(sorted(population, key=fitness, reverse=True))
