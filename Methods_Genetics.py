@@ -1,9 +1,7 @@
-from collections import namedtuple
-from functools import partial
 from random import choices, randint, randrange, random, seed
 from typing import List, Optional, Callable, Tuple
 import numpy as np
-import seed_env;
+import seed_env
 
 np.random.seed(seed_env.getSeed())
 seed(seed_env.getSeed())
@@ -22,9 +20,11 @@ PrinterFunc = Callable[[Population, int, FitnessFunc], None]
 def generate_genome(length: int) -> Genome:
     return choices([0, 1], k=length)
 
+
 # Génération d'une population de génome
 def generate_population(size: int, genome_length: int) -> Population:
     return [generate_genome(genome_length) for _ in range(size)]
+
 
 # 1_point_crossover / échange une portion random sur le bandeau
 def single_point_crossover(a: Genome, b: Genome) -> Tuple[Genome, Genome]:
@@ -38,7 +38,9 @@ def single_point_crossover(a: Genome, b: Genome) -> Tuple[Genome, Genome]:
     p = randint(1, length - 1)
     return a[0:p] + b[p:], b[0:p] + a[p:]
 
-# uniform_point_crossover / https://www.researchgate.net/profile/Yousaf-Shad-Muhammad/publication/327435998/figure/fig2/AS:669547728232455@1536644026201/Uniform-crossover-operator.jpg
+
+# uniform_point_crossover /
+# https://www.researchgate.net/profile/Yousaf-Shad-Muhammad/publication/327435998/figure/fig2/AS:669547728232455@1536644026201/Uniform-crossover-operator.jpg
 # on a un masque de proba entre 0 et , et si c'est au dessous de 0.5 on swap
 def uniform_crossover(a: Genome, b: Genome) -> Tuple[Genome, Genome]:
     if len(a) != len(b):
@@ -47,15 +49,16 @@ def uniform_crossover(a: Genome, b: Genome) -> Tuple[Genome, Genome]:
     length = len(a)
     if length < 2:
         return a, b
-    p = np.random.rand(length);
+    p = np.random.rand(length)
     # p = randint(1, length - 1)
     # return a[0:p] + b[p:], b[0:p] + a[p:]
     for i in range(len(p)):
-        if p[i] < 0.5 :
+        if p[i] < 0.5:
             temp = a[i]
             a[i] = b[i]
             b[i] = temp
     return a, b
+
 
 # 50% de chance d'effectuer une mutation
 def mutation(genome: Genome, num: int = 1, probability: float = 0.5) -> Genome:
@@ -64,17 +67,20 @@ def mutation(genome: Genome, num: int = 1, probability: float = 0.5) -> Genome:
         genome[index] = genome[index] if random() > probability else abs(genome[index] - 1)
     return genome
 
+
 # 1/taillePop de chance d'effectuer une mutation
-def mutationPop(genome: Genome, num: int = 1, sizePop = 10) -> Genome:
-    probability = 1/sizePop
+def mutationPop(genome: Genome, num: int = 1, size_pop=10) -> Genome:
+    probability = 1 / size_pop
     for _ in range(num):
         index = randrange(len(genome))
         genome[index] = genome[index] if random() > probability else abs(genome[index] - 1)
     return genome
 
+
 # mesurer la fitness de toute la pop, on choisi la fonctuon  de fitness
 def population_fitness(population: Population, fitness_func: FitnessFunc) -> int:
     return sum([fitness_func(genome) for genome in population])
+
 
 # selectionner 2 gênomes en vu d'un croisement RANDOM
 def selection_pair(population: Population, fitness_func: FitnessFunc) -> Population:
@@ -83,6 +89,8 @@ def selection_pair(population: Population, fitness_func: FitnessFunc) -> Populat
         weights=[fitness_func(gene) for gene in population],
         k=2
     )
+
+
 # selectionner 2 meilleurs gênomes en vu d'un croisement RANDOM
 def selection_pair_better(population: Population, fitness_func: FitnessFunc) -> Population:
     select_pop = sort_population(population, fitness_func)
@@ -93,13 +101,13 @@ def selection_pair_better(population: Population, fitness_func: FitnessFunc) -> 
 
 # selectionner 2 meilleurs génomes parmis S random
 def selection_pair_parmis_s_random(population: Population, fitness_func: FitnessFunc, s: int = 2) -> Population:
-    if s >= len(population) :
+    if s >= len(population):
         raise ValueError("L'ensemble S random doit etre < a la taille de la pop")
     index_selection_aleatoire = np.unique(np.random.randint(len(population), size=(1, s)))
     ensemble_pris_aleatoirement = []
 
-    #sécurité
-    while index_selection_aleatoire.size < 2 :
+    # sécurité
+    while index_selection_aleatoire.size < 2:
         index_selection_aleatoire = np.unique(np.random.randint(len(population), size=(1, s)))
 
     for i in range(0, index_selection_aleatoire.size):
@@ -108,9 +116,11 @@ def selection_pair_parmis_s_random(population: Population, fitness_func: Fitness
     # Test en gardant que les plus nuls
     return ensemble_pris_aleatoirement[0], ensemble_pris_aleatoirement[1]
 
+
 # trie de la population en fonction de sa fitness
 def sort_population(population: Population, fitness_func: FitnessFunc) -> Population:
     return sorted(population, key=fitness_func, reverse=True)
+
 
 # trie de la population en fonction de sa fitness
 def greatest(population: Population, fitness_func: FitnessFunc) -> Population:
@@ -147,7 +157,7 @@ def run_evolution(
         printer: Optional[PrinterFunc] = None) \
         -> Tuple[Population, int]:
     population = populate_func()
-
+    i = 0
     for i in range(generation_limit):
         population = sorted(population, key=lambda genome: fitness_func(genome), reverse=True)
 
