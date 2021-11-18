@@ -1,10 +1,15 @@
 from functools import partial
-from collections import namedtuple
-import numpy as np
-import Methods_Genetics;
-import seed_env;
 
-from typing import List, Optional, Callable, Tuple
+import matplotlib
+import numpy as np
+import matplotlib.pyplot as plt
+from PIL import Image
+
+
+import Methods_Genetics
+import seed_env
+
+
 #
 # a = OneMaxKnapSack.generate_genome(10) #générer un génome de taille 10
 # b = OneMaxKnapSack.generate_genome(10)
@@ -20,18 +25,19 @@ from typing import List, Optional, Callable, Tuple
 # OneMaxKnapSack.mutation(a, 1, 1)
 # print(a)
 
-#fonction de fitness
-
+# fonction de fitness
 
 def fitness(genome: Methods_Genetics.Genome) -> int:
-    if len(genome) <= 0 :
+    if len(genome) <= 0:
         raise ValueError("Le genome doit être > 0 ")
     # count = 0
     return genome.count(1)
     # for i in range(0, len(genome)):
-        # if genome[i] == 1:
-        #     count = count + 1
+    # if genome[i] == 1:
+    #     count = count + 1
     # return count
+
+
 # L'importance d'utiliser les fonctions de bases e Python
 
 # test d'une fonc de fitness ou il faut un 1 une fois sur 2
@@ -71,18 +77,18 @@ def fitness(genome: Methods_Genetics.Genome) -> int:
 #             count = count + 1
 #     return count
 
-#fitness de la pop globale
+# fitness de la pop globale
 # print(OneMaxKnapSack.population_fitness(Population10par10, fitness))
 #
 # print(OneMaxKnapSack.selection_pair(Population10par10, fitness))
 
 print("________________")
 weight_limit = 10
-population, generations = Methods_Genetics.run_evolution(
-    #taille pop et taille de genome
-    populate_func=partial(Methods_Genetics.generate_population, size=10, genome_length=50),
+population, generations, collected_data = Methods_Genetics.run_evolution(
+    # taille pop et taille de genome
+    populate_func=partial(Methods_Genetics.generate_population, size=10, genome_length=1000),
     fitness_func=partial(fitness),
-    #selectionner les deux meilleurs
+    # selectionner les deux meilleurs
     # selection_func=partial(Methods_Genetics.selection_pair_better),
     selection_func=partial(Methods_Genetics.selection_pair_parmis_s_random, s=2),
 
@@ -97,9 +103,9 @@ population, generations = Methods_Genetics.run_evolution(
     # 5 flip
     # mutation_func=partial(Methods_Genetics.mutation, num=5, probability=0.5),
     # bridage de la fitness
-    fitness_limit=50,
-    #nombre de générations
-    generation_limit=500
+    fitness_limit=1000,
+    # nombre de générations
+    generation_limit=1000
 )
 print("La meilleur solution " +
       str(Methods_Genetics.greatest(population, fitness))
@@ -108,6 +114,18 @@ print("La meilleur solution " +
       + "\n Avec une seed de " + str(seed_env.getSeed())
       )
 print("________________")
+
+x = collected_data[0]
+y = collected_data[1]
+plt.plot(x, y)
+plt.savefig("test")
+
+# open method used to open different extension image file
+im = Image.open("test.png")
+
+# This method will show image in any image viewer
+im.show()
+
 
 # print(population);
 # print(OneMaxKnapSack.population_fitness(population, fitness))

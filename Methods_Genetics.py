@@ -158,15 +158,25 @@ def run_evolution(
         -> Tuple[Population, int]:
     population = populate_func()
     i = 0
-    for i in range(generation_limit):
-        population = sorted(population, key=lambda genome: fitness_func(genome), reverse=True)
+    collected_iteration = np.array([])
+    collected_fitness = np.array([])
 
+    for i in range(generation_limit):
+        if i % 10 == 0 :
+            # print("Le programme a l'efficacité : " + str(fitness_func(population[0])) + " / " + str(fitness_limit) + " à l'itération " + str(i))
+            collected_iteration = np.append(collected_iteration, i)
+            collected_fitness = np.append(collected_fitness, fitness_func(population[0]))
+
+        population = sorted(population, key=lambda genome: fitness_func(genome), reverse=True)
         if printer is not None:
             printer(population, i, fitness_func)
 
         if fitness_func(population[0]) >= fitness_limit:
+            # print("Le programme a l'efficacité : " + str(fitness_func(population[0])) + " / " + str(
+            #     fitness_limit) + " à l'itération " + str(i))
+            collected_iteration = np.append(collected_iteration, i)
+            collected_fitness = np.append(collected_fitness, fitness_func(population[0]))
             break
-
         next_generation = population[0:2]
 
         for j in range(int(len(population) / 2) - 1):
@@ -177,5 +187,5 @@ def run_evolution(
             next_generation += [offspring_a, offspring_b]
 
         population = next_generation
-
-    return population, i
+    collected_data = [collected_iteration, collected_fitness]
+    return population, i, collected_data
