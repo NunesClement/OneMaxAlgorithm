@@ -35,7 +35,6 @@ def generate_population(size: int, genome_length: int) -> Population:
 def single_point_crossover(a: List[int], b: List[int]) -> Tuple[List[int], List[int]]:
     if len(a) != len(b):
         raise ValueError("Les génomes doivent être de la même taille")
-
     if len(a) < 2:
         return a, b
 
@@ -62,26 +61,6 @@ def uniform_crossover(
             continue
 
     return [offspring_1, offspring_2]
-
-# uniform_point_crossover /
-# https://www.researchgate.net/profile/Yousaf-Shad-Muhammad/publication/327435998/figure/fig2/AS:669547728232455@1536644026201/Uniform-crossover-operator.jpg
-# on a un masque de proba entre 0 et , et si c'est au dessous de 0.5 on swap
-# def uniform_crossover(a: List[int], b: List[int]) -> Tuple[List[int], List[int]]:
-#     if len(a) != len(b):
-#         raise ValueError("Les génomes doivent être de la même taille")
-#
-#     length = len(a)
-#     if length < 2:
-#         return a, b
-#     p = np.random.rand(length)
-#     # p = randint(1, length - 1)
-#     # return a[0:p] + b[p:], b[0:p] + a[p:]
-#     for i in range(len(p)):
-#         if p[i] < 0.5:
-#             temp = a[i]
-#             a[i] = b[i]
-#             b[i] = temp
-#     return a, b
 
 
 # 50% de chance d'effectuer une mutation
@@ -193,7 +172,7 @@ def run_evolution(
         if i % 5 == 0:
             # print("Le programme a l'efficacité : " + str(fitness_func(population[0])) + " / " + str(fitness_limit) + " à l'itération " + str(i))
             collected_iteration = np.append(collected_iteration, i)
-            collected_fitness = np.append(collected_fitness, fitness_func(population[0]))++
+            collected_fitness = np.append(collected_fitness, fitness_func(population[0]))
         population = sorted(population, key=lambda genome: fitness_func(genome), reverse=True)
 
         if printer is not None:

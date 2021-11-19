@@ -105,7 +105,7 @@ def launch_with_param(mutation="1-flip", crossover="single_point_crossover",
 
     (population, generations, collected_data) = Methods_Genetics.run_evolution(
         # taille pop et taille de genome
-        populate_func=partial(Methods_Genetics.generate_population, size=10, genome_length=500),
+        populate_func=partial(Methods_Genetics.generate_population, size=10, genome_length=750),
         fitness_func=partial(fitness),
         # selectionner les deux meilleurs
         # selection_func=partial(Methods_Genetics.selection_pair_better),
@@ -123,9 +123,9 @@ def launch_with_param(mutation="1-flip", crossover="single_point_crossover",
         # 5 flip
         # mutation_func=partial(Methods_Genetics.mutation, num=5, probability=0.5),
         # bridage de la fitness
-        fitness_limit=500,
+        fitness_limit=750,
         # nombre de générations
-        generation_limit=1000
+        generation_limit=10000
     )
     print("One call just finished")
     return population, generations, collected_data
@@ -153,23 +153,12 @@ plt.ylabel("Fitness atteinte")
 # plt.plot(x, y, label=lbl)
 
 
-# population, generations, collected_data = launch_with_param("3-flip", "uniform_crossover", "selection_pair_better")
-# x = collected_data[0]
-# y = collected_data[1]
-# lbl = "uniform_crossover + 3 flips + selection_pair_better " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
-# plt.plot(x, y, label=lbl)
-
-# population, generations, collected_data = launch_with_param("1-flip", "uniform_crossover", "selection_pair")
-# x = collected_data[0]
-# y = collected_data[1]
-# lbl = "uniform_crossover + 1 flip + selection_pair " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
-# plt.plot(x, y, label=lbl)
 
 
-population, generations, collected_data = launch_with_param("3-flip", "single_point_crossover", "selection_pair_better")
+population, generations, collected_data = launch_with_param("1-flip", "single_point_crossover", "selection_pair_better")
 x = collected_data[0]
 y = collected_data[1]
-lbl = "single_point_crossover + 3 flips + selection_pair_better " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
+lbl = "single_point_crossover + 1 flips + selection_pair_better " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
 plt.plot(x, y, label=lbl)
 
 population, generations, collected_data = launch_with_param("1-flip", "uniform_crossover", "selection_pair")
@@ -178,11 +167,19 @@ y = collected_data[1]
 lbl = "uniform_crossover + 1 flips + selection_pair " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
 plt.plot(x, y, label=lbl)
 
-# population, generations, collected_data = launch_with_param("5-flip", "uniform_crossover", "selection_pair_better")
-# x = collected_data[0]
-# y = collected_data[1]
-# lbl = "uniform_crossover + 5 flips + selection_pair_better " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
-# plt.plot(x, y, label=lbl)
+
+population, generations, collected_data = launch_with_param("3-flip", "single_point_crossover", "selection_pair_better")
+x = collected_data[0]
+y = collected_data[1]
+lbl = "single_point_crossover + 3 flips + selection_pair_better " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
+plt.plot(x, y, label=lbl)
+
+population, generations, collected_data = launch_with_param("3-flip", "uniform_crossover", "selection_pair")
+x = collected_data[0]
+y = collected_data[1]
+lbl = "uniform_crossover + 3 flips + selection_pair " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
+plt.plot(x, y, label=lbl)
+
 
 plt.legend()
 plt.savefig("test")
