@@ -1,11 +1,11 @@
 from functools import partial
+from typing import List
 
 import matplotlib
 import numpy as np
 import matplotlib.pyplot as plt
 from PIL import Image
-
-
+from random import randint
 import Methods_Genetics
 import seed_env
 
@@ -27,15 +27,10 @@ import seed_env
 
 # fonction de fitness
 
-def fitness(genome: Methods_Genetics.Genome) -> int:
+def fitness(genome: List[int]) -> int:
     if len(genome) <= 0:
         raise ValueError("Le genome doit être > 0 ")
-    # count = 0
     return genome.count(1)
-    # for i in range(0, len(genome)):
-    # if genome[i] == 1:
-    #     count = count + 1
-    # return count
 
 
 # L'importance d'utiliser les fonctions de bases e Python
@@ -83,41 +78,113 @@ def fitness(genome: Methods_Genetics.Genome) -> int:
 # print(OneMaxKnapSack.selection_pair(Population10par10, fitness))
 
 print("________________")
-weight_limit = 10
-population, generations, collected_data = Methods_Genetics.run_evolution(
-    # taille pop et taille de genome
-    populate_func=partial(Methods_Genetics.generate_population, size=10, genome_length=1000),
-    fitness_func=partial(fitness),
-    # selectionner les deux meilleurs
-    # selection_func=partial(Methods_Genetics.selection_pair_better),
-    selection_func=partial(Methods_Genetics.selection_pair_parmis_s_random, s=2),
 
-    # crossover_func=(Methods_Genetics.uniform_crossover),
-    crossover_func=(Methods_Genetics.single_point_crossover),
-    # Flip avec proba 1/nb_pop
-    # mutation_func=partial(Methods_Genetics.mutationPop, sizePop=11),
-    # 1 flip / bitflip
-    mutation_func=partial(Methods_Genetics.mutation, num=1, probability=0.5),
-    # 3 flip
-    # mutation_func=partial(Methods_Genetics.mutation, num=3, probability=0.5),
-    # 5 flip
-    # mutation_func=partial(Methods_Genetics.mutation, num=5, probability=0.5),
-    # bridage de la fitness
-    fitness_limit=1000,
-    # nombre de générations
-    generation_limit=1000
-)
-print("La meilleur solution " +
-      str(Methods_Genetics.greatest(population, fitness))
-      + " \n A pour fitness " +
-      str(fitness(Methods_Genetics.greatest(population, fitness)))
-      + "\n Avec une seed de " + str(seed_env.getSeed())
-      )
-print("________________")
 
+def launch_with_param(mutation="1-flip", crossover="single_point_crossover",
+                      selection="selection_pair_parmis_s_random"):
+    weight_limit = 10
+    if mutation == "3-flip":
+        mutation = partial(Methods_Genetics.mutation, num=3, probability=0.5)
+    if mutation == "1-flip":
+        mutation = partial(Methods_Genetics.mutation, num=1, probability=0.5)
+    if mutation == "5-flip":
+        mutation = partial(Methods_Genetics.mutation, num=5, probability=0.5)
+    if mutation == "0-flip":
+        mutation = partial(Methods_Genetics.mutation, num=0, probability=0.5)
+    if crossover == "uniform_crossover":
+        crossover = Methods_Genetics.uniform_crossover
+    else:
+        crossover = Methods_Genetics.single_point_crossover
+
+    if selection == "selection_pair_parmis_s_random":
+        selection = partial(Methods_Genetics.selection_pair_parmis_s_random, s=2)
+    if selection == "selection_pair_better":
+        selection = partial(Methods_Genetics.selection_pair_better)
+    if selection == "selection_pair":
+        selection = partial(Methods_Genetics.selection_pair)
+
+    (population, generations, collected_data) = Methods_Genetics.run_evolution(
+        # taille pop et taille de genome
+        populate_func=partial(Methods_Genetics.generate_population, size=10, genome_length=500),
+        fitness_func=partial(fitness),
+        # selectionner les deux meilleurs
+        # selection_func=partial(Methods_Genetics.selection_pair_better),
+        selection_func=selection,
+        crossover_func=crossover,
+        # crossover_func=(Methods_Genetics.uniform_crossover),
+        # crossover_func=(Methods_Genetics.single_point_crossover),
+        # Flip avec proba 1/nb_pop
+        # mutation_func=partial(Methods_Genetics.mutationPop, sizePop=11),
+        mutation_func=mutation,
+        # 1 flip / bitflip
+        # mutation_func=partial(Methods_Genetics.mutation, num=1, probability=0.5),
+        # 3 flip
+        # mutation_func=partial(Methods_Genetics.mutation, num=3, probability=0.5),
+        # 5 flip
+        # mutation_func=partial(Methods_Genetics.mutation, num=5, probability=0.5),
+        # bridage de la fitness
+        fitness_limit=500,
+        # nombre de générations
+        generation_limit=1000
+    )
+    print("One call just finished")
+    return population, generations, collected_data
+
+
+plt.xlabel("Nombre de générations")
+plt.ylabel("Fitness atteinte")
+
+# population, generations, collected_data = launch_with_param("5-flip", "uniform_crossover", "selection_pair_better")
+# x = collected_data[0]
+# y = collected_data[1]
+# lbl = "uniform_crossover + 5 flips + selection_pair " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
+# plt.plot(x, y, label=lbl)
+#
+# population, generations, collected_data = launch_with_param("3-flip", "uniform_crossover", "selection_pair_better")
+# x = collected_data[0]
+# y = collected_data[1]
+# lbl = "uniform_crossover + 3 flips + selection_pair " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
+# plt.plot(x, y, label=lbl)
+#
+# population, generations, collected_data = launch_with_param("1-flip", "uniform_crossover", "selection_pair_better")
+# x = collected_data[0]
+# y = collected_data[1]
+# lbl = "uniform_crossover + 1 flips + selection_pair " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
+# plt.plot(x, y, label=lbl)
+
+
+# population, generations, collected_data = launch_with_param("3-flip", "uniform_crossover", "selection_pair_better")
+# x = collected_data[0]
+# y = collected_data[1]
+# lbl = "uniform_crossover + 3 flips + selection_pair_better " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
+# plt.plot(x, y, label=lbl)
+
+# population, generations, collected_data = launch_with_param("1-flip", "uniform_crossover", "selection_pair")
+# x = collected_data[0]
+# y = collected_data[1]
+# lbl = "uniform_crossover + 1 flip + selection_pair " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
+# plt.plot(x, y, label=lbl)
+
+
+population, generations, collected_data = launch_with_param("3-flip", "single_point_crossover", "selection_pair_better")
 x = collected_data[0]
 y = collected_data[1]
-plt.plot(x, y)
+lbl = "single_point_crossover + 3 flips + selection_pair_better " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
+plt.plot(x, y, label=lbl)
+
+population, generations, collected_data = launch_with_param("1-flip", "uniform_crossover", "selection_pair")
+x = collected_data[0]
+y = collected_data[1]
+lbl = "uniform_crossover + 1 flips + selection_pair " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
+plt.plot(x, y, label=lbl)
+
+# population, generations, collected_data = launch_with_param("5-flip", "uniform_crossover", "selection_pair_better")
+# x = collected_data[0]
+# y = collected_data[1]
+# lbl = "uniform_crossover + 5 flips + selection_pair_better " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
+# plt.plot(x, y, label=lbl)
+
+plt.legend()
 plt.savefig("test")
 
 # open method used to open different extension image file
@@ -125,7 +192,6 @@ im = Image.open("test.png")
 
 # This method will show image in any image viewer
 im.show()
-
 
 # print(population);
 # print(OneMaxKnapSack.population_fitness(population, fitness))

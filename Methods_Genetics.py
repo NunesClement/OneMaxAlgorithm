@@ -7,17 +7,22 @@ np.random.seed(seed_env.getSeed())
 seed(seed_env.getSeed())
 
 Genome = List[int]
-Population = List[Genome]
+Population = List[List[int]]
 PopulateFunc = Callable[[], Population]
-FitnessFunc = Callable[[Genome], int]
-SelectionFunc = Callable[[Population, FitnessFunc], Tuple[Genome, Genome]]
-CrossoverFunc = Callable[[Genome, Genome], Tuple[Genome, Genome]]
-MutationFunc = Callable[[Genome], Genome]
+FitnessFunc = Callable[[List[int]], int]
+SelectionFunc = Callable[[Population, FitnessFunc], Tuple[List[int], List[int]]]
+CrossoverFunc = Callable[[List[int], List[int]], Tuple[List[int], List[int]]]
+MutationFunc = Callable[[List[int]], List[int]]
 PrinterFunc = Callable[[Population, int, FitnessFunc], None]
 
 
+# Génération d'un génome personnalisé
+def custom_genome(custom_list: List[int]) -> List[int]:
+    return custom_list
+
+
 # Génération d'un génome random
-def generate_genome(length: int) -> Genome:
+def generate_genome(length: int) -> List[int]:
     return choices([0, 1], k=length)
 
 
@@ -27,41 +32,60 @@ def generate_population(size: int, genome_length: int) -> Population:
 
 
 # 1_point_crossover / échange une portion random sur le bandeau
-def single_point_crossover(a: Genome, b: Genome) -> Tuple[Genome, Genome]:
+def single_point_crossover(a: List[int], b: List[int]) -> Tuple[List[int], List[int]]:
     if len(a) != len(b):
         raise ValueError("Les génomes doivent être de la même taille")
 
-    length = len(a)
-    if length < 2:
+    if len(a) < 2:
         return a, b
 
-    p = randint(1, length - 1)
-    return a[0:p] + b[p:], b[0:p] + a[p:]
+    p = randint(1, len(a) - 1)
+    a = a[0:p] + b[p:]
+    b = b[0:p] + a[p:]
 
+    return a, b
+
+
+def uniform_crossover(
+    individual_1: np.array, individual_2: np.array, thresh: int = 0.5
+):
+    offspring_1 = individual_1.copy()
+    offspring_2 = individual_2.copy()
+    for i, _ in enumerate(offspring_1):
+        ran_num = np.random.uniform()
+        if ran_num > thresh:
+            # swap 2 bits at i-th position
+            temp_bit = offspring_1[i]
+            offspring_1[i] = offspring_2[i]
+            offspring_2[i] = temp_bit
+        else:
+            continue
+
+    return [offspring_1, offspring_2]
 
 # uniform_point_crossover /
 # https://www.researchgate.net/profile/Yousaf-Shad-Muhammad/publication/327435998/figure/fig2/AS:669547728232455@1536644026201/Uniform-crossover-operator.jpg
 # on a un masque de proba entre 0 et , et si c'est au dessous de 0.5 on swap
-def uniform_crossover(a: Genome, b: Genome) -> Tuple[Genome, Genome]:
-    if len(a) != len(b):
-        raise ValueError("Les génomes doivent être de la même taille")
-
-    length = len(a)
-    if length < 2:
-        return a, b
-    p = np.random.rand(length)
-    # p = randint(1, length - 1)
-    # return a[0:p] + b[p:], b[0:p] + a[p:]
-    for i in range(len(p)):
-        if p[i] < 0.5:
-            temp = a[i]
-            a[i] = b[i]
-            b[i] = temp
-    return a, b
+# def uniform_crossover(a: List[int], b: List[int]) -> Tuple[List[int], List[int]]:
+#     if len(a) != len(b):
+#         raise ValueError("Les génomes doivent être de la même taille")
+#
+#     length = len(a)
+#     if length < 2:
+#         return a, b
+#     p = np.random.rand(length)
+#     # p = randint(1, length - 1)
+#     # return a[0:p] + b[p:], b[0:p] + a[p:]
+#     for i in range(len(p)):
+#         if p[i] < 0.5:
+#             temp = a[i]
+#             a[i] = b[i]
+#             b[i] = temp
+#     return a, b
 
 
 # 50% de chance d'effectuer une mutation
-def mutation(genome: Genome, num: int = 1, probability: float = 0.5) -> Genome:
+def mutation(genome: List[int], num: int = 1, probability: float = 0.5) -> List[int]:
     for _ in range(num):
         index = randrange(len(genome))
         genome[index] = genome[index] if random() > probability else abs(genome[index] - 1)
@@ -69,7 +93,7 @@ def mutation(genome: Genome, num: int = 1, probability: float = 0.5) -> Genome:
 
 
 # 1/taillePop de chance d'effectuer une mutation
-def mutationPop(genome: Genome, num: int = 1, size_pop=10) -> Genome:
+def mutationPop(genome: List[int], num: int = 1, size_pop=10) -> List[int]:
     probability = 1 / size_pop
     for _ in range(num):
         index = randrange(len(genome))
@@ -127,7 +151,7 @@ def greatest(population: Population, fitness_func: FitnessFunc) -> Population:
     return sorted(population, key=fitness_func, reverse=True)[0]
 
 
-def genome_to_string(genome: Genome) -> str:
+def genome_to_string(genome: List[int]) -> str:
     return "".join(map(str, genome))
 
 
@@ -156,18 +180,22 @@ def run_evolution(
         generation_limit: int = 100,
         printer: Optional[PrinterFunc] = None) \
         -> Tuple[Population, int]:
+    """
+
+    :rtype: object
+    """
     population = populate_func()
     i = 0
     collected_iteration = np.array([])
     collected_fitness = np.array([])
 
     for i in range(generation_limit):
-        if i % 10 == 0 :
+        if i % 5 == 0:
             # print("Le programme a l'efficacité : " + str(fitness_func(population[0])) + " / " + str(fitness_limit) + " à l'itération " + str(i))
             collected_iteration = np.append(collected_iteration, i)
-            collected_fitness = np.append(collected_fitness, fitness_func(population[0]))
-
+            collected_fitness = np.append(collected_fitness, fitness_func(population[0]))++
         population = sorted(population, key=lambda genome: fitness_func(genome), reverse=True)
+
         if printer is not None:
             printer(population, i, fitness_func)
 
