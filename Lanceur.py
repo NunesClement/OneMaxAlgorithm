@@ -1,16 +1,12 @@
 from functools import partial
 from typing import List
 
-import matplotlib
-import numpy as np
 import matplotlib.pyplot as plt
-from PIL import Image
-from random import randint
+# from PIL import Image
+# from random import randint
 import Methods_Genetics
-import seed_env
 
 
-#
 # a = OneMaxKnapSack.generate_genome(10) #générer un génome de taille 10
 # b = OneMaxKnapSack.generate_genome(10)
 # print(a)
@@ -107,25 +103,13 @@ def launch_with_param(mutation="1-flip", crossover="single_point_crossover",
         # taille pop et taille de genome
         populate_func=partial(Methods_Genetics.generate_population, size=10, genome_length=750),
         fitness_func=partial(fitness),
-        # selectionner les deux meilleurs
-        # selection_func=partial(Methods_Genetics.selection_pair_better),
         selection_func=selection,
         crossover_func=crossover,
-        # crossover_func=(Methods_Genetics.uniform_crossover),
-        # crossover_func=(Methods_Genetics.single_point_crossover),
-        # Flip avec proba 1/nb_pop
-        # mutation_func=partial(Methods_Genetics.mutationPop, sizePop=11),
         mutation_func=mutation,
-        # 1 flip / bitflip
-        # mutation_func=partial(Methods_Genetics.mutation, num=1, probability=0.5),
-        # 3 flip
-        # mutation_func=partial(Methods_Genetics.mutation, num=3, probability=0.5),
-        # 5 flip
-        # mutation_func=partial(Methods_Genetics.mutation, num=5, probability=0.5),
         # bridage de la fitness
         fitness_limit=750,
         # nombre de générations
-        generation_limit=10000
+        generation_limit=50
     )
     print("One call just finished")
     return population, generations, collected_data
@@ -134,62 +118,40 @@ def launch_with_param(mutation="1-flip", crossover="single_point_crossover",
 plt.xlabel("Nombre de générations")
 plt.ylabel("Fitness atteinte")
 
-# population, generations, collected_data = launch_with_param("5-flip", "uniform_crossover", "selection_pair_better")
-# x = collected_data[0]
-# y = collected_data[1]
-# lbl = "uniform_crossover + 5 flips + selection_pair " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
-# plt.plot(x, y, label=lbl)
-#
-# population, generations, collected_data = launch_with_param("3-flip", "uniform_crossover", "selection_pair_better")
-# x = collected_data[0]
-# y = collected_data[1]
-# lbl = "uniform_crossover + 3 flips + selection_pair " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
-# plt.plot(x, y, label=lbl)
-#
-# population, generations, collected_data = launch_with_param("1-flip", "uniform_crossover", "selection_pair_better")
-# x = collected_data[0]
-# y = collected_data[1]
-# lbl = "uniform_crossover + 1 flips + selection_pair " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
-# plt.plot(x, y, label=lbl)
 
+def launch_the_launcher(globalState):
+    print(globalState.mutationFlipNumber)
 
+    population, generations, collected_data = launch_with_param(str(globalState.mutationFlipNumber), "single_point_crossover",
+                                                                "selection_pair_better")
+    x = collected_data[0]
+    y = collected_data[1]
+    lbl = "single_point_crossover " + globalState.mutationFlipNumber + " selection_pair_better " + str(generations) + " " + str(
+        collected_data[1][len(collected_data[1]) - 1])
+    plt.plot(x, y, label=lbl)
 
+    population, generations, collected_data = launch_with_param("1-flip", "uniform_crossover", "selection_pair")
+    x = collected_data[0]
+    y = collected_data[1]
+    lbl = "uniform_crossover + 1 flips + selection_pair " + str(generations) + " " + str(
+        collected_data[1][len(collected_data[1]) - 1])
+    plt.plot(x, y, label=lbl)
 
-population, generations, collected_data = launch_with_param("1-flip", "single_point_crossover", "selection_pair_better")
-x = collected_data[0]
-y = collected_data[1]
-lbl = "single_point_crossover + 1 flips + selection_pair_better " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
-plt.plot(x, y, label=lbl)
+    #
 
-population, generations, collected_data = launch_with_param("1-flip", "uniform_crossover", "selection_pair")
-x = collected_data[0]
-y = collected_data[1]
-lbl = "uniform_crossover + 1 flips + selection_pair " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
-plt.plot(x, y, label=lbl)
+    # population, generations, collected_data = launch_with_param("3-flip", "uniform_crossover", "selection_pair")
+    # x = collected_data[0]
+    # y = collected_data[1]
+    # lbl = "uniform_crossover + 3 flips + selection_pair " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
+    # plt.plot(x, y, label=lbl)
 
+    plt.legend()
 
-population, generations, collected_data = launch_with_param("3-flip", "single_point_crossover", "selection_pair_better")
-x = collected_data[0]
-y = collected_data[1]
-lbl = "single_point_crossover + 3 flips + selection_pair_better " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
-plt.plot(x, y, label=lbl)
+    plt.savefig("test")
 
-population, generations, collected_data = launch_with_param("3-flip", "uniform_crossover", "selection_pair")
-x = collected_data[0]
-y = collected_data[1]
-lbl = "uniform_crossover + 3 flips + selection_pair " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
-plt.plot(x, y, label=lbl)
-
-
-plt.legend()
-plt.savefig("test")
-
-# open method used to open different extension image file
-im = Image.open("test.png")
-
-# This method will show image in any image viewer
-im.show()
-
-# print(population);
-# print(OneMaxKnapSack.population_fitness(population, fitness))
-# print(sorted(population, key=fitness, reverse=True))
+    # open method used to open different extension image file
+    # im = Image.open("test.png")
+    #
+    # # This method will show image in any image viewer
+    # im.show()
+    return 0
