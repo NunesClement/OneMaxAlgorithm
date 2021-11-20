@@ -11,12 +11,12 @@ import Methods_Genetics
 # b = OneMaxKnapSack.generate_genome(10)
 # print(a)
 # print(b)
-#
+
 # a = [0,0,0,0,0,0,0]
 # b = [1,1,1,1,1,1,1]
 # print(OneMaxKnapSack.single_point_crossover(a, b)) # crossover entre 2 gênes
 # Population10par10 = OneMaxKnapSack.generate_population(10, 10) # générer une pop de 10 gênomes de taille 10
-#
+
 # #muter un gène random
 # OneMaxKnapSack.mutation(a, 1, 1)
 # print(a)
@@ -122,11 +122,13 @@ plt.ylabel("Fitness atteinte")
 def launch_the_launcher(globalState):
     print(globalState.mutationFlipNumber)
 
-    population, generations, collected_data = launch_with_param(str(globalState.mutationFlipNumber), "single_point_crossover",
+    population, generations, collected_data = launch_with_param(str(globalState.mutationFlipNumber),
+                                                                "single_point_crossover",
                                                                 "selection_pair_better")
     x = collected_data[0]
     y = collected_data[1]
-    lbl = "single_point_crossover " + globalState.mutationFlipNumber + " selection_pair_better " + str(generations) + " " + str(
+    lbl = "single_point_crossover " + globalState.mutationFlipNumber + " selection_pair_better " + str(
+        generations) + " " + str(
         collected_data[1][len(collected_data[1]) - 1])
     plt.plot(x, y, label=lbl)
 
@@ -136,14 +138,6 @@ def launch_the_launcher(globalState):
     lbl = "uniform_crossover + 1 flips + selection_pair " + str(generations) + " " + str(
         collected_data[1][len(collected_data[1]) - 1])
     plt.plot(x, y, label=lbl)
-
-    #
-
-    # population, generations, collected_data = launch_with_param("3-flip", "uniform_crossover", "selection_pair")
-    # x = collected_data[0]
-    # y = collected_data[1]
-    # lbl = "uniform_crossover + 3 flips + selection_pair " + str(generations) + " " + str(collected_data[1][len(collected_data[1])-1])
-    # plt.plot(x, y, label=lbl)
 
     plt.legend()
 
