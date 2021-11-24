@@ -1,17 +1,26 @@
 import sys
 
 from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QLabel, QMainWindow, QApplication, QPushButton, QVBoxLayout, QComboBox, QWidget
+from PySide6.QtWidgets import QLabel, QMainWindow, QApplication, QPushButton, QVBoxLayout, QComboBox, QWidget, QLineEdit
 import Lanceur
 
 
 class GlobalParameter:
-    def __init__(self, mutation_flip_number, mutation_flip_probability):
-        self.mutationFlipNumber = mutation_flip_number
-        self.mutationFlipProbability = mutation_flip_probability
+    def __init__(self, seed, taille_pop, mutation_params, selection_params,
+                 fitness_limit, generation_limit, genome_length):
+        self.seed = seed
+        self.mutation_params = mutation_params
+        self.selection_params = selection_params
+        self.fitness_limit = fitness_limit
+        self.generation_limit = generation_limit
+        self.genome_length = genome_length
+        self.taille_pop = taille_pop
 
 
-globalState = GlobalParameter("1-flip", 0.5)
+globalState = GlobalParameter(13, 10,
+                              ["1-flip", 0.5],
+                              "selection_pair_parmis_s_random",
+                              1000, 1000, 1000)
 
 
 class Second(QMainWindow):
@@ -49,7 +58,6 @@ class First(QMainWindow):
         self.setWindowTitle(self.title)
 
         self.buttonRun = QPushButton("Run")
-
         self.fitnessLabel = QLabel("Validation")
         self.choixFitness = QLabel("Choix fitness par encore disponible - onemax par défaut")
 
@@ -77,7 +85,36 @@ class First(QMainWindow):
         self.layout.addWidget(self.selectionChoix)
         self.layout.addWidget(self.mutationLabel)
         self.layout.addWidget(self.mutationChoix)
-        self.dialogs = "test"
+
+        self.sizePopLabel = QLabel("nb d'individus")
+        self.sizePop = QLineEdit()
+        self.sizePop.setText("10")
+        self.layout.addWidget(self.sizePopLabel)
+        self.layout.addWidget(self.sizePop)
+        self.sizePop.textChanged.connect(self.change_size_pop)
+
+        self.fitnessMaxLabel = QLabel("set fitness max")
+        self.fitnessMax = QLineEdit()
+        self.fitnessMax.setText("1000")
+        self.layout.addWidget(self.fitnessMaxLabel)
+        self.layout.addWidget(self.fitnessMax)
+        self.fitnessMax.textChanged.connect(self.change_fitness_max)
+
+        self.genomeTailleLabel = QLabel("genome taille")
+        self.genomeTaille = QLineEdit()
+        self.genomeTaille.setText("1000")
+        self.layout.addWidget(self.genomeTailleLabel)
+        self.layout.addWidget(self.genomeTaille)
+        self.genomeTaille.textChanged.connect(self.change_genome_taille_label)
+
+        self.generationNbLabel = QLabel("Itération / génération")
+        self.generationNb = QLineEdit()
+        self.generationNb.setText("1000")
+        self.layout.addWidget(self.generationNbLabel)
+        self.layout.addWidget(self.generationNb)
+        self.generationNb.textChanged.connect(self.change_nb_generation)
+
+        self.dialogs = ""
         self.buttonRun.clicked.connect(self.on_pushButton_clicked)
         self.mutationChoix.currentTextChanged.connect(self.setMutationFLip)
         self.widget = QWidget()
@@ -85,13 +122,25 @@ class First(QMainWindow):
         self.setCentralWidget(self.widget)
         self.show()
 
+    def change_size_pop(self, text):
+        globalState.taille_pop = text
+
+    def change_fitness_max(self, text):
+        globalState.fitness_limit = text
+
+    def change_genome_taille_label(self, text):
+        globalState.genome_length = text
+
+    def change_nb_generation(self, text):
+        globalState.generation_limit = text
+
     def on_pushButton_clicked(self):
         dialog = Second(self)
         # self.dialogs.append(dialog)
         # dialog.show()
 
     def setMutationFLip(self, s):
-        globalState.mutationFlipNumber = str(s)
+        globalState.mutation_params = [s, 0.5]
 
 
 def main():

@@ -5,7 +5,6 @@ import seed_env
 
 np.random.seed(seed_env.getSeed())
 seed(seed_env.getSeed())
-
 Genome = List[int]
 Population = List[List[int]]
 PopulateFunc = Callable[[], Population]
@@ -77,6 +76,7 @@ def mutationPop(genome: List[int], num: int = 1, size_pop=10) -> List[int]:
     for _ in range(num):
         index = randrange(len(genome))
         genome[index] = genome[index] if random() > probability else abs(genome[index] - 1)
+
     return genome
 
 
@@ -87,6 +87,7 @@ def population_fitness(population: Population, fitness_func: FitnessFunc) -> int
 
 # selectionner 2 gênomes en vu d'un croisement RANDOM
 def selection_pair(population: Population, fitness_func: FitnessFunc) -> Population:
+
     return choices(
         population=population,
         weights=[fitness_func(gene) for gene in population],
@@ -106,9 +107,9 @@ def selection_pair_better(population: Population, fitness_func: FitnessFunc) -> 
 def selection_pair_parmis_s_random(population: Population, fitness_func: FitnessFunc, s: int = 2) -> Population:
     if s >= len(population):
         raise ValueError("L'ensemble S random doit etre < a la taille de la pop")
+
     index_selection_aleatoire = np.unique(np.random.randint(len(population), size=(1, s)))
     ensemble_pris_aleatoirement = []
-
     # sécurité
     while index_selection_aleatoire.size < 2:
         index_selection_aleatoire = np.unique(np.random.randint(len(population), size=(1, s)))
@@ -174,7 +175,6 @@ def run_evolution(
             collected_iteration = np.append(collected_iteration, i)
             collected_fitness = np.append(collected_fitness, fitness_func(population[0]))
         population = sorted(population, key=lambda genome: fitness_func(genome), reverse=True)
-
         if printer is not None:
             printer(population, i, fitness_func)
 
