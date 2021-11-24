@@ -70,6 +70,17 @@ def mutation(genome: List[int], num: int = 1, probability: float = 0.5) -> List[
     return genome
 
 
+def bitflip(
+    genome: List[int], num: np.array, probability: int = 0.5
+):
+    genome = genome.copy()
+    index = randrange(len(genome))
+    index2 = randrange(len(genome))
+    temp = genome[index]
+    genome[index] = temp
+    genome[index2] = genome[index]
+    return genome
+
 # 1/taillePop de chance d'effectuer une mutation
 def mutationPop(genome: List[int], num: int = 1, size_pop=10) -> List[int]:
     probability = 1 / size_pop

@@ -108,11 +108,6 @@ def launch_with_param(
     if selection_param == "selection_pair":
         selection = partial(Methods_Genetics.selection_pair)
     # a setup via le globalState de l'interface TO DO
-    # size = 10
-    # genome_length = 10
-    # fitness_limit = 10
-    # generation_limit = 10
-    #
 
     # noinspection PyTupleAssignmentBalance
     (population, generations, collected_data) = Methods_Genetics.run_evolution(
@@ -181,14 +176,15 @@ def launch_the_launcher(globalState):
     plt.plot(x, y, label=lbl)
 
     population, generations, collected_data = launch_with_param(
-        "1-flip",
+        str(globalState.mutation_params[0]),
         "uniform_crossover",
-        "selection_pair",
+        "selection_pair_better",
         int(globalState.taille_pop),
         int(globalState.genome_length),
         int(globalState.fitness_limit),
         int(globalState.generation_limit)
     )
+
     x = collected_data[0]
     y = collected_data[1]
     lbl = "uniform_crossover + 1 flips + selection_pair " + str(generations) + " " + str(
