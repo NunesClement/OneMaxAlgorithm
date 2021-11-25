@@ -69,9 +69,9 @@ def mutation(genome: List[int], num: int = 1, probability: float = 0.5) -> List[
         genome[index] = genome[index] if random() > probability else abs(genome[index] - 1)
     return genome
 
-
+# être sûr que c'est oomme ça ?
 def bitflip(
-    genome: List[int], num: np.array, probability: int = 0.5
+    genome: List[int]
 ):
     genome = genome.copy()
     index = randrange(len(genome))

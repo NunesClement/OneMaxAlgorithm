@@ -96,6 +96,9 @@ def launch_with_param(
         mutation = partial(Methods_Genetics.mutation, num=5, probability=0.5)
     if mutation_param == "0-flip":
         mutation = partial(Methods_Genetics.mutation, num=0, probability=0.5)
+    if mutation_param == "bitflip":
+        mutation = partial(Methods_Genetics.bitflip)
+
     if crossover_param == "uniform_crossover":
         crossover = Methods_Genetics.uniform_crossover
     else:
@@ -176,6 +179,22 @@ def launch_the_launcher(globalState):
     plt.plot(x, y, label=lbl)
 
     population, generations, collected_data = launch_with_param(
+        "bitflip",
+        "single_point_crossover",
+        "selection_pair_better",
+        int(globalState.taille_pop),
+        int(globalState.genome_length),
+        int(globalState.fitness_limit),
+        int(globalState.generation_limit)
+    )
+    x = collected_data[0]
+    y = collected_data[1]
+    lbl = "single_point_crossover " + globalState.mutation_params[0] + "  selection_pair_better " + str(
+        generations) + " " + str(
+        collected_data[1][len(collected_data[1]) - 1])
+    plt.plot(x, y, label=lbl)
+
+    population, generations, collected_data = launch_with_param(
         str(globalState.mutation_params[0]),
         "uniform_crossover",
         "selection_pair_better",
@@ -187,7 +206,7 @@ def launch_the_launcher(globalState):
 
     x = collected_data[0]
     y = collected_data[1]
-    lbl = "uniform_crossover + 1 flips + selection_pair " + str(generations) + " " + str(
+    lbl = "uniform_crossover " + str(globalState.mutation_params[0]) + " selection_pair " + str(generations) + " " + str(
         collected_data[1][len(collected_data[1]) - 1])
     plt.plot(x, y, label=lbl)
 

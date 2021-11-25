@@ -75,6 +75,7 @@ class First(QMainWindow):
         self.mutationChoix.addItem("3-flip")
         self.mutationChoix.addItem("4-flip")
         self.mutationChoix.addItem("5-flip")
+        self.mutationChoix.addItem("bitflip")
 
         self.layout = QVBoxLayout()
         self.layout.addWidget(self.fitnessLabel)
