@@ -6,7 +6,7 @@ import matplotlib.pyplot as plt
 # from random import randint
 import Methods_Genetics
 import numpy as np
-
+import Nqueen
 # a = OneMaxKnapSack.generate_genome(10) #générer un génome de taille 10
 # b = OneMaxKnapSack.generate_genome(10)
 # print(a)
@@ -25,11 +25,17 @@ import numpy as np
 import seed_env
 
 
+# def fitness(genome: List[int]) -> int:
+#     if len(genome) <= 0:
+#         raise ValueError("Le genome doit être > 0 ")
+#     return genome.count(1)
+
+# fitness for nqueen
 def fitness(genome: List[int]) -> int:
     if len(genome) <= 0:
-        raise ValueError("Le genome doit être > 0 ")
-    return genome.count(1)
-
+            raise ValueError("Le genome doit être > 0 ")
+    # print(genome)
+    return Nqueen.calculate_fitness(Nqueen.convert01ToConfiguration(genome))
 
 # L'importance d'utiliser les fonctions de bases e Python
 
@@ -171,6 +177,9 @@ def launch_the_launcher(globalState):
         int(globalState.fitness_limit),
         int(globalState.generation_limit)
     )
+    Nqueen.displayConfiguration(Nqueen.convert01ToConfiguration(population[0]))
+    print("Penalty  : " + str(Nqueen.calculate_penalty(Nqueen.convert01ToConfiguration(population[0]))))
+
     x = collected_data[0]
     y = collected_data[1]
     lbl = "single_point_crossover " + globalState.mutation_params[0] + " selection_pair_better " + str(
@@ -187,6 +196,8 @@ def launch_the_launcher(globalState):
         int(globalState.fitness_limit),
         int(globalState.generation_limit)
     )
+    Nqueen.displayConfiguration(Nqueen.convert01ToConfiguration(population[0]))
+    print("Penalty  : " + str(Nqueen.calculate_penalty(Nqueen.convert01ToConfiguration(population[0]))))
     x = collected_data[0]
     y = collected_data[1]
     lbl = "single_point_crossover " + globalState.mutation_params[0] + "  selection_pair_better " + str(
@@ -203,6 +214,8 @@ def launch_the_launcher(globalState):
         int(globalState.fitness_limit),
         int(globalState.generation_limit)
     )
+    Nqueen.displayConfiguration(Nqueen.convert01ToConfiguration(population[0]))
+    print("Penalty  : " + str(Nqueen.calculate_penalty(Nqueen.convert01ToConfiguration(population[0]))))
 
     x = collected_data[0]
     y = collected_data[1]

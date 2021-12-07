@@ -45,7 +45,7 @@ def single_point_crossover(a: List[int], b: List[int]) -> Tuple[List[int], List[
 
 
 def uniform_crossover(
-    individual_1: np.array, individual_2: np.array, thresh: int = 0.5
+        individual_1: np.array, individual_2: np.array, thresh: int = 0.5
 ):
     offspring_1 = individual_1.copy()
     offspring_2 = individual_2.copy()
@@ -69,9 +69,10 @@ def mutation(genome: List[int], num: int = 1, probability: float = 0.5) -> List[
         genome[index] = genome[index] if random() > probability else abs(genome[index] - 1)
     return genome
 
-# être sûr que c'est oomme ça ?
+
+# être sûr que c'est comme ça ?
 def bitflip(
-    genome: List[int]
+        genome: List[int]
 ):
     genome = genome.copy()
     index = randrange(len(genome))
@@ -80,6 +81,7 @@ def bitflip(
     genome[index] = temp
     genome[index2] = genome[index]
     return genome
+
 
 # 1/taillePop de chance d'effectuer une mutation
 def mutationPop(genome: List[int], num: int = 1, size_pop=10) -> List[int]:
@@ -98,7 +100,6 @@ def population_fitness(population: Population, fitness_func: FitnessFunc) -> int
 
 # selectionner 2 gênomes en vu d'un croisement RANDOM
 def selection_pair(population: Population, fitness_func: FitnessFunc) -> Population:
-
     return choices(
         population=population,
         weights=[fitness_func(gene) for gene in population],
@@ -181,6 +182,10 @@ def run_evolution(
     collected_fitness = np.array([])
 
     for i in range(generation_limit):
+        # Barre de progression
+        if generation_limit > 1000:
+            if i % 500 == 0 and i != 0:
+                print("Itération " + str(i) + " ...")
         if i % 5 == 0:
             # print("Le programme a l'efficacité : " + str(fitness_func(population[0])) + " / " + str(fitness_limit) + " à l'itération " + str(i))
             collected_iteration = np.append(collected_iteration, i)

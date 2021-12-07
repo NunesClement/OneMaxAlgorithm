@@ -20,7 +20,7 @@ class GlobalParameter:
 globalState = GlobalParameter(13, 10,
                               ["1-flip", 0.5],
                               "selection_pair_parmis_s_random",
-                              1000, 1000, 1000)
+                              1000, 1000, 81)
 
 
 class Second(QMainWindow):
@@ -96,14 +96,14 @@ class First(QMainWindow):
 
         self.fitnessMaxLabel = QLabel("set fitness max")
         self.fitnessMax = QLineEdit()
-        self.fitnessMax.setText("1000")
+        self.fitnessMax.setText("25000")
         self.layout.addWidget(self.fitnessMaxLabel)
         self.layout.addWidget(self.fitnessMax)
         self.fitnessMax.textChanged.connect(self.change_fitness_max)
 
         self.genomeTailleLabel = QLabel("genome taille")
         self.genomeTaille = QLineEdit()
-        self.genomeTaille.setText("1000")
+        self.genomeTaille.setText("81")
         self.layout.addWidget(self.genomeTailleLabel)
         self.layout.addWidget(self.genomeTaille)
         self.genomeTaille.textChanged.connect(self.change_genome_taille_label)
