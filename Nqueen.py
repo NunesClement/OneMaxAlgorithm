@@ -1,7 +1,7 @@
 import random
 from itertools import islice, product, starmap
 
-configurationBase = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+configurationBase = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
 size = len(configurationBase)
 max_iter = 30000
 allConfigurations = []
@@ -59,20 +59,24 @@ def check_nb_queens(configuration=configurationBase):
 def fitness_function(configuration, num_queen_x, num_queen_y):
     fitness = 0
     if not check_horizontally(configuration, num_queen_x, num_queen_y):
-        fitness = fitness - 50
-
+        fitness = fitness - 300
+    else:
+        fitness = fitness + 10
     if not check_vertically(configuration, num_queen_x, num_queen_y):
         # print('2')
-        fitness = fitness - 50
-
+        fitness = fitness - 300
+    else:
+        fitness = fitness + 10
     if not check_diagonally_up(configuration, num_queen_x, num_queen_y):
         # print('3')
-        fitness = fitness - 50
-
+        fitness = fitness - 300
+    else:
+        fitness = fitness + 10
     if not check_diagonally_down(configuration, num_queen_x, num_queen_y):
         # print('4>')
-        fitness = fitness - 50
-
+        fitness = fitness - 300
+    else:
+        fitness = fitness + 10
     if not check_nb_queens(configuration):
         # print('4>')
         fitness = fitness - 10000

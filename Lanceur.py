@@ -196,8 +196,8 @@ def launch_the_launcher(globalState):
 
     population, generations, collected_data = launch_with_param(
         str(globalState.mutation_params[0]),
-        "uniform_crossover",
-        "selection_pair_better",
+        "single_point_crossover",
+        "selection_pair",
         int(globalState.taille_pop),
         int(globalState.genome_length),
         int(globalState.fitness_limit),

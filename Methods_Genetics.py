@@ -1,3 +1,4 @@
+from functools import partial
 from random import choices, randint, randrange, random, seed
 from typing import List, Optional, Callable, Tuple
 import numpy as np
@@ -186,6 +187,19 @@ def run_evolution(
         if generation_limit > 1000:
             if i % 500 == 0 and i != 0:
                 print("Itération " + str(i) + " ...")
+        # changement manuel d'opérateur
+        if i == 10000:
+            mutation_func = partial(bitflip)
+        # if i == 10000:
+        #     mutation_func = partial(mutation, num=4, probability=0.5)
+        # if i == 15000:
+        #     mutation_func = partial(mutation, num=3, probability=0.5)
+        # if i == 20000:
+        #     mutation_func = partial(mutation, num=2, probability=0.5)
+        # if i == 30000:
+        #     mutation_func = partial(mutation, num=1, probability=0.5)
+        # if i == 37000:
+        #     mutation_func = partial(bitflip)
         if i % 5 == 0:
             # print("Le programme a l'efficacité : " + str(fitness_func(population[0])) + " / " + str(fitness_limit) + " à l'itération " + str(i))
             collected_iteration = np.append(collected_iteration, i)
