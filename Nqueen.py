@@ -1,7 +1,7 @@
 import random
 from itertools import islice, product, starmap
 
-configurationBase = [1, 2, 3, 4, 5, 6, 7, 8, 9]
+configurationBase = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
 size = len(configurationBase)
 max_iter = 30000
 allConfigurations = []

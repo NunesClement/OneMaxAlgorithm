@@ -20,7 +20,7 @@ class GlobalParameter:
 globalState = GlobalParameter(13, 10,
                               ["1-flip", 0.5],
                               "selection_pair_parmis_s_random",
-                              1000, 1000, 81)
+                              1000, 1000, 100)
 
 
 class Second(QMainWindow):
@@ -103,7 +103,7 @@ class First(QMainWindow):
 
         self.genomeTailleLabel = QLabel("genome taille")
         self.genomeTaille = QLineEdit()
-        self.genomeTaille.setText("81")
+        self.genomeTaille.setText("100")
         self.layout.addWidget(self.genomeTailleLabel)
         self.layout.addWidget(self.genomeTaille)
         self.genomeTaille.textChanged.connect(self.change_genome_taille_label)

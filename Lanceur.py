@@ -93,6 +93,7 @@ def launch_with_param(
         fitness_limit=10,
         generation_limit=10,
 ):
+
     weight_limit = 10
     if mutation_param == "3-flip":
         mutation = partial(Methods_Genetics.mutation, num=3, probability=0.5)
@@ -188,8 +189,8 @@ def launch_the_launcher(globalState):
     plt.plot(x, y, label=lbl)
 
     population, generations, collected_data = launch_with_param(
-        "bitflip",
-        "single_point_crossover",
+        str(globalState.mutation_params[0]),
+        "uniform_crossover",
         "selection_pair_better",
         int(globalState.taille_pop),
         int(globalState.genome_length),

@@ -3,7 +3,7 @@ class Seed:
         self.seed = seed
 
 
-a = Seed(13)
+a = Seed(15)
 
 
 def getSeed():
