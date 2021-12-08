@@ -95,16 +95,22 @@ def launch_with_param(
 ):
 
     weight_limit = 10
-    if mutation_param == "3-flip":
-        mutation = partial(Methods_Genetics.mutation, num=3, probability=0.5)
-    if mutation_param == "1-flip":
-        mutation = partial(Methods_Genetics.mutation, num=1, probability=0.5)
-    if mutation_param == "5-flip":
-        mutation = partial(Methods_Genetics.mutation, num=5, probability=0.5)
-    if mutation_param == "0-flip":
-        mutation = partial(Methods_Genetics.mutation, num=0, probability=0.5)
     if mutation_param == "bitflip":
         mutation = partial(Methods_Genetics.bitflip)
+    if mutation_param == "0-flip":
+        mutation = partial(Methods_Genetics.mutation, num=0, probability=0.5)
+    if mutation_param == "1-flip":
+        mutation = partial(Methods_Genetics.mutation, num=1, probability=0.5)
+    if mutation_param == "2-flip":
+        mutation = partial(Methods_Genetics.mutation, num=2, probability=0.5)
+    if mutation_param == "3-flip":
+        mutation = partial(Methods_Genetics.mutation, num=3, probability=0.5)
+    if mutation_param == "4-flip":
+        mutation = partial(Methods_Genetics.mutation, num=4, probability=0.5)
+    if mutation_param == "5-flip":
+        mutation = partial(Methods_Genetics.mutation, num=5, probability=0.5)
+
+
 
     if crossover_param == "uniform_crossover":
         crossover = Methods_Genetics.uniform_crossover
