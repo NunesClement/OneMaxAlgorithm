@@ -1,14 +1,16 @@
 from typing import List
 import numpy as np
-from random import random
+from random import randrange, random
+import math
+import copy
 
+from numpy.random import f
+import Methods_Genetics
 pop_size = 20
 
 penalization_factor = 1
 
 prob_hill_climbing_1 = 75
-prob_hill_climbing_2 = 65
-prob_hill_climbing_3 = 55
 
 hc_iterations = 1
 
@@ -32,20 +34,14 @@ class Chrom:
     # déterminer les yatchs
     h = np.zeros(42)
     yachts_host_quantity = 0
-    yachts_host_indexes = 0
+    yachts_host_indexes = np.zeros((42, 42, 6))
     fit = 0
     unfitness = 0
-    factible = False
+    faisable = False
 
 
 a = Chrom()
 b = Chrom()
-
-
-# a.x[0][0][0] = 1
-# print(a.h)
-
-# print(yachts_capacities)
 
 
 def yachts_host_counter(array):
@@ -59,7 +55,7 @@ def yachts_host_counter(array):
 
 
 def obtain_h(chromosome):
-    while (chromosome.yachts_host_quantity < periods) or (chromosome.yachts_host_quantity == yachts_quantity):
+    while (chromosome.yachts_host_quantity < periods - 1) or (chromosome.yachts_host_quantity == yachts_quantity):
         for j in range(0, yachts_quantity - 1):
             bit = random() > 0.5
             if bit == 0:
@@ -74,7 +70,7 @@ def obtain_h(chromosome):
 
 def shuffle_array_short_int(array, n):
     if n > 1:
-        return np.random.shuffle(array)
+        array = np.random.shuffle(array)
 
 
 def obtain_x(chromosome):
@@ -82,11 +78,11 @@ def obtain_x(chromosome):
         for j in range(0, yachts_quantity - 1):
             for k in range(0, periods - 1):
                 chromosome.x[i][j][k] = 0
-
-    for j in range(0, yachts_quantity - 1):
-        for k in range(0, periods - 1):
-            yacht_host_index = chromosome.yachts_host_indexes[j][k]
-            chromosome.x[yacht_host_index][j][k] = 1
+    # for j in range(0, yachts_quantity - 1):
+    #     for k in range(0, periods - 1):
+    #         if chromosome.h[j] != 1 and k < periods:
+    #             yacht_host_index = chromosome.yachts_host_indexes[j][k]
+    #             chromosome.x[yacht_host_index][j][k] = 1
 
 
 def obtain_m(chromosome):
@@ -99,8 +95,8 @@ def obtain_m(chromosome):
             for l in range(0, j - 1):
                 for k in range(0, periods - 1):
                     if chromosome.x[i][j][k] and chromosome.x[i][l][k]:
-                        chromosome.m[j][l][k] += 1
-                        chromosome.m[l][j][k] += 1
+                        chromosome.m[j][l][k] = chromosome.m[j][l][k] + 1
+                        chromosome.m[l][j][k] = chromosome.m[l][j][k] + 1
 
 
 def calculate_unfitness(chromosome, verb):
@@ -156,11 +152,10 @@ def calculate_unfitness(chromosome, verb):
                     idle_or_host_visiting += 1
 
     if (idle_or_host_visiting > 0) and verb:
-        print("Au total il existe " +
-              idle_or_host_visiting + " cas où un équipage")
+        print(idle_or_host_visiting)
         print("Estubo idle")
-        print("Visito a mas de un yate")
-        print("Visito a algun yate siendo host")
+        print("Visito  plus d'un yach ")
+        print("Visite un yacht en tant qu'hôte")
 
     for i in range(0, yachts_quantity - 1):
         for j in range(0, yachts_quantity - 1):
@@ -202,24 +197,12 @@ def calculate_unfitness(chromosome, verb):
                                                   visits_same_host + impossible + meet_same_people) + chromosome.yachts_host_quantity
 
     if (chromosome.unfitness > chromosome.yachts_host_quantity):
-        chromosome.factible = False
+        chromosome.faisable = False
     else:
-        chromosome.factible = True
+        chromosome.faisable = True
 
     if verb:
         print("Non conforme", chromosome.unfitness)
-
-
-def deep_copy_chromosome(cr1, cr2):
-    cr1 = cr2
-    return cr1, cr2
-
-
-print(a.yachts_host_quantity)
-
-obtain_h(a)
-
-print(a.yachts_host_quantity)
 
 
 def hill_climbing_1(chromosome):
@@ -229,7 +212,7 @@ def hill_climbing_1(chromosome):
     while chromosome.unfitness > actual_unfitness:
         rand_index = 0
         while chromosome.h[rand_index] == 1:
-            rand_index = random() % yachts_quantity
+            rand_index = randrange(0, 22) % yachts_quantity
         yachts_host_index_original = chromosome.yachts_host_indexes[rand_index]
         shuffle_array_short_int(
             chromosome.yachts_host_indexes[rand_index], periods)
@@ -249,15 +232,52 @@ def hill_climbing_1(chromosome):
         iterations = iterations + 1
 
 
+def get_rand_host_index(chromosome, array):
+    tmp_array = chromosome.yachts_host_quantity
+    added = chromosome.yachts_host_quantity
+    actual_index = 0
+    i = 0
+    while(i < yachts_quantity - 1 and (actual_index < chromosome.yachts_host_quantity - 1)):
+        if chromosome.h[i] == 1:
+            tmp_array[actual_index] = i
+            added[actual_index] = False
+            actual_index = actual_index + 1
+    i = i + 1
+
+    for i in range(0, periods - 1):
+        if chromosome.h[i] == 0:
+            index = randrange(0, 22) % chromosome.yachts_host_quantity
+
+        if (added[index] == False):
+            array[i] = tmp_array[index]
+            added[index] = True
+        else:
+            i = i - 1
+
+
+def obtain_yachts_host_indexes(chromosome):
+    if chromosome.yachts_host_indexes == None:
+        chromosome.yachts_host_indexes = np.zeros(42)
+        for i in range(0, yachts_quantity):
+            chromosome.yachts_host_indexes[i] = np.zeros(periods)
+        for i in range(0, pop_size):
+            get_rand_host_index(chromosome, chromosome.yachts_host_indexes[i])
+
+
 def initialize_population(population):
-    print(population)
-    for i in range(0, pop_size):
-        tmp_pop = np.zeros(pop_size)
+    print("la")
+    for i in range(0, pop_size - 1):
+        print("la2")
+        tmp_pop = copy.deepcopy(population)
+        print(i)
+        print(len(tmp_pop))
+
         obtain_h(tmp_pop[i])
         # obtain_yachts_host_indexes(tmp_pop[i])
         obtain_x(tmp_pop[i])
+        print("la4")
         obtain_m(tmp_pop[i])
-        calculate_unfitness(pop_size[i], False)
+        calculate_unfitness(tmp_pop[i], False)
     population = tmp_pop
     return population
 
@@ -271,7 +291,7 @@ def show_chromosome(chromosome):
     print(chromosome.yachts_host_indexes)
     print(chromosome.fit)
     print(chromosome.unfitness)
-    print(chromosome.factible)
+    print(chromosome.faisable)
 
 
 def show_all_population(population):
@@ -279,61 +299,132 @@ def show_all_population(population):
         show_chromosome(population[i])
 
 
+def sort_population(population, verb):
+    if verb:
+        print("Ordonné")
+    aux = Chrom()
+    for i in range(0, pop_size - 1):
+        for j in range(0, pop_size - i - 1):
+            if population[j + 1].unfitness < population[j].unfitness:
+                aux = population[j + 1]
+                population[j + 1] = population[j]
+                population[j] = aux
+
+    for i in range(0, pop_size - 1):
+        population[i].fit = math.log(pop_size - i + 1) + 1
+    if verb:
+        print("Le chromosome " + i + " a fitness de: " +
+              population[i].fit + " (pas d'aaptitude de " + population[i].unfitness),
+
+    if verb:
+        if population[i].faisable:
+            print("faisable")
+        else:
+            print("infaisable")
+
+
+def calculate_next_population(population):
+    # print("popilace")
+    # print(population)
+    acum_fit = copy.deepcopy(population)
+    acumulator = 0
+
+    # Calcul de l'aptitude
+
+    for i in range(0, pop_size - 1):
+        acumulator = acumulator + population[i].fit
+        acum_fit[i] = acumulator
+    # print(population)
+
+    tmp_pop = copy.deepcopy(population)
+
+    for i in range(0, pop_size - 1):
+        selector = randrange(0, 22) % acumulator + 1
+        index = 0
+
+        while acum_fit[index] < selector:
+            index = index + 1
+
+        tmp_pop[i] = population[index]
+
+    population = tmp_pop
+    for i in range(0, pop_size - 1):
+        if (prob_hill_climbing_1 > randrange(50, 100) % 100):
+            # print("population hill climbing")
+            # print(population[i])
+            hill_climbing_1(population[i])
+
+
 def main():
     # clock_t start, end;
     # double cpu_time_used;
     best_solution = 100000
     population = []
-    a = Chrom
-    b = Chrom
-    c = Chrom
-    d = Chrom
-    e = Chrom
-    f = Chrom
-    g = Chrom
-    h = Chrom
-    i = Chrom
-    j = Chrom
-    k = Chrom
-    l = Chrom
-    m = Chrom
-    n = Chrom
-    o = Chrom
-    p = Chrom
-    q = Chrom
-    r = Chrom
-    s = Chrom
-    t = Chrom
-    u = Chrom
-    population.append(a)
-    population.append(b)
-    population.append(c)
-    population.append(d)
-    population.append(e)
-    population.append(f)
-    population.append(g)
-    population.append(h)
-    population.append(i)
+    a1 = Chrom
+    a2 = Chrom
+    a3 = Chrom
+    a4 = Chrom
+    a5 = Chrom
+    a6 = Chrom
+    a7 = Chrom
+    a8 = Chrom
+    a9 = Chrom
+    a10 = Chrom
+    a11 = Chrom
+    a12 = Chrom
+    a13 = Chrom
+    a14 = Chrom
+    a15 = Chrom
+    a16 = Chrom
+    a17 = Chrom
+    a18 = Chrom
+    a19 = Chrom
+    a20 = Chrom
+
+    population.append(a1)
+    population.append(a2)
+    population.append(a3)
+    population.append(a4)
+    population.append(a5)
+    population.append(a6)
+    population.append(a7)
+    population.append(a8)
+    population.append(a9)
+    population.append(a10)
+    population.append(a11)
+    population.append(a12)
+    population.append(a13)
+    population.append(a14)
+    population.append(a15)
+    population.append(a16)
+    population.append(a17)
+    population.append(a18)
+    population.append(a19)
+    population.append(a20)
 
     # srand(time(0));
 
     # start = clock();
-    print(pop_size)
-
     if pop_size > 0:
         population = initialize_population(population)
-        show_all_population(population)
+        # show_all_population(population)
+        # print("population init")
         # TODO
-        # sort_population(population, False)
+        sort_population(population, False)
+        # print("population sorted")
 
         best_solution = population[0].unfitness
-
+        print("best solution" + str(best_solution))
         # show_chromosome( & population[0]);
 
         while (population[0].unfitness > periods):
             # TODO
-            # calculate_next_population( & population);
-            # sort_population(population, false);
+            calculate_next_population(population)
+            # print("best next ")
+            # print("best population[0].unfitness" +
+            #       str(population[0].unfitness))
+            # print("periods" + str(periods))
+            sort_population(population, False)
 
             if (population[0].unfitness < best_solution):
                 # end = clock();
@@ -343,8 +434,7 @@ def main():
                       population[0].yachts_host_quantity)
                 # show_chromosome( & population[0]);
                 best_solution = population[0].unfitness
-
-        # delete_population(&population);}
+        # print("best solution" + str(best_solution))
 
     return 0
 
