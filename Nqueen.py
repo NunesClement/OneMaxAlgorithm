@@ -7,6 +7,15 @@ max_iter = 30000
 allConfigurations = []
 allConfigurationsMatrix = []
 
+# Fonctionnel pour 11 queens
+
+# uniform_crossover
+# selection pair better
+# 5 flips avec bitflp à 10k itérations
+# 8 pops
+# 121 de largeur
+# 15000 itérations
+# seed de 17
 
 def displayConfiguration(configuration):
     for a in configuration:
