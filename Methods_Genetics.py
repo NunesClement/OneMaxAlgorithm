@@ -188,8 +188,8 @@ def run_evolution(
             if i % 500 == 0 and i != 0:
                 print("Itération " + str(i) + " ...")
         # changement manuel d'opérateur
-        if i == 10000:
-            mutation_func = partial(bitflip)
+        # if i == 10000:
+        #     mutation_func = partial(bitflip)
         # if i == 10000:
         #     mutation_func = partial(mutation, num=4, probability=0.5)
         # if i == 15000:

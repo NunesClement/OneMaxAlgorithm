@@ -4,8 +4,7 @@
 # import OneMaxKnapSack;
 # from collections import namedtuple
 #
-# Thing = namedtuple('Thing', ['name', 'value', 'weight'])
-#
+# Thing = namedtuple('		Avancer async await#
 # first_example = [
 #     Thing('Laptop', 500, 2200),
 #     Thing('Headphones', 150, 160),

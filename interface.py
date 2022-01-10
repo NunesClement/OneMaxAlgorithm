@@ -77,6 +77,15 @@ class First(QMainWindow):
         self.mutationChoix.addItem("5-flip")
         self.mutationChoix.addItem("bitflip")
 
+        self.problemLabel = QLabel("Problème à traiter WIP")
+
+        self.problemChoix = QComboBox()
+        self.problemChoix.addItem("OneMax")
+        self.problemChoix.addItem("N-Reine")
+        self.problemChoix.addItem("KnapSack")
+        self.problemChoix.addItem("Quadratic knapsack (wip)")
+        self.problemChoix.addItem("PPP (wip)")
+
         self.layout = QVBoxLayout()
         self.layout.addWidget(self.fitnessLabel)
         self.layout.addWidget(self.choixFitness)
@@ -86,6 +95,8 @@ class First(QMainWindow):
         self.layout.addWidget(self.selectionChoix)
         self.layout.addWidget(self.mutationLabel)
         self.layout.addWidget(self.mutationChoix)
+        self.layout.addWidget(self.problemLabel)
+        self.layout.addWidget(self.problemChoix)
 
         self.sizePopLabel = QLabel("nb d'individus")
         self.sizePop = QLineEdit()

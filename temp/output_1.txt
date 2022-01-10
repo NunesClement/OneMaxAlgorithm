@@ -1,7 +1,7 @@
-Il et a [26] hotes
+Il y a [26] hotes
 
-Yatchs Hotes { 0 0 0 1 1 1 1 0 0 1 1 1 1 1 1 1 0 0 1 0 1 1 1 1 0 0 1 1 0 1 1 0 1 1 1 0 1 1 1 0 0 0 }
-Los indices de los yates anfitriones son:
+Hotes { 0 0 0 1 1 1 1 0 0 1 1 1 1 1 1 1 0 0 1 0 1 1 1 1 0 0 1 1 0 1 1 0 1 1 1 0 1 1 1 0 0 0 }
+Los indices des bateaux hôtes sont :
 
 - Pour le yatch 0: { 18 22 14 13 30 5 }
 - Pour le yatch 1: { 6 13 38 10 3 34 }

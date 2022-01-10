@@ -14,7 +14,7 @@ prob_hill_climbing_1 = 75
 
 hc_iterations = 1
 
-# Parametros del ejercicio
+# Params
 
 periods = 6
 
@@ -153,7 +153,6 @@ def calculate_unfitness(chromosome, verb):
 
     if (idle_or_host_visiting > 0) and verb:
         print(idle_or_host_visiting)
-        print("Estubo idle")
         print("Visito  plus d'un yach ")
         print("Visite un yacht en tant qu'hôte")
 
@@ -426,7 +425,7 @@ def main():
             # print("periods" + str(periods))
             sort_population(population, False)
 
-            if (population[0].unfitness < best_solution):
+            if population[0].unfitness < best_solution:
                 # end = clock();
                 # cpu_time_used = ((double)(end - start)) / CLOCKS_PER_SEC;
 

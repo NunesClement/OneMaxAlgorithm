@@ -7,6 +7,7 @@ max_iter = 30000
 allConfigurations = []
 allConfigurationsMatrix = []
 
+
 # Fonctionnel pour 11 queens
 
 # uniform_crossover

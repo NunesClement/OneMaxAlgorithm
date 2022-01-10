@@ -7,35 +7,24 @@ import matplotlib.pyplot as plt
 import Methods_Genetics
 import numpy as np
 import Nqueen
-# a = OneMaxKnapSack.generate_genome(10) #générer un génome de taille 10
-# b = OneMaxKnapSack.generate_genome(10)
-# print(a)
-# print(b)
-
-# a = [0,0,0,0,0,0,0]
-# b = [1,1,1,1,1,1,1]
-# print(OneMaxKnapSack.single_point_crossover(a, b)) # crossover entre 2 gênes
-# Population10par10 = OneMaxKnapSack.generate_population(10, 10) # générer une pop de 10 gênomes de taille 10
-
-# #muter un gène random
-# OneMaxKnapSack.mutation(a, 1, 1)
-# print(a)
 
 # fonction de fitness
 import seed_env
 
 
-# def fitness(genome: List[int]) -> int:
-#     if len(genome) <= 0:
-#         raise ValueError("Le genome doit être > 0 ")
-#     return genome.count(1)
-
-# fitness for nqueen
 def fitness(genome: List[int]) -> int:
     if len(genome) <= 0:
-            raise ValueError("Le genome doit être > 0 ")
+        raise ValueError("Le genome doit être > 0 ")
+    return genome.count(1)
+
+
+# fitness for nqueen
+def fitness_nqueen(genome: List[int]) -> int:
+    if len(genome) <= 0:
+        raise ValueError("Le genome doit être > 0 ")
     # print(genome)
     return Nqueen.calculate_fitness(Nqueen.convert01ToConfiguration(genome))
+
 
 # L'importance d'utiliser les fonctions de bases e Python
 
@@ -93,7 +82,6 @@ def launch_with_param(
         fitness_limit=10,
         generation_limit=10,
 ):
-
     weight_limit = 10
     if mutation_param == "bitflip":
         mutation = partial(Methods_Genetics.bitflip)
@@ -109,8 +97,6 @@ def launch_with_param(
         mutation = partial(Methods_Genetics.mutation, num=4, probability=0.5)
     if mutation_param == "5-flip":
         mutation = partial(Methods_Genetics.mutation, num=5, probability=0.5)
-
-
 
     if crossover_param == "uniform_crossover":
         crossover = Methods_Genetics.uniform_crossover
@@ -157,7 +143,7 @@ def launch_with_param(
 
 
 def debugGlobalState(globalState):
-    print("Seed "+ str(globalState.seed))
+    print("Seed " + str(globalState.seed))
     print("Type de mutation "
           + str(globalState.mutation_params[0])
           + " avec une proba de "
@@ -184,8 +170,8 @@ def launch_the_launcher(globalState):
         int(globalState.fitness_limit),
         int(globalState.generation_limit)
     )
-    Nqueen.displayConfiguration(Nqueen.convert01ToConfiguration(population[0]))
-    print("Penalty  : " + str(Nqueen.calculate_penalty(Nqueen.convert01ToConfiguration(population[0]))))
+    # Nqueen.displayConfiguration(Nqueen.convert01ToConfiguration(population[0]))
+    # print("Penalty  : " + str(Nqueen.calculate_penalty(Nqueen.convert01ToConfiguration(population[0]))))
 
     x = collected_data[0]
     y = collected_data[1]
@@ -203,8 +189,8 @@ def launch_the_launcher(globalState):
         int(globalState.fitness_limit),
         int(globalState.generation_limit)
     )
-    Nqueen.displayConfiguration(Nqueen.convert01ToConfiguration(population[0]))
-    print("Penalty  : " + str(Nqueen.calculate_penalty(Nqueen.convert01ToConfiguration(population[0]))))
+    # Nqueen.displayConfiguration(Nqueen.convert01ToConfiguration(population[0]))
+    # print("Penalty  : " + str(Nqueen.calculate_penalty(Nqueen.convert01ToConfiguration(population[0]))))
     x = collected_data[0]
     y = collected_data[1]
     lbl = "single_point_crossover " + globalState.mutation_params[0] + "  selection_pair_better " + str(
@@ -221,12 +207,13 @@ def launch_the_launcher(globalState):
         int(globalState.fitness_limit),
         int(globalState.generation_limit)
     )
-    Nqueen.displayConfiguration(Nqueen.convert01ToConfiguration(population[0]))
-    print("Penalty  : " + str(Nqueen.calculate_penalty(Nqueen.convert01ToConfiguration(population[0]))))
+    # Nqueen.displayConfiguration(Nqueen.convert01ToConfiguration(population[0]))
+    # print("Penalty  : " + str(Nqueen.calculate_penalty(Nqueen.convert01ToConfiguration(population[0]))))
 
     x = collected_data[0]
     y = collected_data[1]
-    lbl = "uniform_crossover " + str(globalState.mutation_params[0]) + " selection_pair " + str(generations) + " " + str(
+    lbl = "uniform_crossover " + str(globalState.mutation_params[0]) + " selection_pair " + str(
+        generations) + " " + str(
         collected_data[1][len(collected_data[1]) - 1])
     plt.plot(x, y, label=lbl)
 
