@@ -41,6 +41,7 @@ class Second(QMainWindow):
                 self.setCentralWidget(label)
                 self.resize(pixmap.width(), pixmap.height())
 
+
         self.w = MainWindow()
         self.w.resize(600, 600)
         self.w.show()
@@ -125,13 +126,13 @@ class First(QMainWindow):
         self.layout.addWidget(self.generationNbLabel)
         self.layout.addWidget(self.generationNb)
         self.generationNb.textChanged.connect(self.change_nb_generation)
-
         self.dialogs = ""
         self.buttonRun.clicked.connect(self.on_pushButton_clicked)
         self.mutationChoix.currentTextChanged.connect(self.setMutationFLip)
         self.widget = QWidget()
         self.widget.setLayout(self.layout)
         self.setCentralWidget(self.widget)
+
         self.show()
 
     def change_size_pop(self, text):

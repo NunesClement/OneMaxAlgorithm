@@ -10,21 +10,22 @@ import numpy as np
 
 # taille du problème
 ONE_MAX_LENGTH = 100
+# PM = probability matching
 
 # Paramètres AG
 POPULATION_SIZE = 1
 P_CROSSOVER = 0.0
 P_MUTATION = 1.0
 MAX_GENERATIONS = 1500
-FITNESS_OFFSET=5
+FITNESS_OFFSET = 5
 
 # générateur aléatoire
-#RANDOM_SEED = 10
-#random.seed(RANDOM_SEED)
+# RANDOM_SEED = 10
+# random.seed(RANDOM_SEED)
 random.seed()
 
 #############################################
-#Définition dess éléments de base pour l'AG #
+# Définition dess éléments de base pour l'AG #
 #############################################
 toolbox = base.Toolbox()
 
@@ -35,20 +36,24 @@ toolbox.register("zeroOrOne", random.randint, 0, 1)
 creator.create("FitnessMax", base.Fitness, weights=(1.0,))
 
 # Classe Individual construite avec un containeur list
-creator.create("Individual",list,fitness=creator.FitnessMax)
+creator.create("Individual", list, fitness=creator.FitnessMax)
 
-#initialisatiuon des individus avec uniquement des 0
+
+# initialization des individus avec uniquement des 0
 def zero():
-  return 0
+    return 0
 
-toolbox.register("individualCreator",tools.initRepeat,creator.Individual,zero, ONE_MAX_LENGTH)
+
+toolbox.register("individualCreator", tools.initRepeat, creator.Individual, zero, ONE_MAX_LENGTH)
 
 # initialisation de la population
 toolbox.register("populationCreator", tools.initRepeat, list, toolbox.individualCreator)
 
+
 # Calcul de la fitness/ fonction evaluate
 def oneMaxFitness(individual):
     return sum(individual),  # return a tuple
+
 
 toolbox.register("evaluate", oneMaxFitness)
 
@@ -58,45 +63,51 @@ toolbox.register("evaluate", oneMaxFitness)
 toolbox.register("select", tools.selTournament, tournsize=3)
 
 # Uniform crossover
-toolbox.register("mate", tools.cxUniform,indpb=0.5)
+toolbox.register("mate", tools.cxUniform, indpb=0.5)
 
 # Mutation Bit-Flip
-toolbox.register("bitflip", tools.mutFlipBit, indpb=1.0/ONE_MAX_LENGTH)
+toolbox.register("bitflip", tools.mutFlipBit, indpb=1.0 / ONE_MAX_LENGTH)
+
 
 # mutations 1FLip... n flips
 def flip(b):
-  if (b==1):
-     return 0
-  else:
-    return 1
+    if b == 1:
+        return 0
+    else:
+        return 1
+
 
 def one_flip(individual):
-  pos=random.randint(0,ONE_MAX_LENGTH-1)
-  individual[pos]=flip(individual[pos])
+    pos = random.randint(0, ONE_MAX_LENGTH - 1)
+    individual[pos] = flip(individual[pos])
 
-def n_flips(individual,n):
-  lpos=[]
-  while(len(lpos)<n):
-    pos=random.randint(0,ONE_MAX_LENGTH-1)
-    if (lpos.count(pos)==0):
-      lpos.append(pos)
-  for pos in lpos:
-    individual[pos]=flip(individual[pos])
 
-#définition le l'opérateur de mutation par défaut pour l'AG simple
-toolbox.register("mutate", tools.mutFlipBit, indpb=1.0/ONE_MAX_LENGTH)
+def n_flips(individual, n):
+    lpos = []
+    while len(lpos) < n:
+        pos = random.randint(0, ONE_MAX_LENGTH - 1)
+        if lpos.count(pos) == 0:
+            lpos.append(pos)
+    for pos in lpos:
+        individual[pos] = flip(individual[pos])
 
-#insertion best fitness
-#sélectionner le moins bon et le remplacer éventuellement
-toolbox.register("worst",tools.selWorst,fit_attr='fitness')
 
-def insertion_best_fitness(population,offspring):
+# définition le l'opérateur de mutation par défaut pour l'AG simple
+toolbox.register("mutate", tools.mutFlipBit, indpb=1.0 / ONE_MAX_LENGTH)
+
+# insertion best fitness
+# sélectionner le moins bon et le remplacer éventuellement
+toolbox.register("worst", tools.selWorst, fit_attr='fitness')
+
+
+def insertion_best_fitness(population, offspring):
     for ind in offspring:
-        worst=toolbox.worst(population,1)
-        if (ind.fitness.values[0]>worst[0].fitness.values[0]):
-           population.remove(worst[0])
-           population.append(ind)
+        worst = toolbox.worst(population, 1)
+        if ind.fitness.values[0] > worst[0].fitness.values[0]:
+            population.remove(worst[0])
+            population.append(ind)
     return population
+
 
 #########################################
 # Outils pour la sélection d'opérateurs #
@@ -124,7 +135,7 @@ def init_op_history(l, taille):
 
 # calcul de l'amélioration/reward immédiate (plusieurs versions possibles)
 def improvement(val_init, val_mut):
-    return ((val_mut - val_init) + FITNESS_OFFSET)
+    return (val_mut - val_init) + FITNESS_OFFSET
     # return max(0,(val_mut-val_init))
     # return max(0,(val_mut-val_init)/ONE_MAX_LENGTH)
     # return (val_mut-val_init)/ONE_MAX_LENGTH
@@ -141,7 +152,7 @@ def update_reward_sliding(reward_list, reward_history, history_size, index, valu
         reward_history[index] = [value]
     else:
         reward_history[index].append(value)
-    if (len(reward_history[index]) > history_size):
+    if len(reward_history[index]) > history_size:
         reward_history[index] = reward_history[index][1:len(reward_history[index])]
     reward_list[index] = sum(reward_history[index]) / len(reward_history[index])
 
@@ -243,6 +254,7 @@ def ea_loop_PM(population, maxFitnessValues, meanFitnessValues, op_history, op_l
         maxFitnessValues.append(maxFitness)
         meanFitnessValues.append(meanFitness)
 
+
 ######################
 # Sélection avec UCB #
 ######################
@@ -263,11 +275,16 @@ def update_UCB_val(UCB_val, C, op_history, reward_list, generationCounter):
 
 
 # sélection operateur
+# biais, on prend toujours le premier
+# on devrait prendre un au hasard qui a la valeur max et pas juste le premier
+# ex 1 2 1 3 1 3 1 2
+# faut sélectionner un 3 au hasard
 def select_op_UCB(UCB_val):
     return UCB_val.index(max(UCB_val))
 
 
 # boucle évol. UCB (même structure que PM )
+# à la place on sélectionne la meilleur valeur UCB
 def ea_loop_MAB(population, maxFitnessValues, meanFitnessValues, op_history, op_list, history_size, C):
     generationCounter = 0
     reward_list = init_reward_list(len(op_list))
@@ -312,24 +329,27 @@ def ea_loop_MAB(population, maxFitnessValues, meanFitnessValues, op_history, op_
         maxFitnessValues.append(maxFitness)
         meanFitnessValues.append(meanFitness)
 
+
 # Appels et statistiques
 def main():
     # initialisations des acccummulateurs statistiques
     maxFitnessValues = []
     meanFitnessValues = []
     op_history = []
+    # 1 flip puis 3 flips puis 5 flips
     op_list = [1, 3, 5]
     op_history_stat = []
     Max_Fitness_history_stat = []
 
     # cchoix des paramètres propres et de la méthode
     AOS = 'PM'
-    #AOS = 'UCB'
+    # AOS = 'UCB'
     p_min = 0.05
     history_size = 10
     C = 4
     # nombre de runs pour les stats
-    NB_RUNS = 10
+    # moyenne sur plusieurs exec
+    NB_RUNS = 5
     # taille de la plus petie éxécution (pour normaliser les figures)
     long_min = MAX_GENERATIONS
 

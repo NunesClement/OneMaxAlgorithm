@@ -3,6 +3,7 @@ from random import choices, randint, randrange, random, seed
 from typing import List, Optional, Callable, Tuple
 import numpy as np
 import seed_env
+from interface import globalState
 
 np.random.seed(seed_env.getSeed())
 seed(seed_env.getSeed())
@@ -183,7 +184,6 @@ def run_evolution(
     collected_fitness = np.array([])
 
     for i in range(generation_limit):
-        # Barre de progression
         if generation_limit > 1000:
             if i % 500 == 0 and i != 0:
                 print("Itération " + str(i) + " ...")

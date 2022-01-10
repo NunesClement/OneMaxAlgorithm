@@ -1,9 +1,6 @@
 from functools import partial
 from typing import List
-
 import matplotlib.pyplot as plt
-# from PIL import Image
-# from random import randint
 import Methods_Genetics
 import numpy as np
 import Nqueen
@@ -24,23 +21,6 @@ def fitness_nqueen(genome: List[int]) -> int:
         raise ValueError("Le genome doit être > 0 ")
     # print(genome)
     return Nqueen.calculate_fitness(Nqueen.convert01ToConfiguration(genome))
-
-
-# L'importance d'utiliser les fonctions de bases e Python
-
-# test d'une fonc de fitness ou il faut un 1 une fois sur 2
-# def fitness(genome: OneMaxKnapSack.Genome) -> int:
-#     if len(genome) <= 0 :
-#         raise ValueError("Le genome doit être > 0 ")
-#     count = 0
-#     for i in range(0, len(genome)):
-#         if genome[i] == 1 and i%2 == 0:
-#             count = count + 1
-#         if genome[i] == 0 and i%2 == 0:
-#             count = count - 1
-#         if genome[i] == 1 and i%2 != 0:
-#             count = count - 1
-#     return count
 
 
 # test d'une fonc de fitness ou il faut du all different
@@ -69,9 +49,6 @@ def fitness_nqueen(genome: List[int]) -> int:
 # print(OneMaxKnapSack.population_fitness(Population10par10, fitness))
 #
 # print(OneMaxKnapSack.selection_pair(Population10par10, fitness))
-
-print("________________")
-
 
 def launch_with_param(
         mutation_param="1-flip",
@@ -128,12 +105,10 @@ def launch_with_param(
     congig_memory = [str(seed_env.getSeed()), str(mutation_param), str(selection_param),
                      str(crossover_param), str(fitness_limit),
                      str(generation_limit), str(genome_length), str(size)]
-    # iteration_array = collected_data[0].astype(np.float)
     iteration_array = np.array_str(collected_data[0])
 
     fitness_array = np.array_str(collected_data[1])
-    # np.savetxt("array_1d.csv", [congig_memory, iteration_array, fitness_array], delimiter=",",
-    #            fmt="%s")
+
     np.warnings.filterwarnings('ignore', category=np.VisibleDeprecationWarning)
     with open('array_1d.csv', 'a') as csvfile:
         np.savetxt(csvfile, [congig_memory, iteration_array], delimiter=',', fmt="%s")
@@ -221,9 +196,4 @@ def launch_the_launcher(globalState):
 
     plt.savefig("test")
 
-    # open method used to open different extension image file
-    # im = Image.open("test.png")
-    #
-    # # This method will show image in any image viewer
-    # im.show()
     return 0
