@@ -131,8 +131,13 @@ def debugGlobalState(global_state):
     print("Taille d'une population " + str(global_state.taille_pop))
 
 
-def launch_the_launcher(global_state):
+def cleanup_graph():
     plt.figure().clear()
+    print("The plot has been cleaned up !")
+
+
+def launch_the_launcher(global_state):
+    # plt.figure().clear()
     plt.xlabel("Nombre de générations")
     plt.ylabel("Fitness atteinte")
     debugGlobalState(global_state)

@@ -50,14 +50,12 @@ class First(QMainWindow):
 
     def __init__(self, parent=None):
         super(First, self).__init__(parent)
-        self.pushButton = QPushButton("Run programme")
         self.setGeometry(500, 500, 500, 250)
-
-        self.pushButton.clicked.connect(self.on_pushButton_clicked)
         self.title = "Menu de sélection"
         self.setWindowTitle(self.title)
 
         self.buttonRun = QPushButton("Run")
+        self.cleanupButton = QPushButton("Cleanup the plot")
         self.fitnessLabel = QLabel("Validation")
         self.choixFitness = QLabel("Choix fitness par encore disponible - onemax par défaut")
 
@@ -97,6 +95,7 @@ class First(QMainWindow):
         self.layout.addWidget(self.mutationChoix)
         self.layout.addWidget(self.problemLabel)
         self.layout.addWidget(self.problemChoix)
+        self.layout.addWidget(self.cleanupButton)
 
         self.sizePopLabel = QLabel("nb d'individus")
         self.sizePop = QLineEdit()
@@ -127,6 +126,7 @@ class First(QMainWindow):
         self.generationNb.textChanged.connect(self.change_nb_generation)
         self.dialogs = ""
         self.buttonRun.clicked.connect(self.on_pushButton_clicked)
+        self.cleanupButton.clicked.connect(self.on_cleanup_button_clicked)
         self.mutationChoix.currentTextChanged.connect(self.setMutationFLip)
         self.widget = QWidget()
         self.widget.setLayout(self.layout)
@@ -150,6 +150,9 @@ class First(QMainWindow):
         dialog = Second(self)
         # self.dialogs.append(dialog)
         # dialog.show()
+
+    def on_cleanup_button_clicked(self):
+        Lanceur.cleanup_graph()
 
     def setMutationFLip(self, s):
         global_state.mutation_params = [s, 0.5]
