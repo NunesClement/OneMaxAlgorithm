@@ -86,7 +86,7 @@ def launch_with_param(
         selection = partial(Methods_Genetics.selection_pair_better)
     if selection_param == "selection_pair":
         selection = partial(Methods_Genetics.selection_pair)
-    # a setup via le globalState de l'interface TO DO
+    # a setup via le global_state de l'interface TO DO
 
     # noinspection PyTupleAssignmentBalance
     (population, generations, collected_data) = Methods_Genetics.run_evolution(
@@ -117,77 +117,77 @@ def launch_with_param(
     return population, generations, collected_data
 
 
-def debugGlobalState(globalState):
-    print("Seed " + str(globalState.seed))
+def debugGlobalState(global_state):
+    print("Seed " + str(global_state.seed))
     print("Type de mutation "
-          + str(globalState.mutation_params[0])
+          + str(global_state.mutation_params[0])
           + " avec une proba de "
-          + str(globalState.mutation_params[1])
+          + str(global_state.mutation_params[1])
           )
-    print("Paramètre de sélection " + str(globalState.selection_params))
-    print("Limit de fitness " + str(globalState.fitness_limit))
-    print("Nb d'itération/génération " + str(globalState.generation_limit))
-    print("Taille d'un genome " + str(globalState.genome_length))
-    print("Taille d'une population " + str(globalState.taille_pop))
+    print("Paramètre de sélection " + str(global_state.selection_params))
+    print("Limit de fitness " + str(global_state.fitness_limit))
+    print("Nb d'itération/génération " + str(global_state.generation_limit))
+    print("Taille d'un genome " + str(global_state.genome_length))
+    print("Taille d'une population " + str(global_state.taille_pop))
 
 
-def launch_the_launcher(globalState):
+def launch_the_launcher(global_state):
     plt.figure().clear()
     plt.xlabel("Nombre de générations")
     plt.ylabel("Fitness atteinte")
-    debugGlobalState(globalState)
+    debugGlobalState(global_state)
     population, generations, collected_data = launch_with_param(
-        str(globalState.mutation_params[0]),
+        str(global_state.mutation_params[0]),
         "single_point_crossover",
         "selection_pair_better",
-        int(globalState.taille_pop),
-        int(globalState.genome_length),
-        int(globalState.fitness_limit),
-        int(globalState.generation_limit)
+        int(global_state.taille_pop),
+        int(global_state.genome_length),
+        int(global_state.fitness_limit),
+        int(global_state.generation_limit)
     )
     # Nqueen.displayConfiguration(Nqueen.convert01ToConfiguration(population[0]))
     # print("Penalty  : " + str(Nqueen.calculate_penalty(Nqueen.convert01ToConfiguration(population[0]))))
+    #
+    # x = collected_data[0]
+    # y = collected_data[1]
+    # lbl = "single_point_crossover " + global_state.mutation_params[0] + " selection_pair_better " + str(
+    #     generations) + " " + str(
+    #     collected_data[1][len(collected_data[1]) - 1])
+    # plt.plot(x, y, label=lbl)
+    #
+    # population, generations, collected_data = launch_with_param(
+    #     str(global_state.mutation_params[0]),
+    #     "single_point_crossover",
+    #     "selection_pair",
+    #     int(global_state.taille_pop),
+    #     int(global_state.genome_length),
+    #     int(global_state.fitness_limit),
+    #     int(global_state.generation_limit)
+    # )
+    # # Nqueen.displayConfiguration(Nqueen.convert01ToConfiguration(population[0]))
+    # # print("Penalty  : " + str(Nqueen.calculate_penalty(Nqueen.convert01ToConfiguration(population[0]))))
+    # x = collected_data[0]
+    # y = collected_data[1]
+    # lbl = "single_point_crossover " + global_state.mutation_params[0] + "  selection_pair_better " + str(
+    #     generations) + " " + str(
+    #     collected_data[1][len(collected_data[1]) - 1])
+    # plt.plot(x, y, label=lbl)
+    #
+    # population, generations, collected_data = launch_with_param(
+    #     str(global_state.mutation_params[0]),
+    #     "uniform_crossover",
+    #     "selection_pair_better",
+    #     int(global_state.taille_pop),
+    #     int(global_state.genome_length),
+    #     int(global_state.fitness_limit),
+    #     int(global_state.generation_limit)
+    # )
+    # # Nqueen.displayConfiguration(Nqueen.convert01ToConfiguration(population[0]))
+    # # print("Penalty  : " + str(Nqueen.calculate_penalty(Nqueen.convert01ToConfiguration(population[0]))))
 
     x = collected_data[0]
     y = collected_data[1]
-    lbl = "single_point_crossover " + globalState.mutation_params[0] + " selection_pair_better " + str(
-        generations) + " " + str(
-        collected_data[1][len(collected_data[1]) - 1])
-    plt.plot(x, y, label=lbl)
-
-    population, generations, collected_data = launch_with_param(
-        str(globalState.mutation_params[0]),
-        "single_point_crossover",
-        "selection_pair",
-        int(globalState.taille_pop),
-        int(globalState.genome_length),
-        int(globalState.fitness_limit),
-        int(globalState.generation_limit)
-    )
-    # Nqueen.displayConfiguration(Nqueen.convert01ToConfiguration(population[0]))
-    # print("Penalty  : " + str(Nqueen.calculate_penalty(Nqueen.convert01ToConfiguration(population[0]))))
-    x = collected_data[0]
-    y = collected_data[1]
-    lbl = "single_point_crossover " + globalState.mutation_params[0] + "  selection_pair_better " + str(
-        generations) + " " + str(
-        collected_data[1][len(collected_data[1]) - 1])
-    plt.plot(x, y, label=lbl)
-
-    population, generations, collected_data = launch_with_param(
-        str(globalState.mutation_params[0]),
-        "uniform_crossover",
-        "selection_pair_better",
-        int(globalState.taille_pop),
-        int(globalState.genome_length),
-        int(globalState.fitness_limit),
-        int(globalState.generation_limit)
-    )
-    # Nqueen.displayConfiguration(Nqueen.convert01ToConfiguration(population[0]))
-    # print("Penalty  : " + str(Nqueen.calculate_penalty(Nqueen.convert01ToConfiguration(population[0]))))
-
-    x = collected_data[0]
-    y = collected_data[1]
-    lbl = "uniform_crossover " + str(globalState.mutation_params[0]) + " selection_pair " + str(
+    lbl = "uniform_crossover " + str(global_state.mutation_params[0]) + " selection_pair " + str(
         generations) + " " + str(
         collected_data[1][len(collected_data[1]) - 1])
     plt.plot(x, y, label=lbl)

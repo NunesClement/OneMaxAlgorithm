@@ -9,14 +9,14 @@ import seaborn as sns
 import numpy as np
 
 # taille du problème
-ONE_MAX_LENGTH = 100
+ONE_MAX_LENGTH = 1000
 # PM = probability matching
 
 # Paramètres AG
 POPULATION_SIZE = 1
 P_CROSSOVER = 0.0
 P_MUTATION = 1.0
-MAX_GENERATIONS = 1500
+MAX_GENERATIONS = 5000
 FITNESS_OFFSET = 5
 
 # générateur aléatoire

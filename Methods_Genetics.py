@@ -3,7 +3,7 @@ from random import choices, randint, randrange, random, seed
 from typing import List, Optional, Callable, Tuple
 import numpy as np
 import seed_env
-from interface import globalState
+from interface import global_state
 
 np.random.seed(seed_env.getSeed())
 seed(seed_env.getSeed())

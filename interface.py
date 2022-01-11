@@ -17,16 +17,16 @@ class GlobalParameter:
         self.taille_pop = taille_pop
 
 
-globalState = GlobalParameter(13, 10,
-                              ["1-flip", 0.5],
-                              "selection_pair_parmis_s_random",
-                              1000, 1000, 121)
+global_state = GlobalParameter(13, 10,
+                               ["1-flip", 0.5],
+                               "selection_pair_parmis_s_random",
+                               1000, 1000, 121)
 
 
 class Second(QMainWindow):
     def __init__(self, parent=None):
         super(Second, self).__init__(parent)
-        Lanceur.launch_the_launcher(globalState)
+        Lanceur.launch_the_launcher(global_state)
 
         class MainWindow(QMainWindow):
 
@@ -40,7 +40,6 @@ class Second(QMainWindow):
                 label.setPixmap(pixmap)
                 self.setCentralWidget(label)
                 self.resize(pixmap.width(), pixmap.height())
-
 
         self.w = MainWindow()
         self.w.resize(600, 600)
@@ -136,16 +135,16 @@ class First(QMainWindow):
         self.show()
 
     def change_size_pop(self, text):
-        globalState.taille_pop = text
+        global_state.taille_pop = text
 
     def change_fitness_max(self, text):
-        globalState.fitness_limit = text
+        global_state.fitness_limit = text
 
     def change_genome_taille_label(self, text):
-        globalState.genome_length = text
+        global_state.genome_length = text
 
     def change_nb_generation(self, text):
-        globalState.generation_limit = text
+        global_state.generation_limit = text
 
     def on_pushButton_clicked(self):
         dialog = Second(self)
@@ -153,7 +152,7 @@ class First(QMainWindow):
         # dialog.show()
 
     def setMutationFLip(self, s):
-        globalState.mutation_params = [s, 0.5]
+        global_state.mutation_params = [s, 0.5]
 
 
 def main():
