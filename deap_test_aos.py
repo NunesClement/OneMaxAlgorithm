@@ -16,7 +16,7 @@ ONE_MAX_LENGTH = 1000
 POPULATION_SIZE = 1
 P_CROSSOVER = 0.0
 P_MUTATION = 1.0
-MAX_GENERATIONS = 5000
+MAX_GENERATIONS = 50
 FITNESS_OFFSET = 5
 
 # générateur aléatoire
@@ -143,10 +143,11 @@ def improvement(val_init, val_mut):
 
 # calcul de moyenne simple
 def update_reward(reward_list, iter, index, value):
-    reward_list[index] = ((iter - 1) * reward_list[index] + value) / (iter)
+    reward_list[index] = ((iter - 1) * reward_list[index] + value) / iter
 
 
 # sliding window
+# Mise à jour de la récompense glissante
 def update_reward_sliding(reward_list, reward_history, history_size, index, value):
     if reward_history[index] == [0]:
         reward_history[index] = [value]
@@ -186,7 +187,7 @@ def select_op_proba(proba_list):
     i = 0
     while somme < r and i < len(proba_list):
         somme = somme + proba_list[i]
-        if (somme < r):
+        if somme < r:
             i = i + 1
     return i
 
@@ -225,7 +226,7 @@ def ea_loop_PM(population, maxFitnessValues, meanFitnessValues, op_history, op_l
             if random.random() < P_MUTATION:
                 fitness_init = mutant.fitness.values[0]
                 # choix de l'op en fonction de son numéro (O=bitflip)
-                if (current_op > 0):
+                if current_op > 0:
                     n_flips(mutant, op_list[current_op])
                 else:
                     toolbox.bitflip(mutant)
@@ -238,7 +239,7 @@ def ea_loop_PM(population, maxFitnessValues, meanFitnessValues, op_history, op_l
         # MAJ roulette
         update_roulette_wheel(reward_list, proba_list, p_min)
         # on effectue la mutation uniquement si elle est améliorante
-        if (improvement(fitness_init, mutant.fitness.values[0]) > 0):
+        if improvement(fitness_init, mutant.fitness.values[0]) > 0:
             population = insertion_best_fitness(population, offspring)
         # on collecte les valeurs de fitness
         fitnessValues = [ind.fitness.values[0] for ind in population]
@@ -260,6 +261,7 @@ def ea_loop_PM(population, maxFitnessValues, meanFitnessValues, op_history, op_l
 ######################
 
 # initialisation strutures
+# [0, 0, 0] 3 opérateurs
 def init_UCB_val(taille):
     l = []
     for o in range(taille):
@@ -268,6 +270,7 @@ def init_UCB_val(taille):
 
 
 # MAJ valeurs UCB
+# Le biais pour faire décroitre de façon algorithmique le regret
 def update_UCB_val(UCB_val, C, op_history, reward_list, generationCounter):
     for o in range(len(op_history)):
         UCB_val[o] = reward_list[o] + C * np.sqrt(
@@ -279,6 +282,7 @@ def update_UCB_val(UCB_val, C, op_history, reward_list, generationCounter):
 # on devrait prendre un au hasard qui a la valeur max et pas juste le premier
 # ex 1 2 1 3 1 3 1 2
 # faut sélectionner un 3 au hasard
+# TODO
 def select_op_UCB(UCB_val):
     return UCB_val.index(max(UCB_val))
 
@@ -309,7 +313,7 @@ def ea_loop_MAB(population, maxFitnessValues, meanFitnessValues, op_history, op_
         for mutant in offspring:
             if random.random() < P_MUTATION:
                 fitness_init = mutant.fitness.values[0]
-                if (current_op > 0):
+                if current_op > 0:
                     n_flips(mutant, op_list[current_op])
                 else:
                     toolbox.bitflip(mutant)
@@ -320,7 +324,7 @@ def ea_loop_MAB(population, maxFitnessValues, meanFitnessValues, op_history, op_
                               improvement(fitness_init, mutant.fitness.values[0]))
         update_UCB_val(UCB_val, C, op_history, reward_list, generationCounter)
 
-        if (improvement(fitness_init, mutant.fitness.values[0]) > 0):
+        if improvement(fitness_init, mutant.fitness.values[0]) > 0:
             population = insertion_best_fitness(population, offspring)
 
         fitnessValues = [ind.fitness.values[0] for ind in population]
@@ -341,15 +345,15 @@ def main():
     op_history_stat = []
     Max_Fitness_history_stat = []
 
-    # cchoix des paramètres propres et de la méthode
-    AOS = 'PM'
-    # AOS = 'UCB'
+    # Choix des paramètres propres et de la méthode
+    # AOS = 'PM'
+    AOS = 'UCB'
     p_min = 0.05
     history_size = 10
     C = 4
     # nombre de runs pour les stats
     # moyenne sur plusieurs exec
-    NB_RUNS = 5
+    NB_RUNS = 10
     # taille de la plus petie éxécution (pour normaliser les figures)
     long_min = MAX_GENERATIONS
 
@@ -361,7 +365,7 @@ def main():
         init_op_history(op_history, len(op_list))
         # population initiale (generation 0):
         population = toolbox.populationCreator(n=POPULATION_SIZE)
-        if (AOS == 'PM'):
+        if AOS == 'PM':
             ea_loop_PM(population, maxFitnessValues, meanFitnessValues, op_history, op_list, p_min, history_size)
         else:
             ea_loop_MAB(population, maxFitnessValues, meanFitnessValues, op_history, op_list, history_size, C)
@@ -369,7 +373,7 @@ def main():
 
         op_history_stat.append(op_history)
         Max_Fitness_history_stat.append(maxFitnessValues)
-        if (len(op_history[0]) < long_min):
+        if len(op_history[0]) < long_min:
             long_min = len(op_history[0])
 
             # utiliation des historiques et agrégation des data
