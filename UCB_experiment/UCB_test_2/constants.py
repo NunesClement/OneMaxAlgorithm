@@ -5,6 +5,9 @@ All constants useful for the UCB algorithm
 # import numpy.random as rd
 import numpy as np
 import scipy.stats as st
+import matplotlib.pyplot as plt
+
+plt.show()
 
 # number of arms
 K = 3
@@ -28,6 +31,24 @@ ARMS[1] = st.bernoulli(0.3)
 ARMS[2] = st.poisson(0.5)
 # ARMS[0] = st.randint(0, 1)  # constant = 0
 # ARMS[1] = st.randint(1, 2)  # constant = 1
+
+print(ARMS[0])
+print(ARMS[1])
+print(ARMS[2])
+
+# fig, ax = plt.subplots(1, 1)
+# mu = 0.6
+# mean, var, skew, kurt = st.poisson.stats(mu, moments='mvsk')
+# x = np.arange(st.poisson.ppf(0.01, mu),
+#               st.poisson.ppf(0.99, mu))
+# ax.plot(x, st.poisson.pmf(x, mu), 'bo', ms=8, label='poisson pmf')
+# ax.vlines(x, 0, st.poisson.pmf(x, mu), colors='b', lw=5, alpha=0.5)
+# rv = st.poisson(mu)
+# ax.vlines(x, 0, rv.pmf(x), colors='k', linestyles='-', lw=1,
+#         label='frozen pmf')
+# ax.legend(loc='best', frameon=False)
+#
+# plt.show()
 
 # set of arm distributions
 ARM_DISTRIBUTIONS = [0] * K

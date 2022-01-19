@@ -100,5 +100,4 @@ def thompson_sampling():
     # print(HYPERPARAMETERS[2][0]/HYPERPARAMETERS[2][1])
 
 
-
 thompson_sampling()

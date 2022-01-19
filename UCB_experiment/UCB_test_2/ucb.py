@@ -32,7 +32,6 @@ def sample(k):
     """
     Sample arm k
     """
-
     return float(ARMS[k].rvs())
 
 
@@ -42,7 +41,9 @@ def update_arm(k):
     """
 
     val = sample(k)
+    # nouvelle moyenne empirique par opérateur [0.41, 0.23, 0.50]
     emp_means[k] = new_empirical_mean(emp_means[k], counters[k], val)
+
     counters[k] += 1
     gains[0] += val
     gains[1] += MEANS[k]
@@ -61,7 +62,7 @@ def ucb_step(t):
     """
     Realize one UCB step
     """
-
+    # optimistic_means est un biais utile pour faire décroitre le regret
     optimistic_means = np.array(emp_means) + np.sqrt(UCB_constant * log(t) / np.array(counters))
     k = np.argmax(optimistic_means)
     update_arm(k)
@@ -97,7 +98,7 @@ def runUCB():
     print('Best arm: {:d} with mean {:.2f}'.format(BEST_ARM, BEST_MEAN))
     print('Means: ', MEANS)
     print('Counters: ', counters)
-    print('Regret={:.2f}'.format(R))
+    print('Regret: {:.2f}'.format(R))
 
 
 def plotUCB():
