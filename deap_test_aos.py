@@ -370,7 +370,6 @@ def main():
         else:
             ea_loop_MAB(population, maxFitnessValues, meanFitnessValues, op_history, op_list, history_size, C)
         # MAJ des stats
-
         op_history_stat.append(op_history)
         Max_Fitness_history_stat.append(maxFitnessValues)
         if len(op_history[0]) < long_min:

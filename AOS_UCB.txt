@@ -1,0 +1,14 @@
+main ():
+    op_list = [1, 3, 5] (différentes mutations/flip)
+    op_history_stat = [] ???
+    Max_Fitness_history_stat = [] ???
+
+    for nbruns
+        op_history # list des coups par opérateurs (reset a chaque run)
+        op_history_stat garde tous les op_history
+        Max_Fitness_history_stat # garde les meilleurs fitness de tous les runs
+            ===> ea_loop_MAB(population, maxFitnessValues, meanFitnessValues, op_history, op_list, history_size, C)
+            => init_UCB_valhttps://docs.anaconda.com/anaconda/navigator/index.htmlhttps://docs.anaconda.com/anaconda/navigator/index.html
+            =>
+            =>
+        à défricher
