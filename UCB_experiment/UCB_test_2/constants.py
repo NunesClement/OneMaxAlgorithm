@@ -7,8 +7,6 @@ import numpy as np
 import scipy.stats as st
 import matplotlib.pyplot as plt
 
-plt.show()
-
 # number of arms
 K = 3
 
