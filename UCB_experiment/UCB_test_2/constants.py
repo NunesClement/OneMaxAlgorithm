@@ -24,15 +24,18 @@ MEANS = [0] * K
 
 # choice of the arms' distributions
 # ARMS[0] = st.truncnorm(0, 5)
+
+# ARMS[0] = st.expon(scale=1 / 2.5)
 ARMS[0] = st.expon(scale=1 / 2.5)
 ARMS[1] = st.bernoulli(0.3)
 ARMS[2] = st.poisson(0.5)
+
 # ARMS[0] = st.randint(0, 1)  # constant = 0
 # ARMS[1] = st.randint(1, 2)  # constant = 1
 
-print(ARMS[0])
-print(ARMS[1])
-print(ARMS[2])
+# print(ARMS[0])
+# print(ARMS[1])
+# print(ARMS[2])
 
 # fig, ax = plt.subplots(1, 1)
 # mu = 0.6
