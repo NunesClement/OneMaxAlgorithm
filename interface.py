@@ -74,6 +74,7 @@ class First(QMainWindow):
         self.mutationChoix.addItem("4-flip")
         self.mutationChoix.addItem("5-flip")
         self.mutationChoix.addItem("bitflip")
+        self.mutationChoix.addItem("AOS- UCB - Sélection automatique WIP")
 
         self.problemLabel = QLabel("Problème à traiter WIP")
 

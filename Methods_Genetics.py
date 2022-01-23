@@ -164,6 +164,51 @@ def print_stats(population: Population, generation_id: int, fitness_func: Fitnes
     return sorted_population[0]
 
 
+def ea_loop_MAB(population, maxFitnessValues, meanFitnessValues, op_history, op_list, history_size, C):
+    generationCounter = 0
+    reward_list = np.zeros(len(op_list))
+    reward_history = np.zeros(len(op_list))
+    UCB_val = np.zeros(len(op_list))
+    op_util = []
+    fitnessValues = list(map(toolbox.evaluate, population))
+    for individual, fitnessValue in zip(population, fitnessValues):
+        individual.fitness.values = fitnessValue
+    fitnessValues = [individual.fitness.values[0] for individual in population]
+    while (max(fitnessValues) < ONE_MAX_LENGTH) and (generationCounter < MAX_GENERATIONS):
+        generationCounter = generationCounter + 1
+        current_op = select_op_UCB(UCB_val)
+        for o in range(len(op_list)):
+            if o == current_op:
+                op_history[o].append(op_history[o][generationCounter - 1] + 1)
+            else:
+                op_history[o].append(op_history[o][generationCounter - 1])
+        op_util.append(op_list[current_op])
+        offspring = toolbox.select(population, 1)
+        offspring = list(map(toolbox.clone, offspring))
+        for mutant in offspring:
+            if random.random() < P_MUTATION:
+                fitness_init = mutant.fitness.values[0]
+                if current_op > 0:
+                    n_flips(mutant, op_list[current_op])
+                else:
+                    toolbox.bitflip(mutant)
+                del mutant.fitness.values
+                mutant.fitness.values = list(toolbox.evaluate(mutant))
+
+        update_reward_sliding(reward_list, reward_history, history_size, current_op,
+                              improvement(fitness_init, mutant.fitness.values[0]))
+        update_UCB_val(UCB_val, C, op_history, reward_list, generationCounter)
+
+        if improvement(fitness_init, mutant.fitness.values[0]) > 0:
+            population = insertion_best_fitness(population, offspring)
+
+        fitnessValues = [ind.fitness.values[0] for ind in population]
+        maxFitness = max(fitnessValues)
+        meanFitness = sum(fitnessValues) / len(population)
+        maxFitnessValues.append(maxFitness)
+        meanFitnessValues.append(meanFitness)
+
+
 def run_evolution(
         populate_func: PopulateFunc,
         fitness_func: FitnessFunc,
@@ -201,7 +246,8 @@ def run_evolution(
         # if i == 37000:
         #     mutation_func = partial(bitflip)
         if i % 5 == 0:
-            # print("Le programme a l'efficacité : " + str(fitness_func(population[0])) + " / " + str(fitness_limit) + " à l'itération " + str(i))
+            # print("Le programme a l'efficacité : " + str(fitness_func(population[0])) + " / " + str(fitness_limit)
+            # + " à l'itération " + str(i))
             collected_iteration = np.append(collected_iteration, i)
             collected_fitness = np.append(collected_fitness, fitness_func(population[0]))
         population = sorted(population, key=lambda genome: fitness_func(genome), reverse=True)
