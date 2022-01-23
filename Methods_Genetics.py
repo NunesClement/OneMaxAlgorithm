@@ -145,8 +145,22 @@ def greatest(population: Population, fitness_func: FitnessFunc) -> Population:
     return sorted(population, key=fitness_func, reverse=True)[0]
 
 
+# trie de la population en fonction de sa fitness
+def loosest(population: Population, fitness_func: FitnessFunc) -> Population:
+    return sorted(population, key=fitness_func, reverse=False)[0]
+
+
 def genome_to_string(genome: List[int]) -> str:
     return "".join(map(str, genome))
+
+
+# def insertion_best_fitness(population, offspring):
+#     for ind in offspring:
+#         worst = toolbox.worst(population, 1)
+#         if ind.fitness.values[0] > worst[0].fitness.values[0]:
+#             population.remove(worst[0])
+#             population.append(ind)
+#     return population
 
 
 def print_stats(population: Population, generation_id: int, fitness_func: FitnessFunc):
@@ -164,17 +178,68 @@ def print_stats(population: Population, generation_id: int, fitness_func: Fitnes
     return sorted_population[0]
 
 
-def ea_loop_MAB(population, maxFitnessValues, meanFitnessValues, op_history, op_list, history_size, C):
+# initialisation strutures
+# [0, 0, 0] 3 opérateurs
+def init_UCB_val(taille):
+    l = []
+    for o in range(taille):
+        l.append(0)
+    return l
+
+
+# sélection operateur
+# biais, on prend toujours le premier
+# on devrait prendre un au hasard qui a la valeur max et pas juste le premier
+# ex 1 2 1 3 1 3 1 2
+# faut sélectionner un 3 au hasard
+# TODO
+def select_op_UCB(UCB_val):
+    return UCB_val.index(max(UCB_val))
+
+
+# Mise à jour de la récompense glissante
+def update_reward_sliding(reward_list, reward_history, history_size, index, value):
+    if reward_history[index] == [0]:
+        reward_history[index] = [value]
+    else:
+        reward_history[index].append(value)
+    if len(reward_history[index]) > history_size:
+        reward_history[index] = reward_history[index][1:len(reward_history[index])]
+    reward_list[index] = sum(reward_history[index]) / len(reward_history[index])
+
+
+# MAJ valeurs UCB
+# Le biais pour faire décroitre de façon algorithmique le regret
+def update_UCB_val(UCB_val, C, op_history, reward_list, generationCounter):
+    for o in range(len(op_history)):
+        UCB_val[o] = reward_list[o] + C * np.sqrt(
+            generationCounter / (2 * np.log(1 + op_history[o][generationCounter]) + 1))
+
+
+# calcul de l'amélioration/reward immédiate (plusieurs versions possibles)
+def improvement(val_init, val_mut):
+    # return (val_mut - val_init) + FITNESS_OFFSET
+    return max(0, (val_mut - val_init))
+    # return max(0,(val_mut-val_init)/ONE_MAX_LENGTH)
+    # return (val_mut-val_init)/ONE_MAX_LENGTH
+
+
+# boucle évol. UCB (même structure que PM )
+# à la place on sélectionne la meilleure valeur UCB
+def ea_loop_MAB(genome_length, generation_limit, population, maxFitnessValues, meanFitnessValues, op_history, op_list,
+                history_size, C):
     generationCounter = 0
-    reward_list = np.zeros(len(op_list))
-    reward_history = np.zeros(len(op_list))
-    UCB_val = np.zeros(len(op_list))
+    P_MUTATION = 0.1
+
+    reward_list = init_reward_list(len(op_list))
+    reward_history = init_reward_history(len(op_list))
+    UCB_val = init_UCB_val(len(op_list))
     op_util = []
     fitnessValues = list(map(toolbox.evaluate, population))
     for individual, fitnessValue in zip(population, fitnessValues):
         individual.fitness.values = fitnessValue
     fitnessValues = [individual.fitness.values[0] for individual in population]
-    while (max(fitnessValues) < ONE_MAX_LENGTH) and (generationCounter < MAX_GENERATIONS):
+    while (max(fitnessValues) < genome_length) and (generationCounter < generation_limit):
         generationCounter = generationCounter + 1
         current_op = select_op_UCB(UCB_val)
         for o in range(len(op_list)):
@@ -209,6 +274,25 @@ def ea_loop_MAB(population, maxFitnessValues, meanFitnessValues, op_history, op_
         meanFitnessValues.append(meanFitness)
 
 
+def init_reward_list(taille):
+    l = []
+    for o in range(taille):
+        l.append(0)
+    return l
+
+
+def init_reward_history(taille):
+    l = []
+    for o in range(taille):
+        l.append([0])
+    return l
+
+
+def init_op_history(l, taille):
+    for o in range(taille):
+        l.append([0])
+
+
 def run_evolution(
         populate_func: PopulateFunc,
         fitness_func: FitnessFunc,
@@ -228,47 +312,67 @@ def run_evolution(
     collected_iteration = np.array([])
     collected_fitness = np.array([])
 
-    for i in range(generation_limit):
-        if generation_limit > 1000:
-            if i % 500 == 0 and i != 0:
-                print("Itération " + str(i) + " ...")
-        # changement manuel d'opérateur
-        # if i == 10000:
-        #     mutation_func = partial(bitflip)
-        # if i == 10000:
-        #     mutation_func = partial(mutation, num=4, probability=0.5)
-        # if i == 15000:
-        #     mutation_func = partial(mutation, num=3, probability=0.5)
-        # if i == 20000:
-        #     mutation_func = partial(mutation, num=2, probability=0.5)
-        # if i == 30000:
-        #     mutation_func = partial(mutation, num=1, probability=0.5)
-        # if i == 37000:
-        #     mutation_func = partial(bitflip)
-        if i % 5 == 0:
-            # print("Le programme a l'efficacité : " + str(fitness_func(population[0])) + " / " + str(fitness_limit)
-            # + " à l'itération " + str(i))
-            collected_iteration = np.append(collected_iteration, i)
-            collected_fitness = np.append(collected_fitness, fitness_func(population[0]))
-        population = sorted(population, key=lambda genome: fitness_func(genome), reverse=True)
-        if printer is not None:
-            printer(population, i, fitness_func)
+    genome_length = global_state.genome_length
+    maxFitnessValues = []
+    meanFitnessValues = []
+    op_history = []
+    # 1 flip puis 3 flips puis 5 flips
+    op_list = [1, 3, 5]
+    op_history_stat = []
+    Max_Fitness_history_stat = []
 
-        if fitness_func(population[0]) >= fitness_limit:
-            # print("Le programme a l'efficacité : " + str(fitness_func(population[0])) + " / " + str(
-            #     fitness_limit) + " à l'itération " + str(i))
-            collected_iteration = np.append(collected_iteration, i)
-            collected_fitness = np.append(collected_fitness, fitness_func(population[0]))
-            break
-        next_generation = population[0:2]
+    p_min = 0.05
+    history_size = 10
+    C = 4
+    # nombre de runs pour les stats
+    # moyenne sur plusieurs exec
+    NB_RUNS = 10
 
-        for j in range(int(len(population) / 2) - 1):
-            parents = selection_func(population, fitness_func)
-            offspring_a, offspring_b = crossover_func(parents[0], parents[1])
-            offspring_a = mutation_func(offspring_a)
-            offspring_b = mutation_func(offspring_b)
-            next_generation += [offspring_a, offspring_b]
+    long_min = generation_limit
 
-        population = next_generation
-    collected_data = [collected_iteration, collected_fitness]
-    return population, i, collected_data
+    print("> Taille génôme " + str(global_state.genome_length))
+    AOS = "AAA"
+    if AOS == "MAB":
+        ea_loop_MAB(genome_length, generation_limit, population, maxFitnessValues, meanFitnessValues, op_history,
+                    op_list, history_size, C)
+    else:
+        for i in range(generation_limit):
+
+            maxFitnessValues = []
+            meanFitnessValues = []
+            op_history = []
+            init_op_history(op_history, len(op_list))
+
+            if generation_limit > 1000:
+                if i % 500 == 0 and i != 0:
+                    print("Itération " + str(i) + " ...")
+            if i % 5 == 0:
+                # print("Le programme a l'efficacité : " + str(fitness_func(population[0])) + " / " + str(fitness_limit)
+                # + " à l'itération " + str(i))
+                collected_iteration = np.append(collected_iteration, i)
+                collected_fitness = np.append(collected_fitness, fitness_func(population[0]))
+            population = sorted(population, key=lambda genome: fitness_func(genome), reverse=True)
+            # print("Meilleur : " + str(fitness_func(greatest(population, fitness_func))))
+            # print("Plus nulle : " + str(fitness_func(loosest(population, fitness_func))))
+            # print(fitness_func(sort_population(population, fitness_func)[len(population)-1]))
+            if printer is not None:
+                printer(population, i, fitness_func)
+
+            if fitness_func(population[0]) >= fitness_limit:
+                # print("Le programme a l'efficacité : " + str(fitness_func(population[0])) + " / " + str(
+                #     fitness_limit) + " à l'itération " + str(i))
+                collected_iteration = np.append(collected_iteration, i)
+                collected_fitness = np.append(collected_fitness, fitness_func(population[0]))
+                break
+            next_generation = population[0:2]
+
+            for j in range(int(len(population) / 2) - 1):
+                parents = selection_func(population, fitness_func)
+                offspring_a, offspring_b = crossover_func(parents[0], parents[1])
+                offspring_a = mutation_func(offspring_a)
+                offspring_b = mutation_func(offspring_b)
+                next_generation += [offspring_a, offspring_b]
+
+            population = next_generation
+        collected_data = [collected_iteration, collected_fitness]
+        return population, i, collected_data
