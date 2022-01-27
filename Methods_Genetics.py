@@ -4,6 +4,7 @@ from typing import List, Optional, Callable, Tuple
 import numpy as np
 import seed_env
 from interface import global_state
+import Lanceur
 
 np.random.seed(seed_env.getSeed())
 seed(seed_env.getSeed())
@@ -178,6 +179,14 @@ def init_UCB_val(taille):
     return l
 
 
+# calcul de l'amélioration/reward immédiate (plusieurs versions possibles)
+def improvement(val_init, val_mut):
+    return max(0, (val_mut - val_init))
+    # return (val_mut - val_init) + FITNESS_OFFSET
+    # return max(0,(val_mut-val_init)/ONE_MAX_LENGTH)
+    # return (val_mut-val_init)/ONE_MAX_LENGTH
+
+
 # Mise à jour de la récompense glissante
 def update_reward_sliding(reward_list, reward_history, history_size, index, value):
     if reward_history[index] == [0]:
@@ -191,10 +200,10 @@ def update_reward_sliding(reward_list, reward_history, history_size, index, valu
 
 # MAJ valeurs UCB
 # Le biais pour faire décroitre de façon algorithmique le regret
-def update_UCB_val(UCB_val, C, op_history, reward_list, generationCounter):
+def update_UCB_val(UCB_val, C, op_history, reward_list, i):
     for o in range(len(op_history)):
         UCB_val[o] = reward_list[o] + C * np.sqrt(
-            generationCounter / (2 * np.log(1 + op_history[o][generationCounter]) + 1))
+            i / (2 * np.log(1 + op_history[o][i]) + 1))
 
 
 # calcul de l'amélioration/reward immédiate (plusieurs versions possibles)
@@ -203,6 +212,59 @@ def improvement(val_init, val_mut):
     return max(0, (val_mut - val_init))
     # return max(0,(val_mut-val_init)/ONE_MAX_LENGTH)
     # return (val_mut-val_init)/ONE_MAX_LENGTH
+
+
+def init_reward_list(taille):
+    l = []
+    for o in range(taille):
+        l.append(0)
+    return l
+
+
+def init_reward_history(taille):
+    l = []
+    for o in range(taille):
+        l.append([0])
+    return l
+
+
+def init_op_history(l, taille):
+    for o in range(taille):
+        l.append([0])
+
+
+# sélection d'un opérateur selon une liste de probabilités
+def select_op_proba(proba_list):
+    r = random.random()
+    somme = 0
+    i = 0
+    while somme < r and i < len(proba_list):
+        somme = somme + proba_list[i]
+        if somme < r:
+            i = i + 1
+    return i
+
+
+# sélection operateur
+# biais, on prend toujours le premier
+# on devrait prendre un au hasard qui a la valeur max et pas juste le premier
+# ex 1 2 1 3 1 3 1 2
+# faut sélectionner un 3 au hasard
+# TODO
+def select_op_UCB(UCB_val):
+    return UCB_val.index(max(UCB_val))
+
+
+maxFitnessValues = []
+meanFitnessValues = []
+op_history = []
+# 1 flip puis 3 flips puis 5 flips
+op_list = [1, 3, 5]
+op_history_stat = []
+Max_Fitness_history_stat = []
+p_min = 0.05
+history_size = 10
+C = 4
 
 
 def run_evolution(
@@ -215,10 +277,19 @@ def run_evolution(
         generation_limit: int = 100,
         printer: Optional[PrinterFunc] = None) \
         -> Tuple[Population, int]:
-    """
+    maxFitnessValues = []
+    meanFitnessValues = []
+    op_history = []
+    init_op_history(op_history, len(op_list))
 
-    :rtype: object
-    """
+    reward_list = init_reward_list(len(op_list))
+    print(reward_list)
+    reward_history = init_reward_history(len(op_list))
+    UCB_val = init_UCB_val(len(op_list))
+    op_util = []
+    # un individu lié à une fitness
+    # fitnessValues = list(map(toolbox.evaluate, population))
+
     population = populate_func()
     i = 0
     collected_iteration = np.array([])
@@ -227,6 +298,22 @@ def run_evolution(
     print("> Taille génôme " + str(global_state.genome_length))
 
     for i in range(generation_limit):
+        current_op = select_op_UCB(UCB_val)
+        op_util.append(op_list[current_op])
+
+        for o in range(len(op_list)):
+            print(o)
+            if o == current_op:
+                op_history[o].append(op_history[o][i - 1] + 1)
+            else:
+                op_history[o].append(op_history[o][i - 1])
+        print()
+        if op_list[current_op] == 1:
+            mutation_func = partial(mutation, num=1, probability=0.5)
+        if op_list[current_op] == 3:
+            mutation_func = partial(mutation, num=3, probability=0.5)
+        if op_list[current_op] == 5:
+            mutation_func = partial(mutation, num=5, probability=0.5)
 
         if generation_limit > 1000:
             if i % 500 == 0 and i != 0:
@@ -252,12 +339,26 @@ def run_evolution(
         next_generation = population[0:2]
 
         for j in range(int(len(population) / 2) - 1):
+            fitness_init = Lanceur.fitness(greatest(population, fitness_func))
             parents = selection_func(population, fitness_func)
             offspring_a, offspring_b = crossover_func(parents[0], parents[1])
             offspring_a = mutation_func(offspring_a)
             offspring_b = mutation_func(offspring_b)
             next_generation += [offspring_a, offspring_b]
 
+        fitness_now = Lanceur.fitness(greatest(next_generation, fitness_func))
+        # fitness_now = Lanceur.fitness(greatest(population, fitness_func))
+        update_reward_sliding(reward_list, reward_history, history_size, current_op,
+                              improvement(fitness_init, fitness_now))
+        print(history_size)
+        update_UCB_val(UCB_val, C, op_history, reward_list, i)
+
         population = next_generation
+        # print(collected_fitness)
+        # maxFitness = max(collected_fitness)
+        # meanFitness = sum(collected_fitness) / len(population)
+        # collected_fitness.append(maxFitness)
+        # collected_fitness.append(meanFitness)
+
     collected_data = [collected_iteration, collected_fitness]
     return population, i, collected_data
