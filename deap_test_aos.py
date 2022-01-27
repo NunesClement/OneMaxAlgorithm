@@ -296,6 +296,7 @@ def ea_loop_MAB(population, maxFitnessValues, meanFitnessValues, op_history, op_
     UCB_val = init_UCB_val(len(op_list))
     op_util = []
     fitnessValues = list(map(toolbox.evaluate, population))
+
     for individual, fitnessValue in zip(population, fitnessValues):
         individual.fitness.values = fitnessValue
     fitnessValues = [individual.fitness.values[0] for individual in population]
@@ -315,6 +316,8 @@ def ea_loop_MAB(population, maxFitnessValues, meanFitnessValues, op_history, op_
                 fitness_init = mutant.fitness.values[0]
                 if current_op > 0:
                     n_flips(mutant, op_list[current_op])
+                    print("---")
+                    print(mutant)
                 else:
                     toolbox.bitflip(mutant)
                 del mutant.fitness.values

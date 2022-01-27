@@ -28,7 +28,7 @@ MEANS = [0] * K
 # ARMS[0] = st.expon(scale=1 / 2.5)
 ARMS[0] = st.expon(scale=1 / 2.5)
 ARMS[1] = st.bernoulli(0.3)
-ARMS[2] = st.poisson(0.5)
+ARMS[2] = st.poisson(0.1)
 
 # ARMS[0] = st.randint(0, 1)  # constant = 0
 # ARMS[1] = st.randint(1, 2)  # constant = 1
