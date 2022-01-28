@@ -46,6 +46,10 @@ class Second(QMainWindow):
         self.w.show()
 
 
+def change_size_pop(text):
+    global_state.taille_pop = text
+
+
 class First(QMainWindow):
 
     def __init__(self, parent=None):
@@ -74,7 +78,8 @@ class First(QMainWindow):
         self.mutationChoix.addItem("4-flip")
         self.mutationChoix.addItem("5-flip")
         self.mutationChoix.addItem("bitflip")
-        self.mutationChoix.addItem("AOS- UCB - Sélection automatique WIP")
+        self.mutationChoix.addItem("AOS - UCB")
+        self.mutationChoix.addItem("AOS - PM")
 
         self.problemLabel = QLabel("Problème à traiter WIP")
 
@@ -103,7 +108,7 @@ class First(QMainWindow):
         self.sizePop.setText("10")
         self.layout.addWidget(self.sizePopLabel)
         self.layout.addWidget(self.sizePop)
-        self.sizePop.textChanged.connect(self.change_size_pop)
+        self.sizePop.textChanged.connect(change_size_pop)
 
         self.fitnessMaxLabel = QLabel("set fitness max")
         self.fitnessMax = QLineEdit()
@@ -134,9 +139,6 @@ class First(QMainWindow):
         self.setCentralWidget(self.widget)
 
         self.show()
-
-    def change_size_pop(self, text):
-        global_state.taille_pop = text
 
     def change_fitness_max(self, text):
         global_state.fitness_limit = text

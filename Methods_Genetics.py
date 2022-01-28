@@ -67,6 +67,9 @@ def uniform_crossover(
 
 # 50% de chance d'effectuer une mutation
 def mutation(genome: List[int], num: int = 1, probability: float = 0.5) -> List[int]:
+    # if num == 1:
+    #     print("ALERTE")
+    # print(num)
     for _ in range(num):
         index = randrange(len(genome))
         genome[index] = genome[index] if random() > probability else abs(genome[index] - 1)
@@ -277,44 +280,39 @@ def run_evolution(
         generation_limit: int = 100,
         printer: Optional[PrinterFunc] = None) \
         -> Tuple[Population, int]:
-    maxFitnessValues = []
-    meanFitnessValues = []
-    op_history = []
-    init_op_history(op_history, len(op_list))
+    print(mutation_func)
+    if mutation_func == "AOS - UCB":
+        maxFitnessValues = []
+        meanFitnessValues = []
+        op_history = []
+        init_op_history(op_history, len(op_list))
 
-    reward_list = init_reward_list(len(op_list))
-    print(reward_list)
-    reward_history = init_reward_history(len(op_list))
-    UCB_val = init_UCB_val(len(op_list))
-    op_util = []
-    # un individu lié à une fitness
-    # fitnessValues = list(map(toolbox.evaluate, population))
+        reward_list = init_reward_list(len(op_list))
+        reward_history = init_reward_history(len(op_list))
+        UCB_val = init_UCB_val(len(op_list))
+        op_util = []
+        # un individu lié à une fitness
+        # fitnessValues = list(map(toolbox.evaluate, population))
 
     population = populate_func()
     i = 0
     collected_iteration = np.array([])
     collected_fitness = np.array([])
 
-    print("> Taille génôme " + str(global_state.genome_length))
-
     for i in range(generation_limit):
-        current_op = select_op_UCB(UCB_val)
-        op_util.append(op_list[current_op])
+        if mutation_func == "AOS - UCB":
+            current_op = select_op_UCB(UCB_val)
+            op_util.append(op_list[current_op])
+            if mutation_func == "AOS - UCB":
+                for o in range(len(op_list)):
+                    if o == current_op:
+                        op_history[o].append(op_history[o][i - 1] + 1)
+                    else:
+                        op_history[o].append(op_history[o][i - 1])
 
-        for o in range(len(op_list)):
-            print(o)
-            if o == current_op:
-                op_history[o].append(op_history[o][i - 1] + 1)
-            else:
-                op_history[o].append(op_history[o][i - 1])
-        print()
-        if op_list[current_op] == 1:
-            mutation_func = partial(mutation, num=1, probability=0.5)
-        if op_list[current_op] == 3:
-            mutation_func = partial(mutation, num=3, probability=0.5)
-        if op_list[current_op] == 5:
-            mutation_func = partial(mutation, num=5, probability=0.5)
+                mutation_func = partial(mutation, num=op_list[current_op], probability=0.5)
 
+        # print("a " + str(op_list[current_op]))
         if generation_limit > 1000:
             if i % 500 == 0 and i != 0:
                 print("Itération " + str(i) + " ...")
@@ -346,15 +344,17 @@ def run_evolution(
             offspring_b = mutation_func(offspring_b)
             next_generation += [offspring_a, offspring_b]
 
-        fitness_now = Lanceur.fitness(greatest(next_generation, fitness_func))
-        # fitness_now = Lanceur.fitness(greatest(population, fitness_func))
-        update_reward_sliding(reward_list, reward_history, history_size, current_op,
-                              improvement(fitness_init, fitness_now))
-        print(history_size)
-        update_UCB_val(UCB_val, C, op_history, reward_list, i)
+        if mutation_func == "AOS - UCB":
+            fitness_now = Lanceur.fitness(greatest(next_generation, fitness_func))
+            # fitness_now = Lanceur.fitness(greatest(population, fitness_func))
+            update_reward_sliding(reward_list, reward_history, history_size, current_op,
+                                  improvement(fitness_init, fitness_now))
+
+            # print(str(fitness_init) + " " + str(fitness_now))
+            update_UCB_val(UCB_val, C, op_history, reward_list, i)
+            print(reward_list)
 
         population = next_generation
-        # print(collected_fitness)
         # maxFitness = max(collected_fitness)
         # meanFitness = sum(collected_fitness) / len(population)
         # collected_fitness.append(maxFitness)

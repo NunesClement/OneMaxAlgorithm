@@ -74,6 +74,8 @@ def launch_with_param(
         mutation = partial(Methods_Genetics.mutation, num=4, probability=0.5)
     if mutation_param == "5-flip":
         mutation = partial(Methods_Genetics.mutation, num=5, probability=0.5)
+    if mutation_param == "AOS - UCB":
+        mutation = "AOS - UCB"
 
     if crossover_param == "uniform_crossover":
         crossover = Methods_Genetics.uniform_crossover
