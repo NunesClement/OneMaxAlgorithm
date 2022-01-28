@@ -3,7 +3,6 @@ from random import choices, randint, randrange, random, seed
 from typing import List, Optional, Callable, Tuple
 import numpy as np
 import seed_env
-from interface import global_state
 import Lanceur
 
 np.random.seed(seed_env.getSeed())
@@ -278,9 +277,11 @@ def run_evolution(
         crossover_func: CrossoverFunc = single_point_crossover,
         mutation_func: MutationFunc = mutation,
         generation_limit: int = 100,
+        nb_run: int = 10,
         printer: Optional[PrinterFunc] = None) \
         -> Tuple[Population, int]:
-    print(mutation_func)
+    # print(mutation_func)
+    print(nb_run)
     if mutation_func == "AOS - UCB":
         maxFitnessValues = []
         meanFitnessValues = []
@@ -355,10 +356,11 @@ def run_evolution(
             print(reward_list)
 
         population = next_generation
-        # maxFitness = max(collected_fitness)
-        # meanFitness = sum(collected_fitness) / len(population)
-        # collected_fitness.append(maxFitness)
-        # collected_fitness.append(meanFitness)
+        if mutation_func == "AOS - UCB":
+            maxFitness = max(collected_fitness)
+            meanFitness = sum(collected_fitness) / len(population)
+            collected_fitness.append(maxFitness)
+            collected_fitness.append(meanFitness)
 
     collected_data = [collected_iteration, collected_fitness]
     return population, i, collected_data

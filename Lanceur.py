@@ -58,6 +58,7 @@ def launch_with_param(
         genome_length=10,
         fitness_limit=10,
         generation_limit=10,
+        nb_run=10,
 ):
     weight_limit = 10
     if mutation_param == "bitflip":
@@ -101,9 +102,11 @@ def launch_with_param(
         # bridage de la fitness
         fitness_limit=fitness_limit,
         # nombre de générations
-        generation_limit=generation_limit
+        generation_limit=generation_limit,
+        nb_run=nb_run
     )
     print("One call just finished")
+    # print(nb_run)
     congig_memory = [str(seed_env.getSeed()), str(mutation_param), str(selection_param),
                      str(crossover_param), str(fitness_limit),
                      str(generation_limit), str(genome_length), str(size)]
@@ -150,57 +153,19 @@ def launch_the_launcher(global_state):
         int(global_state.taille_pop),
         int(global_state.genome_length),
         int(global_state.fitness_limit),
-        int(global_state.generation_limit)
+        int(global_state.generation_limit),
+        int(global_state.nb_run)
     )
-    # Nqueen.displayConfiguration(Nqueen.convert01ToConfiguration(population[0]))
-    # print("Penalty  : " + str(Nqueen.calculate_penalty(Nqueen.convert01ToConfiguration(population[0]))))
-    #
-    # x = collected_data[0]
-    # y = collected_data[1]
-    # lbl = "single_point_crossover " + global_state.mutation_params[0] + " selection_pair_better " + str(
-    #     generations) + " " + str(
-    #     collected_data[1][len(collected_data[1]) - 1])
-    # plt.plot(x, y, label=lbl)
-    #
-    # population, generations, collected_data = launch_with_param(
-    #     str(global_state.mutation_params[0]),
-    #     "single_point_crossover",
-    #     "selection_pair",
-    #     int(global_state.taille_pop),
-    #     int(global_state.genome_length),
-    #     int(global_state.fitness_limit),
-    #     int(global_state.generation_limit)
-    # )
-    # # Nqueen.displayConfiguration(Nqueen.convert01ToConfiguration(population[0]))
-    # # print("Penalty  : " + str(Nqueen.calculate_penalty(Nqueen.convert01ToConfiguration(population[0]))))
-    # x = collected_data[0]
-    # y = collected_data[1]
-    # lbl = "single_point_crossover " + global_state.mutation_params[0] + "  selection_pair_better " + str(
-    #     generations) + " " + str(
-    #     collected_data[1][len(collected_data[1]) - 1])
-    # plt.plot(x, y, label=lbl)
-    #
-    # population, generations, collected_data = launch_with_param(
-    #     str(global_state.mutation_params[0]),
-    #     "uniform_crossover",
-    #     "selection_pair_better",
-    #     int(global_state.taille_pop),
-    #     int(global_state.genome_length),
-    #     int(global_state.fitness_limit),
-    #     int(global_state.generation_limit)
-    # )
-    # # Nqueen.displayConfiguration(Nqueen.convert01ToConfiguration(population[0]))
-    # # print("Penalty  : " + str(Nqueen.calculate_penalty(Nqueen.convert01ToConfiguration(population[0]))))
-
     x = collected_data[0]
     y = collected_data[1]
     lbl = "uniform_crossover " + str(global_state.mutation_params[0]) + " selection_pair " + str(
         generations) + " " + str(
         collected_data[1][len(collected_data[1]) - 1])
     plt.plot(x, y, label=lbl)
+    plt.title("AG lancé sur " + str(global_state.nb_run) + " executions")
 
     plt.legend()
 
-    plt.savefig("test")
+    plt.savefig("plot")
 
     return 0

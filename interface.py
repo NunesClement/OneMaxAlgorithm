@@ -7,7 +7,7 @@ import Lanceur
 
 class GlobalParameter:
     def __init__(self, seed, taille_pop, mutation_params, selection_params,
-                 fitness_limit, generation_limit, genome_length):
+                 fitness_limit, generation_limit, genome_length, nb_run):
         self.seed = seed
         self.mutation_params = mutation_params
         self.selection_params = selection_params
@@ -15,12 +15,13 @@ class GlobalParameter:
         self.generation_limit = generation_limit
         self.genome_length = genome_length
         self.taille_pop = taille_pop
+        self.nb_run = nb_run
 
 
 global_state = GlobalParameter(13, 10,
                                ["1-flip", 0.5],
                                "selection_pair_parmis_s_random",
-                               1000, 1000, 121)
+                               1000, 1000, 121, 10)
 
 
 class Second(QMainWindow):
@@ -36,7 +37,7 @@ class Second(QMainWindow):
                 self.setWindowTitle(self.title)
 
                 label = QLabel(self)
-                pixmap = QPixmap('test.png')
+                pixmap = QPixmap('plot.png')
                 label.setPixmap(pixmap)
                 self.setCentralWidget(label)
                 self.resize(pixmap.width(), pixmap.height())
@@ -48,6 +49,10 @@ class Second(QMainWindow):
 
 def change_size_pop(text):
     global_state.taille_pop = text
+
+
+def change_nb_run(text):
+    global_state.nb_run = text
 
 
 class First(QMainWindow):
@@ -109,6 +114,13 @@ class First(QMainWindow):
         self.layout.addWidget(self.sizePopLabel)
         self.layout.addWidget(self.sizePop)
         self.sizePop.textChanged.connect(change_size_pop)
+
+        self.nbRunLabel = QLabel("Nombre de run")
+        self.nbRun = QLineEdit()
+        self.nbRun.setText("10")
+        self.layout.addWidget(self.nbRunLabel)
+        self.layout.addWidget(self.nbRun)
+        self.nbRun.textChanged.connect(change_nb_run)
 
         self.fitnessMaxLabel = QLabel("set fitness max")
         self.fitnessMax = QLineEdit()
