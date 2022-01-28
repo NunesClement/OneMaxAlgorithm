@@ -110,6 +110,7 @@ def launch_with_param(
     congig_memory = [str(seed_env.getSeed()), str(mutation_param), str(selection_param),
                      str(crossover_param), str(fitness_limit),
                      str(generation_limit), str(genome_length), str(size)]
+
     iteration_array = np.array_str(collected_data[0])
 
     fitness_array = np.array_str(collected_data[1])
