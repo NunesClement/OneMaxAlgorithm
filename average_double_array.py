@@ -1,4 +1,3 @@
-
 collected_data_round = [[0, 1], [2, 3], [6, 1]]
 collected_data_means = []
 
@@ -11,7 +10,7 @@ for i in range(0, len(collected_data_round) - 1):
         print(j[i])
         moy = moy + j[i]
     # print("total " + str(moy))
-    moy = round(moy/len(collected_data_round))
+    moy = round(moy / len(collected_data_round))
     collected_data_means.append(moy)
     # print(moy)
     moy = 0

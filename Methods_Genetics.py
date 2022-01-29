@@ -1,3 +1,4 @@
+
 from functools import partial
 from random import choices, randint, randrange, random, seed
 from typing import List, Optional, Callable, Tuple
@@ -257,7 +258,16 @@ def select_op_UCB(UCB_val):
     return UCB_val.index(max(UCB_val))
 
 
-
+maxFitnessValues = []
+meanFitnessValues = []
+op_history = []
+# 1 flip puis 3 flips puis 5 flips
+op_list = [1, 3, 5]
+op_history_stat = []
+Max_Fitness_history_stat = []
+p_min = 0.05
+history_size = 10
+C = 4
 
 
 def run_evolution(
@@ -271,22 +281,11 @@ def run_evolution(
         nb_run: int = 10,
         printer: Optional[PrinterFunc] = None) \
         -> Tuple[Population, int]:
-    maxFitnessValues = []
-    meanFitnessValues = []
-    op_history = []
-    # 1 flip puis 3 flips puis 5 flips
-    op_list = [1, 3, 5]
-    op_history_stat = []
-    Max_Fitness_history_stat = []
-    p_min = 0.05
-    history_size = 10
-    C = 4
-    this_run = 0
-
-    print(nb_run)
+    # print(mutation_func)
     collected_data = []
 
     for this_run in range(0, nb_run):
+        # print(nb_run)
         if mutation_func == "AOS - UCB":
             maxFitnessValues = []
             meanFitnessValues = []
@@ -299,11 +298,11 @@ def run_evolution(
             op_util = []
             # un individu lié à une fitness
             # fitnessValues = list(map(toolbox.evaluate, population))
+
         population = populate_func()
         i = 0
         collected_iteration = np.array([])
         collected_fitness = np.array([])
-
         for i in range(generation_limit):
             if mutation_func == "AOS - UCB":
                 current_op = select_op_UCB(UCB_val)
@@ -348,19 +347,16 @@ def run_evolution(
                 offspring_a = mutation_func(offspring_a)
                 offspring_b = mutation_func(offspring_b)
                 next_generation += [offspring_a, offspring_b]
-            # print(str(this_run) + " / " + str(i))
-            print("2222")
-            # PLACE CONDITION
-            fitness_now = Lanceur.fitness(greatest(next_generation, fitness_func))
-            print("aaaa")
-            # fitness_now = Lanceur.fitness(greatest(population, fitness_func))
-            update_reward_sliding(reward_list, reward_history, history_size, current_op,
-                                  improvement(fitness_init, fitness_now))
 
-            # print(str(fitness_init) + " " + str(fitness_now))
+            if mutation_func == "AOS - UCB":
+                fitness_now = Lanceur.fitness(greatest(next_generation, fitness_func))
+                # fitness_now = Lanceur.fitness(greatest(population, fitness_func))
+                update_reward_sliding(reward_list, reward_history, history_size, current_op,
+                                      improvement(fitness_init, fitness_now))
 
-            update_UCB_val(UCB_val, C, op_history, reward_list, i)
-            print("BBB")
+                # print(str(fitness_init) + " " + str(fitness_now))
+                update_UCB_val(UCB_val, C, op_history, reward_list, i)
+                # print(reward_list)
 
             population = next_generation
             if mutation_func == "AOS - UCB":
@@ -368,21 +364,22 @@ def run_evolution(
                 meanFitness = sum(collected_fitness) / len(population)
                 collected_fitness.append(maxFitness)
                 collected_fitness.append(meanFitness)
-            print("ccc")
-        print("aaa")
-        # collected_data.append([collected_iteration, collected_fitness])
-    collected_data_mean = []
-    # for i in range(0, len(collected_data) - 2):
-    #     # print(i)
-    #     moy = 0
-    #     for j in collected_data:
-    #         print(len(collected_data))
-    #         print(round(j[i][0]))
-            # moy = moy + round(j[i][0])
-        # # print("total " + str(moy))
-        # moy = round(moy / len(collected_data))
-        # collected_data_mean.append(moy)
-    # print(collected_data_mean)
 
+        collected_data.append(collected_fitness)
 
-    return population, i, collected_data
+    print(" taille collected data : " + str(len(collected_data)))
+
+    collected_data_means = []
+    for a in range(0, len(collected_data[0]) - 1):
+        for i in range(0, nb_run):
+            moy = 0
+            # print(i)
+            # print(collected_data[i][a])
+            moy = moy + collected_data[i][a]
+            # for j in range(0, collected_data[i]):
+            #     print(collected_data[i][j])
+            # moy = round(moy / len(collected_data[0]))
+        collected_data_means.append(moy)
+    # print(len(collected_data[0]))
+    print(collected_data_means)
+    return population, i, [collected_iteration, collected_data_means]
