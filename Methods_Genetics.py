@@ -370,7 +370,7 @@ def run_evolution(
     print(" taille collected data : " + str(len(collected_data)))
 
     collected_data_means = []
-    for a in range(0, len(collected_data[0]) - 1):
+    for a in range(0, len(collected_data[0])):
         for i in range(0, nb_run):
             moy = 0
             # print(i)
@@ -381,5 +381,7 @@ def run_evolution(
             # moy = round(moy / len(collected_data[0]))
         collected_data_means.append(moy)
     # print(len(collected_data[0]))
-    print(collected_data_means)
+    print([collected_iteration, collected_data_means])
+    print(str(len(collected_iteration)) + " " + str(len(collected_data_means)))
+    collected_data_means = np.asarray(collected_data_means)
     return population, i, [collected_iteration, collected_data_means]
