@@ -262,7 +262,7 @@ maxFitnessValues = []
 meanFitnessValues = []
 op_history = []
 # 1 flip puis 3 flips puis 5 flips
-op_list = [1, 3, 5]
+op_list = [1, 2, 3, 4, 5]
 op_history_stat = []
 Max_Fitness_history_stat = []
 p_min = 0.05
@@ -285,7 +285,7 @@ def run_evolution(
     collected_data = []
 
     for this_run in range(0, nb_run):
-        # print(nb_run)
+        print("Run actuel : " + str(this_run))
         if mutation_func == "AOS - UCB":
             maxFitnessValues = []
             meanFitnessValues = []
@@ -332,12 +332,13 @@ def run_evolution(
             if printer is not None:
                 printer(population, i, fitness_func)
 
-            if fitness_func(population[0]) >= fitness_limit:
-                # print("Le programme a l'efficacité : " + str(fitness_func(population[0])) + " / " + str(
-                #     fitness_limit) + " à l'itération " + str(i))
-                collected_iteration = np.append(collected_iteration, i)
-                collected_fitness = np.append(collected_fitness, fitness_func(population[0]))
-                break
+            # if fitness_func(population[0]) >= fitness_limit:
+            #     # print("Le programme a l'efficacité : " + str(fitness_func(population[0])) + " / " + str(
+            #     #     fitness_limit) + " à l'itération " + str(i))
+            #     print("test")
+            #     collected_iteration = np.append(collected_iteration, i)
+            #     collected_fitness = np.append(collected_fitness, fitness_func(population[0]))
+            #     break
             next_generation = population[0:2]
 
             for j in range(int(len(population) / 2) - 1):
@@ -371,17 +372,15 @@ def run_evolution(
 
     collected_data_means = []
     for a in range(0, len(collected_data[0])):
+        moy = 0
         for i in range(0, nb_run):
-            moy = 0
-            # print(i)
-            # print(collected_data[i][a])
             moy = moy + collected_data[i][a]
-            # for j in range(0, collected_data[i]):
-            #     print(collected_data[i][j])
-            # moy = round(moy / len(collected_data[0]))
+        moy = round(moy / len(collected_data))
+        # print(moy)
         collected_data_means.append(moy)
-    # print(len(collected_data[0]))
-    print([collected_iteration, collected_data_means])
-    print(str(len(collected_iteration)) + " " + str(len(collected_data_means)))
+    # print([collected_iteration, collected_data_means])
+    # print(str(len(collected_iteration)) + " " + str(len(collected_data_means)))
     collected_data_means = np.asarray(collected_data_means)
+    # print(collected_data)
+    # print(collected_data_means)
     return population, i, [collected_iteration, collected_data_means]
