@@ -135,6 +135,7 @@ def debugGlobalState(global_state):
           + " avec une proba de "
           + str(global_state.mutation_params[1])
           )
+    print("Paramètre de croismement TODO !!!!")
     print("Paramètre de sélection " + str(global_state.selection_params))
     print("Limit de fitness " + str(global_state.fitness_limit))
     print("Nb d'itération/génération " + str(global_state.generation_limit))

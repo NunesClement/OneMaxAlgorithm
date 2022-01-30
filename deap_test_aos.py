@@ -330,7 +330,8 @@ def ea_loop_MAB(population, maxFitnessValues, meanFitnessValues, op_history, op_
         # print(history_size)
         update_UCB_val(UCB_val, C, op_history, reward_list, generationCounter)
         # print(reward_list)
-
+        print(reward_list)
+        print(reward_history)
         if improvement(fitness_init, mutant.fitness.values[0]) > 0:
             population = insertion_best_fitness(population, offspring)
         print(op_history)

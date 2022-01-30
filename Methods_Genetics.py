@@ -181,8 +181,8 @@ def init_UCB_val(taille):
 
 # calcul de l'amélioration/reward immédiate (plusieurs versions possibles)
 def improvement(val_init, val_mut):
-    return max(0, (val_mut - val_init))
-    # return (val_mut - val_init) + FITNESS_OFFSET
+    # return max(0, (val_mut - val_init))
+    return (val_mut - val_init) + 5
     # return max(0,(val_mut-val_init)/ONE_MAX_LENGTH)
     # return (val_mut-val_init)/ONE_MAX_LENGTH
 
@@ -196,6 +196,7 @@ def update_reward_sliding(reward_list, reward_history, history_size, index, valu
     if len(reward_history[index]) > history_size:
         reward_history[index] = reward_history[index][1:len(reward_history[index])]
     reward_list[index] = sum(reward_history[index]) / len(reward_history[index])
+    return reward_history, reward_list
 
 
 # MAJ valeurs UCB
@@ -204,6 +205,7 @@ def update_UCB_val(UCB_val, C, op_history, reward_list, i):
     for o in range(len(op_history)):
         UCB_val[o] = reward_list[o] + C * np.sqrt(
             i / (2 * np.log(1 + op_history[o][i]) + 1))
+    return UCB_val
 
 
 # calcul de l'amélioration/reward immédiate (plusieurs versions possibles)
@@ -211,7 +213,7 @@ def improvement(val_init, val_mut):
     # return (val_mut - val_init) + FITNESS_OFFSET
     # return max(0, (val_mut - val_init))
     # print(interface.global_state.genome_length)
-    return max(0, (val_mut-val_init)/interface.global_state.genome_length)
+    return max(0, (val_mut - val_init) / interface.global_state.genome_length)
     # return (val_mut-val_init)/ONE_MAX_LENGTH
 
 
@@ -260,7 +262,7 @@ maxFitnessValues = []
 meanFitnessValues = []
 op_history = []
 # les différents flips (à mettre dans l'ordre)
-op_list = [1, 2, 3, 4, 5]
+op_list = [5, 4, 3, 2, 1]
 op_history_stat = []
 Max_Fitness_history_stat = []
 p_min = 0.05
@@ -282,6 +284,7 @@ def run_evolution(
         -> Tuple[Population, int]:
     collected_data = []
     # print(crossover_func)
+    # crossover_func = uniform_crossover # OVERRIDE TODO
     print("selector_operator " + str(selector_operator))
     if selector_operator == "AOS_UCB":
         for this_run in range(0, nb_run):
@@ -337,11 +340,12 @@ def run_evolution(
 
                 fitness_now = Lanceur.fitness(greatest(next_generation, fitness_func))
                 # fitness_now = Lanceur.fitness(greatest(population, fitness_func))
-                update_reward_sliding(reward_list, reward_history, history_size, current_op,
-                                      improvement(fitness_init, fitness_now))
+                reward_history, reward_list = update_reward_sliding(reward_list, reward_history, history_size,
+                                                                    current_op,
+                                                                    improvement(fitness_init, fitness_now))
 
                 # print(str(fitness_init) + " " + str(fitness_now))
-                update_UCB_val(UCB_val, C, op_history, reward_list, i)
+                UCB_val = update_UCB_val(UCB_val, C, op_history, reward_list, i)
                 # print(reward_list)
 
                 population = next_generation
@@ -350,8 +354,11 @@ def run_evolution(
                 # collected_fitness.append(maxFitness)
                 # collected_fitness.append(meanFitness)
                 # print(op_history)
+                # print(reward_list)
+                # print(reward_history)
             collected_data.append(collected_fitness)
-
+        print(reward_list)
+        print(reward_history)
         print(" taille collected data : " + str(len(collected_data)))
 
         collected_data_means = []
