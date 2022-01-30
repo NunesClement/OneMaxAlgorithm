@@ -54,13 +54,16 @@ def launch_with_param(
         mutation_param="1-flip",
         crossover_param="single_point_crossover",
         selection_param="selection_pair_parmis_s_random",
+        selector_operator="1-flip",
         size=10,
         genome_length=10,
         fitness_limit=10,
         generation_limit=10,
         nb_run=10,
 ):
+    # print(selector_operator)
     weight_limit = 10
+    mutation = partial(Methods_Genetics.mutation, num=1, probability=0.5)
     if mutation_param == "bitflip":
         mutation = partial(Methods_Genetics.bitflip)
     if mutation_param == "0-flip":
@@ -75,14 +78,13 @@ def launch_with_param(
         mutation = partial(Methods_Genetics.mutation, num=4, probability=0.5)
     if mutation_param == "5-flip":
         mutation = partial(Methods_Genetics.mutation, num=5, probability=0.5)
-    if mutation_param == "AOS - UCB":
-        mutation = "AOS - UCB"
 
     if crossover_param == "uniform_crossover":
         crossover = Methods_Genetics.uniform_crossover
     else:
         crossover = Methods_Genetics.single_point_crossover
 
+    selection = partial(Methods_Genetics.selection_pair_parmis_s_random, s=2)
     if selection_param == "selection_pair_parmis_s_random":
         selection = partial(Methods_Genetics.selection_pair_parmis_s_random, s=2)
     if selection_param == "selection_pair_better":
@@ -98,6 +100,7 @@ def launch_with_param(
         fitness_func=partial(fitness),
         selection_func=selection,
         crossover_func=crossover,
+        selector_operator=selector_operator,
         mutation_func=mutation,
         # bridage de la fitness
         fitness_limit=fitness_limit,
@@ -105,6 +108,7 @@ def launch_with_param(
         generation_limit=generation_limit,
         nb_run=nb_run
     )
+    print(selector_operator)
     print("One call just finished")
     # print(nb_run)
     congig_memory = [str(seed_env.getSeed()), str(mutation_param), str(selection_param),
@@ -135,6 +139,7 @@ def debugGlobalState(global_state):
     print("Nb d'itération/génération " + str(global_state.generation_limit))
     print("Taille d'un genome " + str(global_state.genome_length))
     print("Taille d'une population " + str(global_state.taille_pop))
+    print("Type d'AOS " + str(global_state.selector_operator))
 
 
 def cleanup_graph():
@@ -151,12 +156,14 @@ def launch_the_launcher(global_state):
         str(global_state.mutation_params[0]),
         "single_point_crossover",
         "selection_pair_better",
+        str(global_state.selector_operator),
         int(global_state.taille_pop),
         int(global_state.genome_length),
         int(global_state.fitness_limit),
         int(global_state.generation_limit),
         int(global_state.nb_run)
     )
+
     x = collected_data[0]
     y = collected_data[1]
     lbl = "uniform_crossover " + str(global_state.mutation_params[0]) + " selection_pair " + str(

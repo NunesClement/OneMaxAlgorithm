@@ -6,9 +6,10 @@ import Lanceur
 
 
 class GlobalParameter:
-    def __init__(self, seed, taille_pop, mutation_params, selection_params,
+    def __init__(self, seed, taille_pop, mutation_params, selector_operator, selection_params,
                  fitness_limit, generation_limit, genome_length, nb_run):
         self.seed = seed
+        self.selector_operator = selector_operator
         self.mutation_params = mutation_params
         self.selection_params = selection_params
         self.fitness_limit = fitness_limit
@@ -18,9 +19,9 @@ class GlobalParameter:
         self.nb_run = nb_run
 
 
+# 1-flip etc... AOS_UCB AOS_PM
 global_state = GlobalParameter(13, 10,
-                               ["1-flip", 0.5],
-                               "selection_pair_parmis_s_random",
+                               ["1-flip", 0.5], "1-flip", "selection_pair_parmis_s_random",
                                1000, 1000, 121, 10)
 
 
@@ -83,8 +84,8 @@ class First(QMainWindow):
         self.mutationChoix.addItem("4-flip")
         self.mutationChoix.addItem("5-flip")
         self.mutationChoix.addItem("bitflip")
-        self.mutationChoix.addItem("AOS - UCB")
-        self.mutationChoix.addItem("AOS - PM")
+        self.mutationChoix.addItem("AOS_UCB")
+        self.mutationChoix.addItem("AOS_PM")
 
         self.problemLabel = QLabel("Problème à traiter WIP")
 
@@ -145,7 +146,7 @@ class First(QMainWindow):
         self.dialogs = ""
         self.buttonRun.clicked.connect(self.on_pushButton_clicked)
         self.cleanupButton.clicked.connect(self.on_cleanup_button_clicked)
-        self.mutationChoix.currentTextChanged.connect(self.setMutationFLip)
+        self.mutationChoix.currentTextChanged.connect(self.setMutationFlip)
         self.widget = QWidget()
         self.widget.setLayout(self.layout)
         self.setCentralWidget(self.widget)
@@ -169,8 +170,9 @@ class First(QMainWindow):
     def on_cleanup_button_clicked(self):
         Lanceur.cleanup_graph()
 
-    def setMutationFLip(self, s):
+    def setMutationFlip(self, s):
         global_state.mutation_params = [s, 0.5]
+        global_state.selector_operator = s
 
 
 def main():

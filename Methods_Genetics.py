@@ -1,10 +1,10 @@
-
 from functools import partial
 from random import choices, randint, randrange, random, seed
 from typing import List, Optional, Callable, Tuple
 import numpy as np
 import seed_env
 import Lanceur
+import interface
 
 np.random.seed(seed_env.getSeed())
 seed(seed_env.getSeed())
@@ -209,8 +209,9 @@ def update_UCB_val(UCB_val, C, op_history, reward_list, i):
 # calcul de l'amélioration/reward immédiate (plusieurs versions possibles)
 def improvement(val_init, val_mut):
     # return (val_mut - val_init) + FITNESS_OFFSET
-    return max(0, (val_mut - val_init))
-    # return max(0,(val_mut-val_init)/ONE_MAX_LENGTH)
+    # return max(0, (val_mut - val_init))
+    # print(interface.global_state.genome_length)
+    return max(0, (val_mut-val_init)/interface.global_state.genome_length)
     # return (val_mut-val_init)/ONE_MAX_LENGTH
 
 
@@ -272,96 +273,138 @@ def run_evolution(
         fitness_func: FitnessFunc,
         fitness_limit: int,
         selection_func: SelectionFunc = selection_pair,
+        selector_operator="1-flip",
         crossover_func: CrossoverFunc = single_point_crossover,
         mutation_func: MutationFunc = mutation,
         generation_limit: int = 100,
         nb_run: int = 10,
         printer: Optional[PrinterFunc] = None) \
         -> Tuple[Population, int]:
-
     collected_data = []
+    print("selector_operator " + str(selector_operator))
+    if selector_operator == "AOS_UCB":
+        for this_run in range(0, nb_run):
+            print("Run actuel : " + str(this_run))
+            maxFitnessValues = []
+            meanFitnessValues = []
+            op_history = []
+            init_op_history(op_history, len(op_list))
 
-    for this_run in range(0, nb_run):
-        print("Run actuel : " + str(this_run))
-        maxFitnessValues = []
-        meanFitnessValues = []
-        op_history = []
-        init_op_history(op_history, len(op_list))
+            reward_list = init_reward_list(len(op_list))
+            reward_history = init_reward_history(len(op_list))
+            UCB_val = init_UCB_val(len(op_list))
+            op_util = []
 
-        reward_list = init_reward_list(len(op_list))
-        reward_history = init_reward_history(len(op_list))
-        UCB_val = init_UCB_val(len(op_list))
-        op_util = []
+            population = populate_func()
+            i = 0
+            collected_iteration = np.array([])
+            collected_fitness = np.array([])
+            for i in range(generation_limit):
+                current_op = select_op_UCB(UCB_val)
+                op_util.append(op_list[current_op])
+                for o in range(len(op_list)):
+                    if o == current_op:
+                        op_history[o].append(op_history[o][i - 1] + 1)
+                    else:
+                        op_history[o].append(op_history[o][i - 1])
+                mutation_func = partial(mutation, num=op_list[current_op], probability=0.5)
 
-        population = populate_func()
-        i = 0
-        collected_iteration = np.array([])
-        collected_fitness = np.array([])
-        for i in range(generation_limit):
-            current_op = select_op_UCB(UCB_val)
-            op_util.append(op_list[current_op])
-            for o in range(len(op_list)):
-                if o == current_op:
-                    op_history[o].append(op_history[o][i - 1] + 1)
-                else:
-                    op_history[o].append(op_history[o][i - 1])
-            mutation_func = partial(mutation, num=op_list[current_op], probability=0.5)
+                if generation_limit > 1000:
+                    if i % 500 == 0 and i != 0:
+                        print("Itération " + str(i) + " ...")
+                if i % 5 == 0:
+                    # print("Le programme a l'efficacité : " + str(fitness_func(population[0])) + " / " + str(fitness_limit)
+                    # + " à l'itération " + str(i))
+                    collected_iteration = np.append(collected_iteration, i)
+                    collected_fitness = np.append(collected_fitness, fitness_func(population[0]))
+                population = sorted(population, key=lambda genome: fitness_func(genome), reverse=True)
+                # print("Meilleur : " + str(fitness_func(greatest(population, fitness_func))))
+                # print("Plus nulle : " + str(fitness_func(loosest(population, fitness_func))))
+                # print(fitness_func(sort_population(population, fitness_func)[len(population)-1]))
+                if printer is not None:
+                    printer(population, i, fitness_func)
 
-            if generation_limit > 1000:
-                if i % 500 == 0 and i != 0:
-                    print("Itération " + str(i) + " ...")
-            if i % 5 == 0:
-                # print("Le programme a l'efficacité : " + str(fitness_func(population[0])) + " / " + str(fitness_limit)
-                # + " à l'itération " + str(i))
-                collected_iteration = np.append(collected_iteration, i)
-                collected_fitness = np.append(collected_fitness, fitness_func(population[0]))
-            population = sorted(population, key=lambda genome: fitness_func(genome), reverse=True)
-            # print("Meilleur : " + str(fitness_func(greatest(population, fitness_func))))
-            # print("Plus nulle : " + str(fitness_func(loosest(population, fitness_func))))
-            # print(fitness_func(sort_population(population, fitness_func)[len(population)-1]))
-            if printer is not None:
-                printer(population, i, fitness_func)
+                next_generation = population[0:2]
 
-            next_generation = population[0:2]
+                for j in range(int(len(population) / 2) - 1):
+                    fitness_init = Lanceur.fitness(greatest(population, fitness_func))
+                    parents = selection_func(population, fitness_func)
+                    offspring_a, offspring_b = crossover_func(parents[0], parents[1])
+                    offspring_a = mutation_func(offspring_a)
+                    offspring_b = mutation_func(offspring_b)
+                    next_generation += [offspring_a, offspring_b]
 
-            for j in range(int(len(population) / 2) - 1):
-                fitness_init = Lanceur.fitness(greatest(population, fitness_func))
-                parents = selection_func(population, fitness_func)
-                offspring_a, offspring_b = crossover_func(parents[0], parents[1])
-                offspring_a = mutation_func(offspring_a)
-                offspring_b = mutation_func(offspring_b)
-                next_generation += [offspring_a, offspring_b]
+                fitness_now = Lanceur.fitness(greatest(next_generation, fitness_func))
+                # fitness_now = Lanceur.fitness(greatest(population, fitness_func))
+                update_reward_sliding(reward_list, reward_history, history_size, current_op,
+                                      improvement(fitness_init, fitness_now))
 
-            fitness_now = Lanceur.fitness(greatest(next_generation, fitness_func))
-            # fitness_now = Lanceur.fitness(greatest(population, fitness_func))
-            update_reward_sliding(reward_list, reward_history, history_size, current_op,
-                                  improvement(fitness_init, fitness_now))
+                # print(str(fitness_init) + " " + str(fitness_now))
+                update_UCB_val(UCB_val, C, op_history, reward_list, i)
+                # print(reward_list)
 
-            # print(str(fitness_init) + " " + str(fitness_now))
-            update_UCB_val(UCB_val, C, op_history, reward_list, i)
-            # print(reward_list)
+                population = next_generation
+                # maxFitness = max(collected_fitness)
+                # meanFitness = sum(collected_fitness) / len(population)
+                # collected_fitness.append(maxFitness)
+                # collected_fitness.append(meanFitness)
+                # print(op_history)
+            collected_data.append(collected_fitness)
 
-            population = next_generation
-            # maxFitness = max(collected_fitness)
-            # meanFitness = sum(collected_fitness) / len(population)
-            # collected_fitness.append(maxFitness)
-            # collected_fitness.append(meanFitness)
-            # print(op_history)
-        collected_data.append(collected_fitness)
+        print(" taille collected data : " + str(len(collected_data)))
 
-    print(" taille collected data : " + str(len(collected_data)))
+        collected_data_means = []
+        for a in range(0, len(collected_data[0])):
+            moy = 0
+            for i in range(0, nb_run):
+                moy = moy + collected_data[i][a]
+            moy = round(moy / len(collected_data))
+            # print(moy)
+            collected_data_means.append(moy)
+        # print([collected_iteration, collected_data_means])
+        # print(str(len(collected_iteration)) + " " + str(len(collected_data_means)))
+        collected_data_means = np.asarray(collected_data_means)
+        # print(collected_data)
+        # print(collected_data_means)
+    else:
+        for this_run in range(0, nb_run):
+            print("Run actuel : " + str(this_run))
 
-    collected_data_means = []
-    for a in range(0, len(collected_data[0])):
-        moy = 0
-        for i in range(0, nb_run):
-            moy = moy + collected_data[i][a]
-        moy = round(moy / len(collected_data))
-        # print(moy)
-        collected_data_means.append(moy)
-    # print([collected_iteration, collected_data_means])
-    # print(str(len(collected_iteration)) + " " + str(len(collected_data_means)))
-    collected_data_means = np.asarray(collected_data_means)
-    # print(collected_data)
-    # print(collected_data_means)
+            population = populate_func()
+            i = 0
+            collected_iteration = np.array([])
+            collected_fitness = np.array([])
+            for i in range(generation_limit):
+                if generation_limit > 1000:
+                    if i % 500 == 0 and i != 0:
+                        print("Itération " + str(i) + " ...")
+                if i % 5 == 0:
+                    collected_iteration = np.append(collected_iteration, i)
+                    collected_fitness = np.append(collected_fitness, fitness_func(population[0]))
+                population = sorted(population, key=lambda genome: fitness_func(genome), reverse=True)
+                if printer is not None:
+                    printer(population, i, fitness_func)
+
+                next_generation = population[0:2]
+
+                for j in range(int(len(population) / 2) - 1):
+                    fitness_init = Lanceur.fitness(greatest(population, fitness_func))
+                    parents = selection_func(population, fitness_func)
+                    offspring_a, offspring_b = crossover_func(parents[0], parents[1])
+                    offspring_a = mutation_func(offspring_a)
+                    offspring_b = mutation_func(offspring_b)
+                    next_generation += [offspring_a, offspring_b]
+
+                population = next_generation
+
+            collected_data.append(collected_fitness)
+
+        collected_data_means = []
+        for a in range(0, len(collected_data[0])):
+            moy = 0
+            for i in range(0, nb_run):
+                moy = moy + collected_data[i][a]
+            moy = round(moy / len(collected_data))
+            collected_data_means.append(moy)
+        collected_data_means = np.asarray(collected_data_means)
     return population, i, [collected_iteration, collected_data_means]
