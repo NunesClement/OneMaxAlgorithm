@@ -333,6 +333,7 @@ def ea_loop_MAB(population, maxFitnessValues, meanFitnessValues, op_history, op_
 
         if improvement(fitness_init, mutant.fitness.values[0]) > 0:
             population = insertion_best_fitness(population, offspring)
+        print(op_history)
 
         fitnessValues = [ind.fitness.values[0] for ind in population]
         maxFitness = max(fitnessValues)
