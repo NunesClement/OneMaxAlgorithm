@@ -210,10 +210,10 @@ def update_UCB_val(UCB_val, C, op_history, reward_list, i):
 
 # calcul de l'amélioration/reward immédiate (plusieurs versions possibles)
 def improvement(val_init, val_mut):
-    # return (val_mut - val_init) + FITNESS_OFFSET
+    return (val_mut - val_init) + 5
     # return max(0, (val_mut - val_init))
     # print(interface.global_state.genome_length)
-    return max(0, (val_mut - val_init) / interface.global_state.genome_length)
+    # return max(0, (val_mut - val_init) / interface.global_state.genome_length)
     # return (val_mut-val_init)/ONE_MAX_LENGTH
 
 
@@ -262,7 +262,7 @@ maxFitnessValues = []
 meanFitnessValues = []
 op_history = []
 # les différents flips (à mettre dans l'ordre)
-op_list = [5, 4, 3, 2, 1]
+op_list = [5, 4, 3, 2, 1, "bitflip"]
 op_history_stat = []
 Max_Fitness_history_stat = []
 p_min = 0.05
@@ -311,7 +311,10 @@ def run_evolution(
                         op_history[o].append(op_history[o][i - 1] + 1)
                     else:
                         op_history[o].append(op_history[o][i - 1])
-                mutation_func = partial(mutation, num=op_list[current_op], probability=0.5)
+                if op_list[current_op] == "bitflip":
+                    mutation_func = partial(bitflip)
+                else:
+                    mutation_func = partial(mutation, num=op_list[current_op], probability=0.5)
 
                 if generation_limit > 1000:
                     if i % 500 == 0 and i != 0:
@@ -347,6 +350,9 @@ def run_evolution(
                 # print(str(fitness_init) + " " + str(fitness_now))
                 UCB_val = update_UCB_val(UCB_val, C, op_history, reward_list, i)
                 # print(reward_list)
+                # print(fitness_now - fitness_init)
+                # print(improvement(fitness_init, fitness_now))
+                # print(UCB_val)
 
                 population = next_generation
                 # maxFitness = max(collected_fitness)
@@ -357,10 +363,10 @@ def run_evolution(
                 # print(reward_list)
                 # print(reward_history)
             collected_data.append(collected_fitness)
-        print(reward_list)
+        # print([fitness_func(genome) for genome in population])
+        # print(" taille collected data : " + str(len(collected_data)))
         print(reward_history)
-        print(" taille collected data : " + str(len(collected_data)))
-
+        print(reward_list)
         collected_data_means = []
         for a in range(0, len(collected_data[0])):
             moy = 0

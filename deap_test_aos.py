@@ -325,16 +325,16 @@ def ea_loop_MAB(population, maxFitnessValues, meanFitnessValues, op_history, op_
 
         update_reward_sliding(reward_list, reward_history, history_size, current_op,
                               improvement(fitness_init, mutant.fitness.values[0]))
+        print(mutant.fitness.values[0]-fitness_init)
         # print(reward_history)
         # print(reward_list)
         # print(history_size)
         update_UCB_val(UCB_val, C, op_history, reward_list, generationCounter)
         # print(reward_list)
-        print(reward_list)
         print(reward_history)
+        print(reward_list)
         if improvement(fitness_init, mutant.fitness.values[0]) > 0:
             population = insertion_best_fitness(population, offspring)
-        print(op_history)
 
         fitnessValues = [ind.fitness.values[0] for ind in population]
         maxFitness = max(fitnessValues)

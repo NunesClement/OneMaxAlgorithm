@@ -86,6 +86,7 @@ class First(QMainWindow):
         self.mutationChoix.addItem("bitflip")
         self.mutationChoix.addItem("AOS_UCB")
         self.mutationChoix.addItem("AOS_PM")
+        self.mutationChoix.addItem("OS_MANUAL (wip)")
 
         self.problemLabel = QLabel("Problème à traiter WIP")
 
