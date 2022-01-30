@@ -21,7 +21,7 @@ class GlobalParameter:
 
 # 1-flip etc... AOS_UCB AOS_PM
 global_state = GlobalParameter(13, 10,
-                               ["1-flip", 0.5], "1-flip", "selection_pair_parmis_s_random",
+                               ["1-flip", 0.5], "1-flip", "selection_pair_better",
                                1000, 1000, 121, 10)
 
 
@@ -71,9 +71,9 @@ class First(QMainWindow):
 
         self.validationLabel = QLabel("Validation")
         self.selectionChoix = QComboBox()
-        self.selectionChoix.addItem("selection de deux gênomes randoms (en vu d'un croisement random)")
-        self.selectionChoix.addItem("selection de deux meilleurs gênes (en vu d'un croisement random)")
-        self.selectionChoix.addItem("selection pair parmis x random TODO")
+        self.selectionChoix.addItem("selection_pair_better")
+        self.selectionChoix.addItem("selection_pair_parmis_s_random")
+        self.selectionChoix.addItem("selection_pair")
 
         self.mutationLabel = QLabel("Mutation")
 
@@ -147,6 +147,8 @@ class First(QMainWindow):
         self.buttonRun.clicked.connect(self.on_pushButton_clicked)
         self.cleanupButton.clicked.connect(self.on_cleanup_button_clicked)
         self.mutationChoix.currentTextChanged.connect(self.setMutationFlip)
+        self.selectionChoix.currentTextChanged.connect(self.setSelectionChoix)
+
         self.widget = QWidget()
         self.widget.setLayout(self.layout)
         self.setCentralWidget(self.widget)
@@ -173,6 +175,9 @@ class First(QMainWindow):
     def setMutationFlip(self, s):
         global_state.mutation_params = [s, 0.5]
         global_state.selector_operator = s
+
+    def setSelectionChoix(self, s):
+        global_state.selection_params = s
 
 
 def main():

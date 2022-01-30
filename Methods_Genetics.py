@@ -259,7 +259,7 @@ def select_op_UCB(UCB_val):
 maxFitnessValues = []
 meanFitnessValues = []
 op_history = []
-# 1 flip puis 3 flips puis 5 flips
+# les différents flips (à mettre dans l'ordre)
 op_list = [1, 2, 3, 4, 5]
 op_history_stat = []
 Max_Fitness_history_stat = []
@@ -274,13 +274,14 @@ def run_evolution(
         fitness_limit: int,
         selection_func: SelectionFunc = selection_pair,
         selector_operator="1-flip",
-        crossover_func: CrossoverFunc = single_point_crossover,
+        crossover_func: CrossoverFunc = uniform_crossover,
         mutation_func: MutationFunc = mutation,
         generation_limit: int = 100,
         nb_run: int = 10,
         printer: Optional[PrinterFunc] = None) \
         -> Tuple[Population, int]:
     collected_data = []
+    # print(crossover_func)
     print("selector_operator " + str(selector_operator))
     if selector_operator == "AOS_UCB":
         for this_run in range(0, nb_run):
@@ -359,7 +360,6 @@ def run_evolution(
             for i in range(0, nb_run):
                 moy = moy + collected_data[i][a]
             moy = round(moy / len(collected_data))
-            # print(moy)
             collected_data_means.append(moy)
         # print([collected_iteration, collected_data_means])
         # print(str(len(collected_iteration)) + " " + str(len(collected_data_means)))
@@ -388,7 +388,6 @@ def run_evolution(
                 next_generation = population[0:2]
 
                 for j in range(int(len(population) / 2) - 1):
-                    fitness_init = Lanceur.fitness(greatest(population, fitness_func))
                     parents = selection_func(population, fitness_func)
                     offspring_a, offspring_b = crossover_func(parents[0], parents[1])
                     offspring_a = mutation_func(offspring_a)

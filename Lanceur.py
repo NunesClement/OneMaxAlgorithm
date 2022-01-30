@@ -53,7 +53,7 @@ def fitness_nqueen(genome: List[int]) -> int:
 def launch_with_param(
         mutation_param="1-flip",
         crossover_param="single_point_crossover",
-        selection_param="selection_pair_parmis_s_random",
+        selection_param="",
         selector_operator="1-flip",
         size=10,
         genome_length=10,
@@ -85,6 +85,7 @@ def launch_with_param(
         crossover = Methods_Genetics.single_point_crossover
 
     selection = partial(Methods_Genetics.selection_pair_parmis_s_random, s=2)
+    print("selection_param " + selection_param)
     if selection_param == "selection_pair_parmis_s_random":
         selection = partial(Methods_Genetics.selection_pair_parmis_s_random, s=2)
     if selection_param == "selection_pair_better":
@@ -155,7 +156,7 @@ def launch_the_launcher(global_state):
     population, generations, collected_data = launch_with_param(
         str(global_state.mutation_params[0]),
         "single_point_crossover",
-        "selection_pair_better",
+        str(global_state.selection_params),
         str(global_state.selector_operator),
         int(global_state.taille_pop),
         int(global_state.genome_length),
@@ -166,7 +167,7 @@ def launch_the_launcher(global_state):
 
     x = collected_data[0]
     y = collected_data[1]
-    lbl = "uniform_crossover " + str(global_state.mutation_params[0]) + " selection_pair " + str(
+    lbl = "uniform_crossover " + str(global_state.mutation_params[0]) + " " + str(global_state.selection_params) + str(
         generations) + " " + str(
         collected_data[1][len(collected_data[1]) - 1])
     plt.plot(x, y, label=lbl)
