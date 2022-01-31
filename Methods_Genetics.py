@@ -380,13 +380,12 @@ def run_evolution(
 
         generation_limit01 = round(generation_limit * 0.1)
         generation_limit02 = round(generation_limit * 0.2)
-        generation_limit04 = round(generation_limit * 0.4)
-        generation_limit05 = round(generation_limit * 0.5)
+        generation_limit03 = round(generation_limit * 0.3)
         generation_limit06 = round(generation_limit * 0.6)
         generation_limit07 = round(generation_limit * 0.7)
-        generation_limit08 = round(generation_limit * 0.8)
+        generation_limit09 = round(generation_limit * 0.9)
         genome_length_1_on_10 = round(interface.global_state.genome_length / 10)
-        genome_length_1_on_15 = round(interface.global_state.genome_length / 15)
+        genome_length_1_on_16 = round(interface.global_state.genome_length / 12)
 
         for this_run in range(0, nb_run):
             print("Run actuel : " + str(this_run))
@@ -400,19 +399,15 @@ def run_evolution(
                         crossover_func = uniform_crossover
                     if this_run < generation_limit01:
                         mutation_func = partial(mutation, num=genome_length_1_on_10, probability=0.5)
-                    if generation_limit01 <= this_run <= generation_limit02:
-                        mutation_func = partial(mutation, num=genome_length_1_on_15, probability=0.5)
-                    if generation_limit02 <= this_run <= generation_limit04:
+                    if generation_limit02 <= this_run <= generation_limit03:
                         mutation_func = partial(mutation, num=5, probability=0.5)
-                    if generation_limit04 <= this_run <= generation_limit05:
-                        mutation_func = partial(mutation, num=4, probability=0.5)
-                    if generation_limit05 <= this_run <= generation_limit06:
-                        mutation_func = partial(mutation, num=3, probability=0.5)
-                    if generation_limit06 <= this_run <= generation_limit07:
+                    if generation_limit03 <= this_run <= generation_limit06:
                         mutation_func = partial(mutation, num=2, probability=0.5)
-                    if generation_limit07 <= this_run <= generation_limit08:
+                    if generation_limit06 <= this_run <= generation_limit07:
                         mutation_func = partial(mutation, num=1, probability=0.5)
-                    if generation_limit08 <= this_run:
+                    if generation_limit07 <= this_run <= generation_limit09:
+                        mutation_func = bitflip
+                    if generation_limit09 <= this_run:
                         mutation_func = bitflip
                         crossover_func = single_point_crossover
 
