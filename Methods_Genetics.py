@@ -359,9 +359,6 @@ def run_evolution(
                 # meanFitness = sum(collected_fitness) / len(population)
                 # collected_fitness.append(maxFitness)
                 # collected_fitness.append(meanFitness)
-                # print(op_history)
-                # print(reward_list)
-                # print(reward_history)
             collected_data.append(collected_fitness)
         # print([fitness_func(genome) for genome in population])
         # print(" taille collected data : " + str(len(collected_data)))
@@ -379,7 +376,70 @@ def run_evolution(
         collected_data_means = np.asarray(collected_data_means)
         # print(collected_data)
         # print(collected_data_means)
-    else:
+    if selector_operator == "OS_MANUAL":
+
+        generation_limit01 = round(generation_limit * 0.1)
+        generation_limit02 = round(generation_limit * 0.2)
+        generation_limit04 = round(generation_limit * 0.4)
+        generation_limit05 = round(generation_limit * 0.5)
+        generation_limit06 = round(generation_limit * 0.6)
+        generation_limit07 = round(generation_limit * 0.7)
+        generation_limit08 = round(generation_limit * 0.8)
+        genome_length_1_on_10 = round(interface.global_state.genome_length / 10)
+        genome_length_1_on_15 = round(interface.global_state.genome_length / 15)
+
+        for this_run in range(0, nb_run):
+            print("Run actuel : " + str(this_run))
+            population = populate_func()
+            i = 0
+            collected_iteration = np.array([])
+            collected_fitness = np.array([])
+            for i in range(generation_limit):
+                if generation_limit % 10 == 0:
+                    if this_run < generation_limit07:
+                        crossover_func = uniform_crossover
+                    if this_run < generation_limit01:
+                        mutation_func = partial(mutation, num=genome_length_1_on_10, probability=0.5)
+                    if generation_limit01 <= this_run <= generation_limit02:
+                        mutation_func = partial(mutation, num=genome_length_1_on_15, probability=0.5)
+                    if generation_limit02 <= this_run <= generation_limit04:
+                        mutation_func = partial(mutation, num=5, probability=0.5)
+                    if generation_limit04 <= this_run <= generation_limit05:
+                        mutation_func = partial(mutation, num=4, probability=0.5)
+                    if generation_limit05 <= this_run <= generation_limit06:
+                        mutation_func = partial(mutation, num=3, probability=0.5)
+                    if generation_limit06 <= this_run <= generation_limit07:
+                        mutation_func = partial(mutation, num=2, probability=0.5)
+                    if generation_limit07 <= this_run <= generation_limit08:
+                        mutation_func = partial(mutation, num=1, probability=0.5)
+                    if generation_limit08 <= this_run:
+                        mutation_func = bitflip
+                        crossover_func = single_point_crossover
+
+                if generation_limit > 1000:
+                    if i % 500 == 0 and i != 0:
+                        print("Itération " + str(i) + " ...")
+                if i % 5 == 0:
+                    collected_iteration = np.append(collected_iteration, i)
+                    collected_fitness = np.append(collected_fitness, fitness_func(population[0]))
+                population = sorted(population, key=lambda genome: fitness_func(genome), reverse=True)
+                if printer is not None:
+                    printer(population, i, fitness_func)
+
+                next_generation = population[0:2]
+
+                for j in range(int(len(population) / 2) - 1):
+                    parents = selection_func(population, fitness_func)
+                    offspring_a, offspring_b = crossover_func(parents[0], parents[1])
+                    offspring_a = mutation_func(offspring_a)
+                    offspring_b = mutation_func(offspring_b)
+                    next_generation += [offspring_a, offspring_b]
+
+                population = next_generation
+
+            collected_data.append(collected_fitness)
+
+    if selector_operator != "OS_MANUAL" and selector_operator != "AOS_UCB":
         for this_run in range(0, nb_run):
             print("Run actuel : " + str(this_run))
 
@@ -410,13 +470,12 @@ def run_evolution(
                 population = next_generation
 
             collected_data.append(collected_fitness)
-
-        collected_data_means = []
-        for a in range(0, len(collected_data[0])):
-            moy = 0
-            for i in range(0, nb_run):
-                moy = moy + collected_data[i][a]
-            moy = round(moy / len(collected_data))
-            collected_data_means.append(moy)
-        collected_data_means = np.asarray(collected_data_means)
+    collected_data_means = []
+    for a in range(0, len(collected_data[0])):
+        moy = 0
+        for i in range(0, nb_run):
+            moy = moy + collected_data[i][a]
+        moy = round(moy / len(collected_data))
+        collected_data_means.append(moy)
+    collected_data_means = np.asarray(collected_data_means)
     return population, i, [collected_iteration, collected_data_means]
