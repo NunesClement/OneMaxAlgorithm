@@ -65,8 +65,18 @@ def uniform_crossover(
     return [offspring_1, offspring_2]
 
 
+op_count = [0, 0, 0]
+
+
 # 50% de chance d'effectuer une mutation
-def mutation(genome: List[int], num: int = 1, probability: float = 0.5) -> List[int]:
+def mutation(genome: List[int], num: int = 1, probability: float = 0.5, is_Aos: float = False) -> List[int]:
+    if is_Aos:
+        if num == 1:
+            op_count[0] = op_count[0] + 1
+        if num == 3:
+            op_count[1] = op_count[1] + 1
+        if num == 5:
+            op_count[2] = op_count[2] + 1
     for _ in range(num):
         index = randrange(len(genome))
         genome[index] = genome[index] if random() > probability else abs(genome[index] - 1)
@@ -182,7 +192,10 @@ def init_UCB_val(taille):
 # calcul de l'amélioration/reward immédiate (plusieurs versions possibles)
 def improvement(val_init, val_mut):
     # return max(0, (val_mut - val_init))
-    return (val_mut - val_init) + 5
+    if val_mut - val_init <= 0:
+        return 0
+    else:
+        return (val_mut - val_init) + 5
     # return max(0,(val_mut-val_init)/ONE_MAX_LENGTH)
     # return (val_mut-val_init)/ONE_MAX_LENGTH
 
@@ -262,7 +275,9 @@ maxFitnessValues = []
 meanFitnessValues = []
 op_history = []
 # les différents flips (à mettre dans l'ordre)
-op_list = [5, 4, 3, 2, 1, "bitflip"]
+# op_list = [5, 4, 3, 2, 1, "bitflip"]
+# si modif => modif fonction de mutation AOS
+op_list = [1, 3, 5]
 op_history_stat = []
 Max_Fitness_history_stat = []
 p_min = 0.05
@@ -284,7 +299,7 @@ def run_evolution(
         -> Tuple[Population, int]:
     collected_data = []
     # print("crossover_func" + str(crossover_func))
-    # print("selector_operator " + str(selector_operator))
+    print("selector_operator " + str(selector_operator))
     if selector_operator == "AOS_UCB":
         for this_run in range(0, nb_run):
             print("Run actuel : " + str(this_run))
@@ -313,7 +328,7 @@ def run_evolution(
                 if op_list[current_op] == "bitflip":
                     mutation_func = partial(bitflip)
                 else:
-                    mutation_func = partial(mutation, num=op_list[current_op], probability=0.5)
+                    mutation_func = partial(mutation, num=op_list[current_op], probability=0.5, is_Aos=True)
 
                 if generation_limit > 1000:
                     if i % 500 == 0 and i != 0:
@@ -363,6 +378,7 @@ def run_evolution(
         # print(" taille collected data : " + str(len(collected_data)))
         print(reward_history)
         print(reward_list)
+        print(op_count)
         collected_data_means = []
         for a in range(0, len(collected_data[0])):
             moy = 0
@@ -379,9 +395,7 @@ def run_evolution(
 
         generation_limit01 = round(generation_limit * 0.1)
         generation_limit02 = round(generation_limit * 0.2)
-        generation_limit04 = round(generation_limit * 0.4)
         generation_limit05 = round(generation_limit * 0.5)
-        generation_limit07 = round(generation_limit * 0.7)
         genome_length_1_on_10 = round(interface.global_state.genome_length / 10)
 
         for this_run in range(0, nb_run):
