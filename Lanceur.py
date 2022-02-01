@@ -8,6 +8,8 @@ import Nqueen
 # fonction de fitness
 import seed_env
 
+plt.figure(figsize=(10, 6))
+
 
 def fitness(genome: List[int]) -> int:
     if len(genome) <= 0:
@@ -93,7 +95,6 @@ def launch_with_param(
         selection = partial(Methods_Genetics.selection_pair_better)
     if selection_param == "selection_pair":
         selection = partial(Methods_Genetics.selection_pair)
-    # a setup via le global_state de l'interface TO DO
 
     # noinspection PyTupleAssignmentBalance
     (population, generations, collected_data) = Methods_Genetics.run_evolution(
@@ -112,7 +113,6 @@ def launch_with_param(
     )
     print(selector_operator)
     print("One call just finished")
-    # print(nb_run)
     congig_memory = [str(seed_env.getSeed()), str(mutation_param), str(selection_param),
                      str(crossover_param), str(fitness_limit),
                      str(generation_limit), str(genome_length), str(size)]
@@ -146,12 +146,11 @@ def debugGlobalState(global_state):
 
 
 def cleanup_graph():
-    plt.figure().clear()
+    plt.figure(figsize=(10, 6))
     print("The plot has been cleaned up !")
 
 
 def launch_the_launcher(global_state):
-    # plt.figure().clear()
     plt.xlabel("Nombre de générations")
     plt.ylabel("Fitness atteinte")
     debugGlobalState(global_state)
@@ -169,8 +168,9 @@ def launch_the_launcher(global_state):
 
     x = collected_data[0]
     y = collected_data[1]
-    lbl = str(global_state.croisement_param) + " " + str(global_state.mutation_params[0]) + " " + str(global_state.selection_params) + str(
-        generations) + " " + str(
+    lbl = str(global_state.croisement_param) + " " + str(global_state.mutation_params[0]) + " " + str(
+        global_state.selection_params) + " " + str(
+        generations) + " générations " + str(
         collected_data[1][len(collected_data[1]) - 1])
     plt.plot(x, y, label=lbl)
     plt.title("AG lancé sur " + str(global_state.nb_run) + " executions")

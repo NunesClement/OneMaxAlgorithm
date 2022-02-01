@@ -55,7 +55,7 @@ def uniform_crossover(
     for i, _ in enumerate(offspring_1):
         ran_num = np.random.uniform()
         if ran_num > thresh:
-            # swap 2 bits at i-th position
+            # échange de 2 bits à la i-ème position
             temp_bit = offspring_1[i]
             offspring_1[i] = offspring_2[i]
             offspring_2[i] = temp_bit

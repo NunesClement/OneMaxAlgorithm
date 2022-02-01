@@ -35,7 +35,7 @@ class Second(QMainWindow):
 
             def __init__(self):
                 super(MainWindow, self).__init__()
-                self.title = "Image Viewer"
+                self.title = "Algo génétique"
                 self.setWindowTitle(self.title)
 
                 label = QLabel(self)
