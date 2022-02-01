@@ -283,8 +283,7 @@ def run_evolution(
         printer: Optional[PrinterFunc] = None) \
         -> Tuple[Population, int]:
     collected_data = []
-    # print(crossover_func)
-    # crossover_func = uniform_crossover # OVERRIDE TODO
+    print("crossover_func" + str(crossover_func))
     print("selector_operator " + str(selector_operator))
     if selector_operator == "AOS_UCB":
         for this_run in range(0, nb_run):
@@ -381,6 +380,7 @@ def run_evolution(
         generation_limit01 = round(generation_limit * 0.1)
         generation_limit02 = round(generation_limit * 0.2)
         generation_limit04 = round(generation_limit * 0.4)
+        generation_limit05 = round(generation_limit * 0.5)
         generation_limit07 = round(generation_limit * 0.7)
         genome_length_1_on_10 = round(interface.global_state.genome_length / 10)
 
@@ -392,13 +392,13 @@ def run_evolution(
             collected_fitness = np.array([])
             for i in range(generation_limit):
                 if generation_limit % 10 == 0:
-                    if this_run < generation_limit07:
-                        crossover_func = uniform_crossover
+                    # if this_run < generation_limit07:
+                    #     crossover_func = uniform_crossover
                     if this_run < generation_limit01:
                         mutation_func = partial(mutation, num=genome_length_1_on_10, probability=0.5)
-                    if generation_limit02 <= this_run <= generation_limit04:
+                    if generation_limit02 <= this_run <= generation_limit05:
                         mutation_func = partial(mutation, num=2, probability=0.5)
-                    if generation_limit04 :
+                    if generation_limit05:
                         mutation_func = bitflip
 
                 if generation_limit > 1000:

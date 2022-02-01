@@ -52,7 +52,6 @@ def fitness_nqueen(genome: List[int]) -> int:
 
 def launch_with_param(
         mutation_param="1-flip",
-        crossover_param="single_point_crossover",
         selection_param="",
         selector_operator="1-flip",
         size=10,
@@ -60,6 +59,7 @@ def launch_with_param(
         fitness_limit=10,
         generation_limit=10,
         nb_run=10,
+        crossover_param="single_point_crossover",
 ):
     # print(selector_operator)
     weight_limit = 10
@@ -79,6 +79,7 @@ def launch_with_param(
     if mutation_param == "5-flip":
         mutation = partial(Methods_Genetics.mutation, num=5, probability=0.5)
 
+    # print("crossover_param " + str(crossover_param))
     if crossover_param == "uniform_crossover":
         crossover = Methods_Genetics.uniform_crossover
     else:
@@ -156,14 +157,14 @@ def launch_the_launcher(global_state):
     debugGlobalState(global_state)
     population, generations, collected_data = launch_with_param(
         str(global_state.mutation_params[0]),
-        "single_point_crossover",
         str(global_state.selection_params),
         str(global_state.selector_operator),
         int(global_state.taille_pop),
         int(global_state.genome_length),
         int(global_state.fitness_limit),
         int(global_state.generation_limit),
-        int(global_state.nb_run)
+        int(global_state.nb_run),
+        str(global_state.croisement_param)
     )
 
     x = collected_data[0]

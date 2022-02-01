@@ -7,7 +7,7 @@ import Lanceur
 
 class GlobalParameter:
     def __init__(self, seed, taille_pop, mutation_params, selector_operator, selection_params,
-                 fitness_limit, generation_limit, genome_length, nb_run):
+                 fitness_limit, generation_limit, genome_length, nb_run, croisement_param):
         self.seed = seed
         self.selector_operator = selector_operator
         self.mutation_params = mutation_params
@@ -17,12 +17,13 @@ class GlobalParameter:
         self.genome_length = genome_length
         self.taille_pop = taille_pop
         self.nb_run = nb_run
+        self.croisement_param = croisement_param
 
 
 # 1-flip etc... AOS_UCB AOS_PM
 global_state = GlobalParameter(13, 10,
                                ["1-flip", 0.5], "1-flip", "selection_pair_better",
-                               1000, 1000, 121, 10)
+                               1000, 1000, 121, 10, "uniform_crossover")
 
 
 class Second(QMainWindow):
@@ -88,6 +89,12 @@ class First(QMainWindow):
         self.mutationChoix.addItem("AOS_PM")
         self.mutationChoix.addItem("OS_MANUAL")
 
+        self.croisementLabel = QLabel("Croisement")
+
+        self.croisementChoix = QComboBox()
+        self.croisementChoix.addItem("uniform_crossover")
+        self.croisementChoix.addItem("single_point_crossover")
+
         self.problemLabel = QLabel("Problème à traiter WIP")
 
         self.problemChoix = QComboBox()
@@ -106,6 +113,8 @@ class First(QMainWindow):
         self.layout.addWidget(self.selectionChoix)
         self.layout.addWidget(self.mutationLabel)
         self.layout.addWidget(self.mutationChoix)
+        self.layout.addWidget(self.croisementLabel)
+        self.layout.addWidget(self.croisementChoix)
         self.layout.addWidget(self.problemLabel)
         self.layout.addWidget(self.problemChoix)
         self.layout.addWidget(self.cleanupButton)
@@ -148,6 +157,7 @@ class First(QMainWindow):
         self.buttonRun.clicked.connect(self.on_pushButton_clicked)
         self.cleanupButton.clicked.connect(self.on_cleanup_button_clicked)
         self.mutationChoix.currentTextChanged.connect(self.setMutationFlip)
+        self.croisementChoix.currentTextChanged.connect(self.setCroisementChoix)
         self.selectionChoix.currentTextChanged.connect(self.setSelectionChoix)
 
         self.widget = QWidget()
@@ -179,6 +189,9 @@ class First(QMainWindow):
 
     def setSelectionChoix(self, s):
         global_state.selection_params = s
+
+    def setCroisementChoix(self, s):
+        global_state.croisement_param = s
 
 
 def main():
