@@ -119,7 +119,7 @@ def selection_pair_better(population: Population, fitness_func: FitnessFunc) -> 
 
 
 # selectionner 2 meilleurs génomes parmis S random
-def selection_pair_parmis_s_random(population: Population, fitness_func: FitnessFunc, s: int = 2) -> Population:
+def selection_tournois_parmi_s_randoms(population: Population, fitness_func: FitnessFunc, s: int = 2) -> Population:
     if s >= len(population):
         raise ValueError("L'ensemble S random doit etre < a la taille de la pop")
 

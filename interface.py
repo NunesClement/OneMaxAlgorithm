@@ -22,7 +22,7 @@ class GlobalParameter:
 
 # 1-flip etc... AOS_UCB AOS_PM
 global_state = GlobalParameter(13, 10,
-                               ["1-flip", 0.5], "1-flip", "selection_pair_better",
+                               ["1-flip", 0.5], "1-flip", "selection_tournois_parmi_s_randoms",
                                1000, 1000, 121, 10, "uniform_crossover")
 
 
@@ -71,9 +71,11 @@ class First(QMainWindow):
         self.choixFitness = QLabel("Choix fitness par encore disponible - onemax par défaut")
 
         self.validationLabel = QLabel("Validation")
+
+        self.selectionLabel = QLabel("Sélection")
         self.selectionChoix = QComboBox()
+        self.selectionChoix.addItem("selection_tournois_parmi_s_randoms")
         self.selectionChoix.addItem("selection_pair_better")
-        self.selectionChoix.addItem("selection_pair_parmis_s_random")
         self.selectionChoix.addItem("selection_pair")
 
         self.mutationLabel = QLabel("Mutation")
@@ -110,6 +112,7 @@ class First(QMainWindow):
         self.layout.addWidget(self.validationLabel)
 
         self.layout.addWidget(self.buttonRun)
+        self.layout.addWidget(self.selectionLabel)
         self.layout.addWidget(self.selectionChoix)
         self.layout.addWidget(self.mutationLabel)
         self.layout.addWidget(self.mutationChoix)
