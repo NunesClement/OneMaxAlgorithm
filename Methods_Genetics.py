@@ -283,8 +283,8 @@ def run_evolution(
         printer: Optional[PrinterFunc] = None) \
         -> Tuple[Population, int]:
     collected_data = []
-    print("crossover_func" + str(crossover_func))
-    print("selector_operator " + str(selector_operator))
+    # print("crossover_func" + str(crossover_func))
+    # print("selector_operator " + str(selector_operator))
     if selector_operator == "AOS_UCB":
         for this_run in range(0, nb_run):
             print("Run actuel : " + str(this_run))

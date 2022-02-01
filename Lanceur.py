@@ -136,7 +136,7 @@ def debugGlobalState(global_state):
           + " avec une proba de "
           + str(global_state.mutation_params[1])
           )
-    print("Paramètre de croismement TODO !!!!")
+    print("Paramètre de croisemement " + str(global_state.croisement_param))
     print("Paramètre de sélection " + str(global_state.selection_params))
     print("Limit de fitness " + str(global_state.fitness_limit))
     print("Nb d'itération/génération " + str(global_state.generation_limit))
@@ -169,7 +169,7 @@ def launch_the_launcher(global_state):
 
     x = collected_data[0]
     y = collected_data[1]
-    lbl = "uniform_crossover " + str(global_state.mutation_params[0]) + " " + str(global_state.selection_params) + str(
+    lbl = str(global_state.croisement_param) + " " + str(global_state.mutation_params[0]) + " " + str(global_state.selection_params) + str(
         generations) + " " + str(
         collected_data[1][len(collected_data[1]) - 1])
     plt.plot(x, y, label=lbl)
