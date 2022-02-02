@@ -89,6 +89,7 @@ class First(QMainWindow):
         self.mutationChoix.addItem("bitflip")
         self.mutationChoix.addItem("AOS_UCB")
         self.mutationChoix.addItem("AOS_PM")
+        self.mutationChoix.addItem("OS_RANDOM_AVEUGLE")
         self.mutationChoix.addItem("OS_MANUAL")
 
         self.croisementLabel = QLabel("Croisement")

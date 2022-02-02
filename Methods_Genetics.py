@@ -438,7 +438,7 @@ def run_evolution(
 
             collected_data.append(collected_fitness)
 
-    if selector_operator != "OS_MANUAL" and selector_operator != "AOS_UCB":
+    if selector_operator == "OS_RANDOM_AVEUGLE":
         for this_run in range(0, nb_run):
             print("Run actuel : " + str(this_run))
 
@@ -446,6 +446,50 @@ def run_evolution(
             i = 0
             collected_iteration = np.array([])
             collected_fitness = np.array([])
+
+            randomiseur = random()
+            if randomiseur <= 0.25:
+                mutation_func = partial(mutation, num=1, probability=0.5, is_Aos=True)
+            if 0.25 < randomiseur <= 0.50:
+                mutation_func = partial(mutation, num=2, probability=0.5, is_Aos=True)
+            if 0.50 < randomiseur <= 0.75:
+                mutation_func = partial(mutation, num=3, probability=0.5, is_Aos=True)
+            if 0.75 < randomiseur:
+                mutation_func = partial(mutation, num=5, probability=0.5, is_Aos=True)
+
+            for i in range(generation_limit):
+                if generation_limit > 1000:
+                    if i % 500 == 0 and i != 0:
+                        print("Itération " + str(i) + " ...")
+                if i % 5 == 0:
+                    collected_iteration = np.append(collected_iteration, i)
+                    collected_fitness = np.append(collected_fitness, fitness_func(population[0]))
+                population = sorted(population, key=lambda genome: fitness_func(genome), reverse=True)
+                if printer is not None:
+                    printer(population, i, fitness_func)
+
+                next_generation = population[0:2]
+
+                for j in range(int(len(population) / 2) - 1):
+                    parents = selection_func(population, fitness_func)
+                    offspring_a, offspring_b = crossover_func(parents[0], parents[1])
+                    offspring_a = mutation_func(offspring_a)
+                    offspring_b = mutation_func(offspring_b)
+                    next_generation += [offspring_a, offspring_b]
+
+                population = next_generation
+
+            collected_data.append(collected_fitness)
+
+    if selector_operator != "OS_MANUAL" and selector_operator != "AOS_UCB" and selector_operator != "OS_RANDOM_AVEUGLE":
+        for this_run in range(0, nb_run):
+            print("Run actuel : " + str(this_run))
+
+            population = populate_func()
+            i = 0
+            collected_iteration = np.array([])
+            collected_fitness = np.array([])
+
             for i in range(generation_limit):
                 if generation_limit > 1000:
                     if i % 500 == 0 and i != 0:
