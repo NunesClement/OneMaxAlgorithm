@@ -183,6 +183,7 @@ def update_roulette_wheel(reward_list, proba_list, p_min):
 # sélection d'un opérateur selon une liste de probabilités
 def select_op_proba(proba_list):
     r = random.random()
+    print(r)
     somme = 0
     i = 0
     while somme < r and i < len(proba_list):
@@ -325,14 +326,10 @@ def ea_loop_MAB(population, maxFitnessValues, meanFitnessValues, op_history, op_
 
         update_reward_sliding(reward_list, reward_history, history_size, current_op,
                               improvement(fitness_init, mutant.fitness.values[0]))
-        print(mutant.fitness.values[0]-fitness_init)
-        # print(reward_history)
-        # print(reward_list)
+
         # print(history_size)
         update_UCB_val(UCB_val, C, op_history, reward_list, generationCounter)
-        # print(reward_list)
-        print(reward_history)
-        print(reward_list)
+
         if improvement(fitness_init, mutant.fitness.values[0]) > 0:
             population = insertion_best_fitness(population, offspring)
 
@@ -356,7 +353,7 @@ def main():
 
     # Choix des paramètres propres et de la méthode
     # AOS = 'PM'
-    AOS = 'UCB'
+    AOS = 'PM'
     p_min = 0.05
     history_size = 10
     C = 4
