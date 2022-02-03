@@ -320,7 +320,7 @@ def run_evolution(
     print("selector_operator " + str(selector_operator))
     if selector_operator == "AOS_UCB":
         for this_run in range(0, nb_run):
-            print("Run actuel : " + str(this_run))
+            print("Run actuel : " + str(this_run + 1))
             maxFitnessValues = []
             meanFitnessValues = []
             op_history = []
@@ -412,7 +412,7 @@ def run_evolution(
 
     if selector_operator == "AOS_PM":
         for this_run in range(0, nb_run):
-            print("Run actuel : " + str(this_run))
+            print("Run actuel : " + str(this_run + 1))
             maxFitnessValues = []
             meanFitnessValues = []
             op_history = []
@@ -467,13 +467,10 @@ def run_evolution(
                     next_generation += [offspring_a, offspring_b]
 
                 fitness_now = Lanceur.fitness(greatest(next_generation, fitness_func))
-                # fitness_now = Lanceur.fitness(greatest(population, fitness_func))
                 reward_history, reward_list = update_reward_sliding(reward_list, reward_history, history_size,
                                                                     current_op,
                                                                     improvement(fitness_init, fitness_now))
                 proba_list = update_roulette_wheel(reward_list, proba_list, p_min)
-
-                # print(str(fitness_init) + " " + str(fitness_now))
 
                 population = next_generation
                 # maxFitness = max(collected_fitness)
@@ -481,8 +478,7 @@ def run_evolution(
                 # collected_fitness.append(maxFitness)
                 # collected_fitness.append(meanFitness)
             collected_data.append(collected_fitness)
-        # print([fitness_func(genome) for genome in population])
-        # print(" taille collected data : " + str(len(collected_data)))
+
         print(reward_history)
         print(reward_list)
         print(op_count)
@@ -548,7 +544,7 @@ def run_evolution(
 
     if selector_operator == "OS_RANDOM_AVEUGLE":
         for this_run in range(0, nb_run):
-            print("Run actuel : " + str(this_run))
+            print("Run actuel : " + str(this_run + 1))
 
             population = populate_func()
             i = 0
@@ -591,7 +587,7 @@ def run_evolution(
 
     if selector_operator != "OS_MANUAL" and selector_operator != "AOS_UCB" and selector_operator != "AOS_PM" and selector_operator != "OS_RANDOM_AVEUGLE":
         for this_run in range(0, nb_run):
-            print("Run actuel : " + str(this_run))
+            print("Run actuel : " + str(this_run + 1))
 
             population = populate_func()
             i = 0
