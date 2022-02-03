@@ -87,10 +87,22 @@ def launch_with_param(
     else:
         crossover = Methods_Genetics.single_point_crossover
 
-    selection = partial(Methods_Genetics.selection_tournois_parmi_s_randoms, s=2)
-    print("selection_param " + selection_param)
+    nb_tournois = 2
+
+    if size < 10:
+        nb_tournois = 2
+    if 10 < size < 30:
+        nb_tournois = 5
+    if 30 <= size < 70:
+        nb_tournois = 7
+    if 70 <= size < 100:
+        nb_tournois = 10
+    if 100 <= size:
+        nb_tournois = round(size/10)
+
+    selection = partial(Methods_Genetics.selection_tournois_parmi_s_randoms, s=nb_tournois)
     if selection_param == "selection_tournois_parmi_s_randoms":
-        selection = partial(Methods_Genetics.selection_tournois_parmi_s_randoms, s=2)
+        selection = partial(Methods_Genetics.selection_tournois_parmi_s_randoms, s=nb_tournois)
     if selection_param == "selection_pair_better":
         selection = partial(Methods_Genetics.selection_pair_better)
     if selection_param == "selection_pair":

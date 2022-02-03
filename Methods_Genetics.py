@@ -132,11 +132,10 @@ def selection_pair_better(population: Population, fitness_func: FitnessFunc) -> 
 def selection_tournois_parmi_s_randoms(population: Population, fitness_func: FitnessFunc, s: int = 2) -> Population:
     if s >= len(population):
         raise ValueError("L'ensemble S random doit etre < a la taille de la pop")
-
     index_selection_aleatoire = np.unique(np.random.randint(len(population), size=(1, s)))
     ensemble_pris_aleatoirement = []
     # sécurité
-    while index_selection_aleatoire.size < 2:
+    while index_selection_aleatoire.size < s:
         index_selection_aleatoire = np.unique(np.random.randint(len(population), size=(1, s)))
 
     for i in range(0, index_selection_aleatoire.size):
