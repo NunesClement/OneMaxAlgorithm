@@ -130,8 +130,9 @@ def selection_pair_better(population: Population, fitness_func: FitnessFunc) -> 
 
 # selectionner 2 meilleurs génomes parmis S random
 def selection_tournois_parmi_s_randoms(population: Population, fitness_func: FitnessFunc, s: int = 2) -> Population:
+
     if s >= len(population):
-        raise ValueError("L'ensemble S random doit etre < a la taille de la pop")
+        raise ValueError("L'ensemble S random doit être < a la taille de la pop")
     index_selection_aleatoire = np.unique(np.random.randint(len(population), size=(1, s)))
     ensemble_pris_aleatoirement = []
     # sécurité
@@ -150,12 +151,12 @@ def sort_population(population: Population, fitness_func: FitnessFunc) -> Popula
     return sorted(population, key=fitness_func, reverse=True)
 
 
-# trie de la population en fonction de sa fitness
+# meilleur individu (utile pour debug)
 def greatest(population: Population, fitness_func: FitnessFunc) -> Population:
     return sorted(population, key=fitness_func, reverse=True)[0]
 
 
-# trie de la population en fonction de sa fitness
+# pire individu (utile pour debug)
 def loosest(population: Population, fitness_func: FitnessFunc) -> Population:
     return sorted(population, key=fitness_func, reverse=False)[0]
 
