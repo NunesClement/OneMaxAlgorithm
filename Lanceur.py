@@ -90,15 +90,15 @@ def launch_with_param(
     nb_tournois = 2
 
     if size < 10:
-        nb_tournois = 2
+        nb_tournois = 3
     if 10 < size < 30:
-        nb_tournois = 5
+        nb_tournois = 6
     if 30 <= size < 70:
-        nb_tournois = 7
+        nb_tournois = 13
     if 70 <= size < 100:
-        nb_tournois = 10
+        nb_tournois = 25
     if 100 <= size:
-        nb_tournois = round(size/10)
+        nb_tournois = round(size/5)
 
     selection = partial(Methods_Genetics.selection_tournois_parmi_s_randoms, s=nb_tournois)
     if selection_param == "selection_tournois_parmi_s_randoms":
@@ -182,7 +182,7 @@ def launch_the_launcher(global_state):
     y = collected_data[1]
     lbl = str(global_state.croisement_param) + " " + str(global_state.mutation_params[0]) + " " + str(
         global_state.selection_params) + " " + str(
-        generations) + " générations " + str(
+        generations + 1) + " générations " + str(
         collected_data[1][len(collected_data[1]) - 1])
     plt.plot(x, y, label=lbl)
     plt.title("AG lancé sur " + str(global_state.nb_run) + " executions")

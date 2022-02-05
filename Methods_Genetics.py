@@ -213,7 +213,7 @@ def improvement(val_init, val_mut):
     if val_mut - val_init <= 0:
         return 0
     else:
-        return (val_mut - val_init) + 5
+        return (val_mut - val_init) + 10
     # return max(0,(val_mut-val_init)/ONE_MAX_LENGTH)
     # return (val_mut-val_init)/ONE_MAX_LENGTH
 
@@ -500,8 +500,13 @@ def run_evolution(
         generation_limit01 = round(generation_limit * 0.1)
         generation_limit02 = round(generation_limit * 0.2)
         generation_limit05 = round(generation_limit * 0.5)
-        genome_length_1_on_10 = round(interface.global_state.genome_length / 10)
+        genome_length_1_on_10 = 10
 
+        # if interface.global_state.genome_length < 500:
+        #     genome_length_1_on_10 = round(interface.global_state.genome_length / 10)
+        # else:
+        #     if interface.global_state.genome_length < 500:
+        #         genome_length_1_on_10 = 80
         for this_run in range(0, nb_run):
             print("Run actuel : " + str(this_run + 1))
             population = populate_func()

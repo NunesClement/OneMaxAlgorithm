@@ -1,10 +1,13 @@
+from random import random
+
+
 class Seed:
     def __init__(self, seed):
         self.seed = seed
 
 
-a = Seed(17)
-
+a = Seed(round(random()*10))
+# a = 17
 
 def getSeed():
     return a.seed
