@@ -70,6 +70,7 @@ op_count = [0, 0, 0]
 
 # 50% de chance d'effectuer une mutation
 def mutation(genome: List[int], num: int = 1, probability: float = 0.5, is_Aos: float = False) -> List[int]:
+    # print(num)
     if is_Aos:
         if num == 1:
             op_count[0] = op_count[0] + 1
@@ -296,7 +297,7 @@ op_history = []
 # les différents flips (à mettre dans l'ordre)
 # op_list = [5, 4, 3, 2, 1, "bitflip"]
 # si modif => modif fonction de mutation AOS
-op_list = [1, 3, 5]
+op_list = ["bitflip", 3, 5]
 op_history_stat = []
 Max_Fitness_history_stat = []
 p_min = 0.05
@@ -502,7 +503,6 @@ def run_evolution(
         generation_limit02 = round(generation_limit * 0.2)
         generation_limit05 = round(generation_limit * 0.5)
         genome_length_1_on_10 = 10
-
         # if interface.global_state.genome_length < 500:
         #     genome_length_1_on_10 = round(interface.global_state.genome_length / 10)
         # else:
@@ -515,15 +515,12 @@ def run_evolution(
             collected_iteration = np.array([])
             collected_fitness = np.array([])
             for i in range(generation_limit):
-                if generation_limit % 10 == 0:
-                    # if this_run < generation_limit07:
-                    #     crossover_func = uniform_crossover
-                    if this_run < generation_limit01:
-                        mutation_func = partial(mutation, num=genome_length_1_on_10, probability=0.5)
-                    if generation_limit02 <= this_run <= generation_limit05:
-                        mutation_func = partial(mutation, num=2, probability=0.5)
-                    if generation_limit05:
-                        mutation_func = bitflip
+                if i < generation_limit01:
+                    mutation_func = partial(mutation, num=genome_length_1_on_10, probability=0.5)
+                if generation_limit02 <= i <= generation_limit05:
+                    mutation_func = partial(mutation, num=2, probability=0.5)
+                if i > generation_limit05:
+                    mutation_func = bitflip
 
                 if generation_limit > 1000:
                     if i % 500 == 0 and i != 0:
