@@ -103,32 +103,32 @@ print(len(cinq_flips))
 print(len(aos_pm))
 print(len(aos_ucb))
 
-MSE = np.square(np.subtract(deux_flips, un_flip)).mean()
+MSE = np.square(np.subtract(un_flip, deux_flips)).mean()
 RMSE = math.sqrt(MSE)
 
 print("Différence 2-flips / 1-flip")
 print(RMSE)
 
-MSE = np.square(np.subtract(deux_flips, trois_flips)).mean()
+MSE = np.square(np.subtract(trois_flips, deux_flips)).mean()
 RMSE = math.sqrt(MSE)
 
 print("Différence 2-flips / 3-flips")
 print(RMSE)
 
-MSE = np.square(np.subtract(deux_flips, cinq_flips)).mean()
+MSE = np.square(np.subtract(cinq_flips,deux_flips)).mean()
 RMSE = math.sqrt(MSE)
 
 print("Différence 2-flips / 5-flips")
 print(RMSE)
 
 
-MSE = np.square(np.subtract(deux_flips, aos_pm)).mean()
+MSE = np.square(np.subtract(aos_pm, deux_flips)).mean()
 RMSE = math.sqrt(MSE)
 
 print("Différence 2-flips / AOS_PM")
 print(RMSE)
 
-MSE = np.square(np.subtract(deux_flips, aos_ucb)).mean()
+MSE = np.square(np.subtract(aos_ucb, deux_flips)).mean()
 RMSE = math.sqrt(MSE)
 
 print("Différence 2-flips / AOS_UCB")
