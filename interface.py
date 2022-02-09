@@ -139,7 +139,7 @@ class First(QMainWindow):
 
         self.fitnessMaxLabel = QLabel("set fitness max")
         self.fitnessMax = QLineEdit()
-        self.fitnessMax.setText("250000")
+        self.fitnessMax.setText("20000")
         self.layout.addWidget(self.fitnessMaxLabel)
         self.layout.addWidget(self.fitnessMax)
         self.fitnessMax.textChanged.connect(self.change_fitness_max)

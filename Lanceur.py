@@ -98,7 +98,7 @@ def launch_with_param(
     if 70 <= size < 100:
         nb_tournois = 25
     if 100 <= size:
-        nb_tournois = round(size/5)
+        nb_tournois = round(size / 5)
 
     selection = partial(Methods_Genetics.selection_tournois_parmi_s_randoms, s=nb_tournois)
     if selection_param == "selection_tournois_parmi_s_randoms":
@@ -186,6 +186,13 @@ def launch_the_launcher(global_state):
         collected_data[1][len(collected_data[1]) - 1])
     plt.plot(x, y, label=lbl)
     plt.title("AG lancé sur " + str(global_state.nb_run) + " executions")
+
+    np.warnings.filterwarnings('ignore', category=np.VisibleDeprecationWarning)
+    with open('debug/' + str(global_state.mutation_params[0]) + '.csv', 'a') as csvfile:
+        # Générations
+        np.savetxt(csvfile, [collected_data[0]], delimiter=',', fmt="%s")
+        # Fitness
+        np.savetxt(csvfile, [collected_data[1]], delimiter=',', fmt="%s")
 
     plt.legend()
 

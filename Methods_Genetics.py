@@ -4,7 +4,6 @@ from typing import List, Optional, Callable, Tuple
 import numpy as np
 import seed_env
 import Lanceur
-import interface
 
 np.random.seed(seed_env.getSeed())
 seed(seed_env.getSeed())
@@ -243,7 +242,7 @@ def update_UCB_val(UCB_val, C, op_history, reward_list, i):
 
 # calcul de l'amélioration/reward immédiate (plusieurs versions possibles)
 def improvement(val_init, val_mut):
-    return (val_mut - val_init) + 5
+    return (val_mut - val_init) + 10
     # return max(0, (val_mut - val_init))
     # print(interface.global_state.genome_length)
     # return max(0, (val_mut - val_init) / interface.global_state.genome_length)
