@@ -96,6 +96,12 @@ aos_pm = [1004, 1125, 1148, 1160, 1170, 1181, 1190, 1200, 1211, 1222, 1232, 1244
           1999, 1999, 1999, 1999, 1999, 1999, 1999, 1999, 1999, 1999, 1999, 1999, 1999, 1999, 1999, 1999, 1999, 1999,
           1999, 1999, 1999, 1999, 1999, 1999
           ]
+print(len(un_flip))
+print(len(deux_flips))
+print(len(trois_flips))
+print(len(cinq_flips))
+print(len(aos_pm))
+print(len(aos_ucb))
 
 MSE = np.square(np.subtract(deux_flips, un_flip)).mean()
 RMSE = math.sqrt(MSE)
