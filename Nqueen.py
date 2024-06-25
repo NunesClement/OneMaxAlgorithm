@@ -18,6 +18,7 @@ allConfigurationsMatrix = []
 # 15000 itérations
 # seed de 17
 
+
 def displayConfiguration(configuration):
     for a in configuration:
         print(a)
@@ -67,6 +68,7 @@ def check_nb_queens(configuration=configurationBase):
 
 
 def fitness_function(configuration, num_queen_x, num_queen_y):
+    print("passage")
     fitness = 0
     if not check_horizontally(configuration, num_queen_x, num_queen_y):
         fitness = fitness - 300
@@ -134,7 +136,9 @@ def calculate_fitness(configuration):
     for i in range(0, len(configuration)):
         a = obtain_coord(configuration, i)
         for j in range(0, len(a)):
-            fitness_total = fitness_total + fitness_function(configuration, a[j][0], a[j][1])
+            fitness_total = fitness_total + fitness_function(
+                configuration, a[j][0], a[j][1]
+            )
     return fitness_total
 
 
@@ -144,7 +148,9 @@ def calculate_penalty(configuration):
         a = obtain_coord(configuration, i)
 
         for j in range(0, len(a)):
-            penalty_total = penalty_total + penalty_function(configuration, a[j][0], a[j][1])
+            penalty_total = penalty_total + penalty_function(
+                configuration, a[j][0], a[j][1]
+            )
     return penalty_total
 
 

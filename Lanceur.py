@@ -14,17 +14,17 @@ plt.figure(figsize=(10, 6))
 
 
 # fitness for nqueen
-def fitness_nqueen(genome: List[int]) -> int:
+def fitness(genome: List[int]) -> int:
     if len(genome) <= 0:
         raise ValueError("Le genome doit être > 0 ")
     # print(genome)
     return Nqueen.calculate_fitness(Nqueen.convert01ToConfiguration(genome))
 
 
-def fitness(genome: List[int]) -> int:
-    if len(genome) <= 0:
-        raise ValueError("Le genome doit être > 0 ")
-    return genome.count(1)
+# def fitness(genome: List[int]) -> int:
+#     if len(genome) <= 0:
+#         raise ValueError("Le genome doit être > 0 ")
+#     return genome.count(1)
 
 
 def launch_with_param(
