@@ -68,7 +68,6 @@ def check_nb_queens(configuration=configurationBase):
 
 
 def fitness_function(configuration, num_queen_x, num_queen_y):
-    print("passage")
     fitness = 0
     if not check_horizontally(configuration, num_queen_x, num_queen_y):
         fitness = fitness - 300

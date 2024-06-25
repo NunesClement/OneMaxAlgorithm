@@ -3,9 +3,8 @@ from typing import List
 import matplotlib.pyplot as plt
 import Genetics_Methods
 import numpy as np
-
-
 import Nqueen
+
 
 # fonction de fitness
 import seed_env
@@ -14,17 +13,23 @@ plt.figure(figsize=(10, 6))
 
 
 # fitness for nqueen
-def fitness(genome: List[int]) -> int:
+def fitness_nqueen(genome: List[int]) -> int:
     if len(genome) <= 0:
         raise ValueError("Le genome doit être > 0 ")
-    # print(genome)
     return Nqueen.calculate_fitness(Nqueen.convert01ToConfiguration(genome))
 
 
-# def fitness(genome: List[int]) -> int:
-#     if len(genome) <= 0:
-#         raise ValueError("Le genome doit être > 0 ")
-#     return genome.count(1)
+def fitness(genome: List[int]) -> int:
+    if len(genome) <= 0:
+        raise ValueError("Le genome doit être > 0 ")
+    return genome.count(1)
+
+
+def fitness_manager(problemChoice):
+    if problemChoice == "OneMax":
+        return fitness
+    else:
+        return fitness_nqueen
 
 
 def launch_with_param(
@@ -37,6 +42,7 @@ def launch_with_param(
     generation_limit=10,
     nb_run=10,
     crossover_param="single_point_crossover",
+    selected_problem="OneMax",
 ):
     weight_limit = 10
     mutation = partial(Genetics_Methods.mutation, num=1, probability=0.5)
@@ -92,7 +98,7 @@ def launch_with_param(
         populate_func=partial(
             Genetics_Methods.generate_population, size=size, genome_length=genome_length
         ),
-        fitness_func=partial(fitness),
+        fitness_func=partial(fitness_manager(selected_problem)),
         selection_func=selection,
         crossover_func=crossover,
         selector_operator=selector_operator,
@@ -136,6 +142,7 @@ def debugGlobalState(global_state):
         + " avec une proba de "
         + str(global_state.mutation_params[1])
     )
+    print("Choix du problème" + str(global_state.selected_problem))
     print("Paramètre de croisemement " + str(global_state.croisement_param))
     print("Paramètre de sélection " + str(global_state.selection_params))
     print("Limit de fitness " + str(global_state.fitness_limit))
@@ -164,7 +171,17 @@ def launch_the_launcher(global_state):
         int(global_state.generation_limit),
         int(global_state.nb_run),
         str(global_state.croisement_param),
+        str(global_state.selected_problem),
     )
+
+    if global_state.selected_problem == "N-Reine":
+        Nqueen.displayConfiguration(Nqueen.convert01ToConfiguration(population[0]))
+        print(
+            "Penalty  : "
+            + str(
+                Nqueen.calculate_penalty(Nqueen.convert01ToConfiguration(population[0]))
+            )
+        )
 
     x = collected_data[0]
     y = collected_data[1]

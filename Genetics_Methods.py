@@ -266,10 +266,6 @@ def update_UCB_val(UCB_val, C, op_history, reward_list, i):
 # calcul de l'amélioration/reward immédiate (plusieurs versions possibles)
 def improvement(val_init, val_mut):
     return (val_mut - val_init) + 10
-    # return max(0, (val_mut - val_init))
-    # print(interface.global_state.genome_length)
-    # return max(0, (val_mut - val_init) / interface.global_state.genome_length)
-    # return (val_mut-val_init)/ONE_MAX_LENGTH
 
 
 def init_reward_list(taille):
@@ -541,11 +537,7 @@ def run_evolution(
         generation_limit02 = round(generation_limit * 0.2)
         generation_limit05 = round(generation_limit * 0.5)
         genome_length_1_on_10 = 10
-        # if interface.global_state.genome_length < 500:
-        #     genome_length_1_on_10 = round(interface.global_state.genome_length / 10)
-        # else:
-        #     if interface.global_state.genome_length < 500:
-        #         genome_length_1_on_10 = 80
+
         for this_run in range(0, nb_run):
             print("Run actuel : " + str(this_run + 1))
             population = populate_func()

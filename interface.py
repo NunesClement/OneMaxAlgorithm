@@ -1,13 +1,34 @@
 import sys
 
 from PySide6.QtGui import QPixmap
-from PySide6.QtWidgets import QLabel, QMainWindow, QApplication, QPushButton, QVBoxLayout, QComboBox, QWidget, QLineEdit
+from PySide6.QtWidgets import (
+    QLabel,
+    QMainWindow,
+    QApplication,
+    QPushButton,
+    QVBoxLayout,
+    QComboBox,
+    QWidget,
+    QLineEdit,
+)
 import Lanceur
 
 
 class GlobalParameter:
-    def __init__(self, seed, taille_pop, mutation_params, selector_operator, selection_params,
-                 fitness_limit, generation_limit, genome_length, nb_run, croisement_param):
+    def __init__(
+        self,
+        seed,
+        taille_pop,
+        mutation_params,
+        selector_operator,
+        selection_params,
+        fitness_limit,
+        generation_limit,
+        genome_length,
+        nb_run,
+        croisement_param,
+        selected_problem,
+    ):
         self.seed = seed
         self.selector_operator = selector_operator
         self.mutation_params = mutation_params
@@ -18,12 +39,23 @@ class GlobalParameter:
         self.taille_pop = taille_pop
         self.nb_run = nb_run
         self.croisement_param = croisement_param
+        self.selected_problem = selected_problem
 
 
 # 1-flip etc... AOS_UCB AOS_PM
-global_state = GlobalParameter(13, 10,
-                               ["1-flip", 0.5], "1-flip", "selection_tournois_parmi_s_randoms",
-                               1000, 1000, 121, 10, "uniform_crossover")
+global_state = GlobalParameter(
+    13,
+    10,
+    ["1-flip", 0.5],
+    "1-flip",
+    "selection_tournois_parmi_s_randoms",
+    1000,
+    1000,
+    121,
+    10,
+    "uniform_crossover",
+    "OneMax",
+)
 
 
 class Second(QMainWindow):
@@ -39,7 +71,7 @@ class Second(QMainWindow):
                 self.setWindowTitle(self.title)
 
                 label = QLabel(self)
-                pixmap = QPixmap('plot.png')
+                pixmap = QPixmap("plot.png")
                 label.setPixmap(pixmap)
                 self.setCentralWidget(label)
                 self.resize(pixmap.width(), pixmap.height())
@@ -68,7 +100,9 @@ class First(QMainWindow):
         self.buttonRun = QPushButton("Run")
         self.cleanupButton = QPushButton("Cleanup the plot")
         self.fitnessLabel = QLabel("Validation")
-        self.choixFitness = QLabel("Choix fitness par encore disponible - onemax par défaut")
+        self.choixFitness = QLabel(
+            "Choix fitness par encore disponible - onemax par défaut"
+        )
 
         self.validationLabel = QLabel("Validation")
 
@@ -98,14 +132,14 @@ class First(QMainWindow):
         self.croisementChoix.addItem("uniform_crossover")
         self.croisementChoix.addItem("single_point_crossover")
 
-        self.problemLabel = QLabel("Problème à traiter WIP")
+        self.problemLabel = QLabel("Problème à traiter")
 
-        self.problemChoix = QComboBox()
-        self.problemChoix.addItem("OneMax")
-        self.problemChoix.addItem("N-Reine")
-        self.problemChoix.addItem("KnapSack")
-        self.problemChoix.addItem("Quadratic knapsack (wip)")
-        self.problemChoix.addItem("PPP (wip)")
+        self.selectedProblem = QComboBox()
+        self.selectedProblem.addItem("OneMax")
+        self.selectedProblem.addItem("N-Reine")
+        self.selectedProblem.addItem("KnapSack - WIP")
+        self.selectedProblem.addItem("Quadratic knapsack - WIP")
+        self.selectedProblem.addItem("PPP - WIP")
 
         self.layout = QVBoxLayout()
         self.layout.addWidget(self.fitnessLabel)
@@ -120,7 +154,7 @@ class First(QMainWindow):
         self.layout.addWidget(self.croisementLabel)
         self.layout.addWidget(self.croisementChoix)
         self.layout.addWidget(self.problemLabel)
-        self.layout.addWidget(self.problemChoix)
+        self.layout.addWidget(self.selectedProblem)
         self.layout.addWidget(self.cleanupButton)
 
         self.sizePopLabel = QLabel("nb d'individus")
@@ -162,7 +196,8 @@ class First(QMainWindow):
         self.cleanupButton.clicked.connect(self.on_cleanup_button_clicked)
         self.mutationChoix.currentTextChanged.connect(self.setMutationFlip)
         self.croisementChoix.currentTextChanged.connect(self.setCroisementChoix)
-        self.selectionChoix.currentTextChanged.connect(self.setSelectionChoix)
+        self.selectedProblem.currentTextChanged.connect(self.setselectedProblem)
+        self.selectedProblem.currentTextChanged.connect(self.setselectedProblem)
 
         self.widget = QWidget()
         self.widget.setLayout(self.layout)
@@ -197,6 +232,9 @@ class First(QMainWindow):
     def setCroisementChoix(self, s):
         global_state.croisement_param = s
 
+    def setselectedProblem(self, s):
+        global_state.selected_problem = s
+
 
 def main():
     app = QApplication(sys.argv)
@@ -204,5 +242,5 @@ def main():
     sys.exit(app.exec())
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
