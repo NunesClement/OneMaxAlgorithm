@@ -47,7 +47,7 @@ def single_point_crossover(a: List[int], b: List[int]) -> Tuple[List[int], List[
 
 
 def uniform_crossover(
-        individual_1: np.array, individual_2: np.array, thresh: int = 0.5
+    individual_1: np.array, individual_2: np.array, thresh: int = 0.5
 ):
     offspring_1 = individual_1.copy()
     offspring_2 = individual_2.copy()
@@ -68,7 +68,9 @@ op_count = [0, 0, 0]
 
 
 # 50% de chance d'effectuer une mutation
-def mutation(genome: List[int], num: int = 1, probability: float = 0.5, is_Aos: float = False) -> List[int]:
+def mutation(
+    genome: List[int], num: int = 1, probability: float = 0.5, is_Aos: float = False
+) -> List[int]:
     # print(num)
     if is_Aos:
         if num == 1:
@@ -79,14 +81,13 @@ def mutation(genome: List[int], num: int = 1, probability: float = 0.5, is_Aos: 
             op_count[2] = op_count[2] + 1
     for _ in range(num):
         index = randrange(len(genome))
-        genome[index] = genome[index] if random() > probability else abs(genome[index] - 1)
+        genome[index] = (
+            genome[index] if random() > probability else abs(genome[index] - 1)
+        )
     return genome
 
 
-# être sûr que c'est comme ça ?
-def bitflip(
-        genome: List[int]
-):
+def bitflip(genome: List[int]):
     genome = genome.copy()
     index = randrange(len(genome))
     index2 = randrange(len(genome))
@@ -101,7 +102,9 @@ def mutationPop(genome: List[int], num: int = 1, size_pop=10) -> List[int]:
     probability = 1 / size_pop
     for _ in range(num):
         index = randrange(len(genome))
-        genome[index] = genome[index] if random() > probability else abs(genome[index] - 1)
+        genome[index] = (
+            genome[index] if random() > probability else abs(genome[index] - 1)
+        )
 
     return genome
 
@@ -114,14 +117,14 @@ def population_fitness(population: Population, fitness_func: FitnessFunc) -> int
 # selectionner 2 gênomes en vu d'un croisement RANDOM
 def selection_pair(population: Population, fitness_func: FitnessFunc) -> Population:
     return choices(
-        population=population,
-        weights=[fitness_func(gene) for gene in population],
-        k=2
+        population=population, weights=[fitness_func(gene) for gene in population], k=2
     )
 
 
 # selectionner 2 meilleurs gênomes en vu d'un croisement RANDOM
-def selection_pair_better(population: Population, fitness_func: FitnessFunc) -> Population:
+def selection_pair_better(
+    population: Population, fitness_func: FitnessFunc
+) -> Population:
     select_pop = sort_population(population, fitness_func)
     # Test en gardant que les plus nuls
     # return select_pop[len(select_pop) -1], select_pop[len(select_pop) -2]
@@ -129,19 +132,27 @@ def selection_pair_better(population: Population, fitness_func: FitnessFunc) -> 
 
 
 # selectionner 2 meilleurs génomes parmis S random
-def selection_tournois_parmi_s_randoms(population: Population, fitness_func: FitnessFunc, s: int = 2) -> Population:
+def selection_tournois_parmi_s_randoms(
+    population: Population, fitness_func: FitnessFunc, s: int = 2
+) -> Population:
 
     if s >= len(population):
         raise ValueError("L'ensemble S random doit être < a la taille de la pop")
-    index_selection_aleatoire = np.unique(np.random.randint(len(population), size=(1, s)))
+    index_selection_aleatoire = np.unique(
+        np.random.randint(len(population), size=(1, s))
+    )
     ensemble_pris_aleatoirement = []
     # sécurité
     while index_selection_aleatoire.size < s:
-        index_selection_aleatoire = np.unique(np.random.randint(len(population), size=(1, s)))
+        index_selection_aleatoire = np.unique(
+            np.random.randint(len(population), size=(1, s))
+        )
 
     for i in range(0, index_selection_aleatoire.size):
         ensemble_pris_aleatoirement.append(population[i])
-    ensemble_pris_aleatoirement = sort_population(ensemble_pris_aleatoirement, fitness_func)
+    ensemble_pris_aleatoirement = sort_population(
+        ensemble_pris_aleatoirement, fitness_func
+    )
     # Test en gardant que les plus nuls
     return ensemble_pris_aleatoirement[0], ensemble_pris_aleatoirement[1]
 
@@ -168,13 +179,22 @@ def genome_to_string(genome: List[int]) -> str:
 def print_stats(population: Population, generation_id: int, fitness_func: FitnessFunc):
     print("GENERATION %02d" % generation_id)
     print("=============")
-    print("Population: [%s]" % ", ".join([genome_to_string(gene) for gene in population]))
-    print("Avg. Fitness: %f" % (population_fitness(population, fitness_func) / len(population)))
+    print(
+        "Population: [%s]" % ", ".join([genome_to_string(gene) for gene in population])
+    )
+    print(
+        "Avg. Fitness: %f"
+        % (population_fitness(population, fitness_func) / len(population))
+    )
     sorted_population = sort_population(population, fitness_func)
     print(
-        "Best: %s (%f)" % (genome_to_string(sorted_population[0]), fitness_func(sorted_population[0])))
-    print("Worst: %s (%f)" % (genome_to_string(sorted_population[-1]),
-                              fitness_func(sorted_population[-1])))
+        "Best: %s (%f)"
+        % (genome_to_string(sorted_population[0]), fitness_func(sorted_population[0]))
+    )
+    print(
+        "Worst: %s (%f)"
+        % (genome_to_string(sorted_population[-1]), fitness_func(sorted_population[-1]))
+    )
     print("")
 
     return sorted_population[0]
@@ -193,7 +213,9 @@ def update_roulette_wheel(reward_list, proba_list, p_min):
     somme_util = sum(reward_list)
     if somme_util > 0:
         for i in range(len(proba_list)):
-            proba_list[i] = p_min + (1 - len(proba_list) * p_min) * (reward_list[i] / (somme_util))
+            proba_list[i] = p_min + (1 - len(proba_list) * p_min) * (
+                reward_list[i] / (somme_util)
+            )
     else:
         proba_list = init_proba_list(len(proba_list))
     return proba_list
@@ -226,7 +248,7 @@ def update_reward_sliding(reward_list, reward_history, history_size, index, valu
     else:
         reward_history[index].append(value)
     if len(reward_history[index]) > history_size:
-        reward_history[index] = reward_history[index][1:len(reward_history[index])]
+        reward_history[index] = reward_history[index][1 : len(reward_history[index])]
     reward_list[index] = sum(reward_history[index]) / len(reward_history[index])
     return reward_history, reward_list
 
@@ -236,7 +258,8 @@ def update_reward_sliding(reward_list, reward_history, history_size, index, valu
 def update_UCB_val(UCB_val, C, op_history, reward_list, i):
     for o in range(len(op_history)):
         UCB_val[o] = reward_list[o] + C * np.sqrt(
-            i / (2 * np.log(1 + op_history[o][i]) + 1))
+            i / (2 * np.log(1 + op_history[o][i]) + 1)
+        )
     return UCB_val
 
 
@@ -305,17 +328,17 @@ C = 4
 
 
 def run_evolution(
-        populate_func: PopulateFunc,
-        fitness_func: FitnessFunc,
-        fitness_limit: int,
-        selection_func: SelectionFunc = selection_pair,
-        selector_operator="1-flip",
-        crossover_func: CrossoverFunc = uniform_crossover,
-        mutation_func: MutationFunc = mutation,
-        generation_limit: int = 100,
-        nb_run: int = 10,
-        printer: Optional[PrinterFunc] = None) \
-        -> Tuple[Population, int]:
+    populate_func: PopulateFunc,
+    fitness_func: FitnessFunc,
+    fitness_limit: int,
+    selection_func: SelectionFunc = selection_pair,
+    selector_operator="1-flip",
+    crossover_func: CrossoverFunc = uniform_crossover,
+    mutation_func: MutationFunc = mutation,
+    generation_limit: int = 100,
+    nb_run: int = 10,
+    printer: Optional[PrinterFunc] = None,
+) -> Tuple[Population, int]:
     collected_data = []
     # print("crossover_func" + str(crossover_func))
     print("selector_operator " + str(selector_operator))
@@ -347,7 +370,9 @@ def run_evolution(
                 if op_list[current_op] == "bitflip":
                     mutation_func = partial(bitflip)
                 else:
-                    mutation_func = partial(mutation, num=op_list[current_op], probability=0.5, is_Aos=True)
+                    mutation_func = partial(
+                        mutation, num=op_list[current_op], probability=0.5, is_Aos=True
+                    )
 
                 if generation_limit > 1000:
                     if i % 500 == 0 and i != 0:
@@ -356,8 +381,12 @@ def run_evolution(
                     # print("Le programme a l'efficacité : " + str(fitness_func(population[0])) + " / " + str(fitness_limit)
                     # + " à l'itération " + str(i))
                     collected_iteration = np.append(collected_iteration, i)
-                    collected_fitness = np.append(collected_fitness, fitness_func(population[0]))
-                population = sorted(population, key=lambda genome: fitness_func(genome), reverse=True)
+                    collected_fitness = np.append(
+                        collected_fitness, fitness_func(population[0])
+                    )
+                population = sorted(
+                    population, key=lambda genome: fitness_func(genome), reverse=True
+                )
                 # print("Meilleur : " + str(fitness_func(greatest(population, fitness_func))))
                 # print("Plus nulle : " + str(fitness_func(loosest(population, fitness_func))))
                 # print(fitness_func(sort_population(population, fitness_func)[len(population)-1]))
@@ -376,9 +405,13 @@ def run_evolution(
 
                 fitness_now = Lanceur.fitness(greatest(next_generation, fitness_func))
                 # fitness_now = Lanceur.fitness(greatest(population, fitness_func))
-                reward_history, reward_list = update_reward_sliding(reward_list, reward_history, history_size,
-                                                                    current_op,
-                                                                    improvement(fitness_init, fitness_now))
+                reward_history, reward_list = update_reward_sliding(
+                    reward_list,
+                    reward_history,
+                    history_size,
+                    current_op,
+                    improvement(fitness_init, fitness_now),
+                )
 
                 # print(str(fitness_init) + " " + str(fitness_now))
                 UCB_val = update_UCB_val(UCB_val, C, op_history, reward_list, i)
@@ -440,7 +473,9 @@ def run_evolution(
                 if op_list[current_op] == "bitflip":
                     mutation_func = partial(bitflip)
                 else:
-                    mutation_func = partial(mutation, num=op_list[current_op], probability=0.5, is_Aos=True)
+                    mutation_func = partial(
+                        mutation, num=op_list[current_op], probability=0.5, is_Aos=True
+                    )
 
                 if generation_limit > 1000:
                     if i % 500 == 0 and i != 0:
@@ -449,8 +484,12 @@ def run_evolution(
                     # print("Le programme a l'efficacité : " + str(fitness_func(population[0])) + " / " + str(fitness_limit)
                     # + " à l'itération " + str(i))
                     collected_iteration = np.append(collected_iteration, i)
-                    collected_fitness = np.append(collected_fitness, fitness_func(population[0]))
-                population = sorted(population, key=lambda genome: fitness_func(genome), reverse=True)
+                    collected_fitness = np.append(
+                        collected_fitness, fitness_func(population[0])
+                    )
+                population = sorted(
+                    population, key=lambda genome: fitness_func(genome), reverse=True
+                )
                 # print("Meilleur : " + str(fitness_func(greatest(population, fitness_func))))
                 # print("Plus nulle : " + str(fitness_func(loosest(population, fitness_func))))
                 # print(fitness_func(sort_population(population, fitness_func)[len(population)-1]))
@@ -468,9 +507,13 @@ def run_evolution(
                     next_generation += [offspring_a, offspring_b]
 
                 fitness_now = Lanceur.fitness(greatest(next_generation, fitness_func))
-                reward_history, reward_list = update_reward_sliding(reward_list, reward_history, history_size,
-                                                                    current_op,
-                                                                    improvement(fitness_init, fitness_now))
+                reward_history, reward_list = update_reward_sliding(
+                    reward_list,
+                    reward_history,
+                    history_size,
+                    current_op,
+                    improvement(fitness_init, fitness_now),
+                )
                 proba_list = update_roulette_wheel(reward_list, proba_list, p_min)
 
                 population = next_generation
@@ -490,11 +533,7 @@ def run_evolution(
                 moy = moy + collected_data[i][a]
             moy = round(moy / len(collected_data))
             collected_data_means.append(moy)
-        # print([collected_iteration, collected_data_means])
-        # print(str(len(collected_iteration)) + " " + str(len(collected_data_means)))
         collected_data_means = np.asarray(collected_data_means)
-        # print(collected_data)
-        # print(collected_data_means)
 
     if selector_operator == "OS_MANUAL":
 
@@ -515,7 +554,9 @@ def run_evolution(
             collected_fitness = np.array([])
             for i in range(generation_limit):
                 if i < generation_limit01:
-                    mutation_func = partial(mutation, num=genome_length_1_on_10, probability=0.5)
+                    mutation_func = partial(
+                        mutation, num=genome_length_1_on_10, probability=0.5
+                    )
                 if generation_limit02 <= i <= generation_limit05:
                     mutation_func = partial(mutation, num=2, probability=0.5)
                 if i > generation_limit05:
@@ -526,8 +567,12 @@ def run_evolution(
                         print("Itération " + str(i) + " ...")
                 if i % 5 == 0:
                     collected_iteration = np.append(collected_iteration, i)
-                    collected_fitness = np.append(collected_fitness, fitness_func(population[0]))
-                population = sorted(population, key=lambda genome: fitness_func(genome), reverse=True)
+                    collected_fitness = np.append(
+                        collected_fitness, fitness_func(population[0])
+                    )
+                population = sorted(
+                    population, key=lambda genome: fitness_func(genome), reverse=True
+                )
                 if printer is not None:
                     printer(population, i, fitness_func)
 
@@ -569,8 +614,12 @@ def run_evolution(
                         print("Itération " + str(i) + " ...")
                 if i % 5 == 0:
                     collected_iteration = np.append(collected_iteration, i)
-                    collected_fitness = np.append(collected_fitness, fitness_func(population[0]))
-                population = sorted(population, key=lambda genome: fitness_func(genome), reverse=True)
+                    collected_fitness = np.append(
+                        collected_fitness, fitness_func(population[0])
+                    )
+                population = sorted(
+                    population, key=lambda genome: fitness_func(genome), reverse=True
+                )
                 if printer is not None:
                     printer(population, i, fitness_func)
 
@@ -587,7 +636,12 @@ def run_evolution(
 
             collected_data.append(collected_fitness)
 
-    if selector_operator != "OS_MANUAL" and selector_operator != "AOS_UCB" and selector_operator != "AOS_PM" and selector_operator != "OS_RANDOM_AVEUGLE":
+    if (
+        selector_operator != "OS_MANUAL"
+        and selector_operator != "AOS_UCB"
+        and selector_operator != "AOS_PM"
+        and selector_operator != "OS_RANDOM_AVEUGLE"
+    ):
         for this_run in range(0, nb_run):
             print("Run actuel : " + str(this_run + 1))
 
@@ -602,8 +656,12 @@ def run_evolution(
                         print("Itération " + str(i) + " ...")
                 if i % 5 == 0:
                     collected_iteration = np.append(collected_iteration, i)
-                    collected_fitness = np.append(collected_fitness, fitness_func(population[0]))
-                population = sorted(population, key=lambda genome: fitness_func(genome), reverse=True)
+                    collected_fitness = np.append(
+                        collected_fitness, fitness_func(population[0])
+                    )
+                population = sorted(
+                    population, key=lambda genome: fitness_func(genome), reverse=True
+                )
                 if printer is not None:
                     printer(population, i, fitness_func)
 
