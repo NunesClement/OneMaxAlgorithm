@@ -51,7 +51,7 @@ global_state = GlobalParameter(
     "selection_tournois_parmi_s_randoms",
     1000,
     1000,
-    121,
+    484,
     10,
     "uniform_crossover",
     "OneMax",
@@ -180,7 +180,7 @@ class First(QMainWindow):
 
         self.genomeTailleLabel = QLabel("genome taille")
         self.genomeTaille = QLineEdit()
-        self.genomeTaille.setText("121")
+        self.genomeTaille.setText("484")
         self.layout.addWidget(self.genomeTailleLabel)
         self.layout.addWidget(self.genomeTaille)
         self.genomeTaille.textChanged.connect(self.change_genome_taille_label)
