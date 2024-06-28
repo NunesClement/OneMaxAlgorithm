@@ -1,5 +1,6 @@
 import random
 from itertools import islice, product, starmap
+import math
 
 max_iter = 30000
 allConfigurations = []
@@ -39,6 +40,8 @@ def check_vertically(configuration, num_queen_x=0, num_queen_y=0):
 
 
 def check_diagonally_down(configuration, num_queen_x=0, num_queen_y=0):
+    size = math.sqrt(len(configuration[num_queen_x]))
+
     for i in range(1, len(configuration[num_queen_x])):
         if num_queen_x + i < size and num_queen_y + i < size:
             if configuration[num_queen_x + i][num_queen_y + i] == "R":
@@ -47,6 +50,8 @@ def check_diagonally_down(configuration, num_queen_x=0, num_queen_y=0):
 
 
 def check_diagonally_up(configuration, num_queen_x=0, num_queen_y=0):
+    size = math.sqrt(len(configuration[num_queen_x]))
+
     for i in range(1, len(configuration[num_queen_x])):
         if num_queen_x - i >= 0 and num_queen_y + i < size:
             if configuration[num_queen_x - i][num_queen_y + i] == "R":
@@ -54,8 +59,10 @@ def check_diagonally_up(configuration, num_queen_x=0, num_queen_y=0):
     return True
 
 
-def check_nb_queens(configuration=configurationBase):
+def check_nb_queens(configuration):
     nb_queen = 0
+    size = math.sqrt(len(configuration[0]))
+
     for i in range(0, len(configuration)):
         for j in range(0, len(configuration[i])):
             if configuration[i][j] == "R":
@@ -167,6 +174,7 @@ def convert01ToConfiguration(bandeau):
     tab = []
     sousTab = []
     compteur = 0
+    size = math.sqrt(len(bandeau))
     # print(len(bandeau))
     # print(bandeau[0])
     for i in range(0, len(bandeau)):
