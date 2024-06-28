@@ -1,7 +1,30 @@
 import random
 from itertools import islice, product, starmap
 
-configurationBase = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
+configurationBase = [
+    1,
+    2,
+    3,
+    4,
+    5,
+    6,
+    7,
+    8,
+    9,
+    10,
+    11,
+    12,
+    13,
+    14,
+    15,
+    16,
+    17,
+    18,
+    19,
+    20,
+    21,
+    22,
+]
 size = len(configurationBase)
 max_iter = 30000
 allConfigurations = []
@@ -17,6 +40,7 @@ allConfigurationsMatrix = []
 # 121 de largeur
 # 15000 itérations
 # seed de 17
+
 
 def displayConfiguration(configuration):
     for a in configuration:
@@ -134,7 +158,9 @@ def calculate_fitness(configuration):
     for i in range(0, len(configuration)):
         a = obtain_coord(configuration, i)
         for j in range(0, len(a)):
-            fitness_total = fitness_total + fitness_function(configuration, a[j][0], a[j][1])
+            fitness_total = fitness_total + fitness_function(
+                configuration, a[j][0], a[j][1]
+            )
     return fitness_total
 
 
@@ -144,7 +170,9 @@ def calculate_penalty(configuration):
         a = obtain_coord(configuration, i)
 
         for j in range(0, len(a)):
-            penalty_total = penalty_total + penalty_function(configuration, a[j][0], a[j][1])
+            penalty_total = penalty_total + penalty_function(
+                configuration, a[j][0], a[j][1]
+            )
     return penalty_total
 
 

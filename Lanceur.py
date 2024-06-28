@@ -1,14 +1,22 @@
 from functools import partial
 from typing import List
 import matplotlib.pyplot as plt
-import Methods_Genetics
+import Genetics_Methods
 import numpy as np
 import Nqueen
+
 
 # fonction de fitness
 import seed_env
 
 plt.figure(figsize=(10, 6))
+
+
+# fitness for nqueen
+def fitness_nqueen(genome: List[int]) -> int:
+    if len(genome) <= 0:
+        raise ValueError("Le genome doit être > 0 ")
+    return Nqueen.calculate_fitness(Nqueen.convert01ToConfiguration(genome))
 
 
 def fitness(genome: List[int]) -> int:
@@ -17,75 +25,47 @@ def fitness(genome: List[int]) -> int:
     return genome.count(1)
 
 
-# fitness for nqueen
-def fitness_nqueen(genome: List[int]) -> int:
-    if len(genome) <= 0:
-        raise ValueError("Le genome doit être > 0 ")
-    # print(genome)
-    return Nqueen.calculate_fitness(Nqueen.convert01ToConfiguration(genome))
+def fitness_manager(problemChoice):
+    if problemChoice == "OneMax":
+        return fitness
+    else:
+        return fitness_nqueen
 
-
-# test d'une fonc de fitness ou il faut du all different
-# array = [
-#     1, 2, 2, 4 ,5 ,6, 7, 8, 6, 10
-# ]
-# # un possible résultat attendu [1,1,0,1,1,1,1,0,1]
-# def fitness(genome: OneMaxKnapSack.Genome) -> int:
-#     array_collecte = [0,0,0,0,0,0,0,0,0,0]
-#     if len(genome) <= 0 :
-#         raise ValueError("Le genome doit être > 0 ")
-#     count = 0
-#     for i in range(0, len(genome)):
-#         if genome[i] == 1 :
-#             array_collecte[i] = array[i]
-#         else :
-#             array_collecte[i] = 0
-#     for i in range(0, len(genome)):
-#         if array_collecte.count(array_collecte[i]) > 1:
-#             count = count - 1
-#         if array_collecte.count(array_collecte[i]) == 1:
-#             count = count + 1
-#     return count
-
-# fitness de la pop globale
-# print(OneMaxKnapSack.population_fitness(Population10par10, fitness))
-#
-# print(OneMaxKnapSack.selection_pair(Population10par10, fitness))
 
 def launch_with_param(
-        mutation_param="1-flip",
-        selection_param="",
-        selector_operator="1-flip",
-        size=10,
-        genome_length=10,
-        fitness_limit=10,
-        generation_limit=10,
-        nb_run=10,
-        crossover_param="single_point_crossover",
+    mutation_param="1-flip",
+    selection_param="",
+    selector_operator="1-flip",
+    size=10,
+    genome_length=10,
+    fitness_limit=10,
+    generation_limit=10,
+    nb_run=10,
+    crossover_param="single_point_crossover",
+    selected_problem="OneMax",
 ):
-    # print(selector_operator)
     weight_limit = 10
-    mutation = partial(Methods_Genetics.mutation, num=1, probability=0.5)
+    mutation = partial(Genetics_Methods.mutation, num=1, probability=0.5)
     if mutation_param == "bitflip":
-        mutation = partial(Methods_Genetics.bitflip)
+        mutation = partial(Genetics_Methods.bitflip)
     if mutation_param == "0-flip":
-        mutation = partial(Methods_Genetics.mutation, num=0, probability=0.5)
+        mutation = partial(Genetics_Methods.mutation, num=0, probability=0.5)
     if mutation_param == "1-flip":
-        mutation = partial(Methods_Genetics.mutation, num=1, probability=0.5)
+        mutation = partial(Genetics_Methods.mutation, num=1, probability=0.5)
     if mutation_param == "2-flip":
-        mutation = partial(Methods_Genetics.mutation, num=2, probability=0.5)
+        mutation = partial(Genetics_Methods.mutation, num=2, probability=0.5)
     if mutation_param == "3-flip":
-        mutation = partial(Methods_Genetics.mutation, num=3, probability=0.5)
+        mutation = partial(Genetics_Methods.mutation, num=3, probability=0.5)
     if mutation_param == "4-flip":
-        mutation = partial(Methods_Genetics.mutation, num=4, probability=0.5)
+        mutation = partial(Genetics_Methods.mutation, num=4, probability=0.5)
     if mutation_param == "5-flip":
-        mutation = partial(Methods_Genetics.mutation, num=5, probability=0.5)
+        mutation = partial(Genetics_Methods.mutation, num=5, probability=0.5)
 
     # print("crossover_param " + str(crossover_param))
     if crossover_param == "uniform_crossover":
-        crossover = Methods_Genetics.uniform_crossover
+        crossover = Genetics_Methods.uniform_crossover
     else:
-        crossover = Methods_Genetics.single_point_crossover
+        crossover = Genetics_Methods.single_point_crossover
 
     nb_tournois = 2
 
@@ -100,19 +80,25 @@ def launch_with_param(
     if 100 <= size:
         nb_tournois = round(size / 5)
 
-    selection = partial(Methods_Genetics.selection_tournois_parmi_s_randoms, s=nb_tournois)
+    selection = partial(
+        Genetics_Methods.selection_tournois_parmi_s_randoms, s=nb_tournois
+    )
     if selection_param == "selection_tournois_parmi_s_randoms":
-        selection = partial(Methods_Genetics.selection_tournois_parmi_s_randoms, s=nb_tournois)
+        selection = partial(
+            Genetics_Methods.selection_tournois_parmi_s_randoms, s=nb_tournois
+        )
     if selection_param == "selection_pair_better":
-        selection = partial(Methods_Genetics.selection_pair_better)
+        selection = partial(Genetics_Methods.selection_pair_better)
     if selection_param == "selection_pair":
-        selection = partial(Methods_Genetics.selection_pair)
+        selection = partial(Genetics_Methods.selection_pair)
 
     # noinspection PyTupleAssignmentBalance
-    (population, generations, collected_data) = Methods_Genetics.run_evolution(
+    (population, generations, collected_data) = Genetics_Methods.run_evolution(
         # taille pop et taille de genome
-        populate_func=partial(Methods_Genetics.generate_population, size=size, genome_length=genome_length),
-        fitness_func=partial(fitness),
+        populate_func=partial(
+            Genetics_Methods.generate_population, size=size, genome_length=genome_length
+        ),
+        fitness_func=partial(fitness_manager(selected_problem)),
         selection_func=selection,
         crossover_func=crossover,
         selector_operator=selector_operator,
@@ -121,33 +107,42 @@ def launch_with_param(
         fitness_limit=fitness_limit,
         # nombre de générations
         generation_limit=generation_limit,
-        nb_run=nb_run
+        nb_run=nb_run,
     )
     print(selector_operator)
     print("One call just finished")
-    congig_memory = [str(seed_env.getSeed()), str(mutation_param), str(selection_param),
-                     str(crossover_param), str(fitness_limit),
-                     str(generation_limit), str(genome_length), str(size)]
+    congig_memory = [
+        str(seed_env.getSeed()),
+        str(mutation_param),
+        str(selection_param),
+        str(crossover_param),
+        str(fitness_limit),
+        str(generation_limit),
+        str(genome_length),
+        str(size),
+    ]
 
     iteration_array = np.array_str(collected_data[0])
 
     fitness_array = np.array_str(collected_data[1])
 
-    np.warnings.filterwarnings('ignore', category=np.VisibleDeprecationWarning)
-    with open('array_1d.csv', 'a') as csvfile:
-        np.savetxt(csvfile, [congig_memory, iteration_array], delimiter=',', fmt="%s")
-        np.savetxt(csvfile, [fitness_array], delimiter=',', fmt="%s")
+    np.warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
+    with open("array_1d.csv", "a") as csvfile:
+        np.savetxt(csvfile, [congig_memory, iteration_array], delimiter=",", fmt="%s")
+        np.savetxt(csvfile, [fitness_array], delimiter=",", fmt="%s")
 
     return population, generations, collected_data
 
 
 def debugGlobalState(global_state):
     print("Seed " + str(global_state.seed))
-    print("Type de mutation "
-          + str(global_state.mutation_params[0])
-          + " avec une proba de "
-          + str(global_state.mutation_params[1])
-          )
+    print(
+        "Type de mutation "
+        + str(global_state.mutation_params[0])
+        + " avec une proba de "
+        + str(global_state.mutation_params[1])
+    )
+    print("Choix du problème" + str(global_state.selected_problem))
     print("Paramètre de croisemement " + str(global_state.croisement_param))
     print("Paramètre de sélection " + str(global_state.selection_params))
     print("Limit de fitness " + str(global_state.fitness_limit))
@@ -175,24 +170,41 @@ def launch_the_launcher(global_state):
         int(global_state.fitness_limit),
         int(global_state.generation_limit),
         int(global_state.nb_run),
-        str(global_state.croisement_param)
+        str(global_state.croisement_param),
+        str(global_state.selected_problem),
     )
+
+    if global_state.selected_problem == "N-Reine":
+        Nqueen.displayConfiguration(Nqueen.convert01ToConfiguration(population[0]))
+        print(
+            "Penalty  : "
+            + str(
+                Nqueen.calculate_penalty(Nqueen.convert01ToConfiguration(population[0]))
+            )
+        )
 
     x = collected_data[0]
     y = collected_data[1]
-    lbl = str(global_state.croisement_param) + " " + str(global_state.mutation_params[0]) + " " + str(
-        global_state.selection_params) + " " + str(
-        generations + 1) + " générations " + str(
-        collected_data[1][len(collected_data[1]) - 1])
+    lbl = (
+        str(global_state.croisement_param)
+        + " "
+        + str(global_state.mutation_params[0])
+        + " "
+        + str(global_state.selection_params)
+        + " "
+        + str(generations + 1)
+        + " générations "
+        + str(collected_data[1][len(collected_data[1]) - 1])
+    )
     plt.plot(x, y, label=lbl)
     plt.title("AG lancé sur " + str(global_state.nb_run) + " executions")
 
-    np.warnings.filterwarnings('ignore', category=np.VisibleDeprecationWarning)
-    with open('debug/' + str(global_state.mutation_params[0]) + '.csv', 'a') as csvfile:
+    np.warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
+    with open("debug/" + str(global_state.mutation_params[0]) + ".csv", "a") as csvfile:
         # Générations
-        np.savetxt(csvfile, [collected_data[0]], delimiter=',', fmt="%s")
+        np.savetxt(csvfile, [collected_data[0]], delimiter=",", fmt="%s")
         # Fitness
-        np.savetxt(csvfile, [collected_data[1]], delimiter=',', fmt="%s")
+        np.savetxt(csvfile, [collected_data[1]], delimiter=",", fmt="%s")
 
     plt.legend()
 
