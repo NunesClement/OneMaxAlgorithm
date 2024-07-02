@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import Genetics_Methods
 import numpy as np
 import Nqueen
+import csv
 
 
 # fonction de fitness
@@ -46,6 +47,8 @@ def launch_with_param(
 ):
     weight_limit = 10
     mutation = partial(Genetics_Methods.mutation, num=1, probability=0.5)
+
+    # URG : refacto this ugly code
     if mutation_param == "bitflip":
         mutation = partial(Genetics_Methods.bitflip)
     if mutation_param == "0-flip":
@@ -61,7 +64,6 @@ def launch_with_param(
     if mutation_param == "5-flip":
         mutation = partial(Genetics_Methods.mutation, num=5, probability=0.5)
 
-    # print("crossover_param " + str(crossover_param))
     if crossover_param == "uniform_crossover":
         crossover = Genetics_Methods.uniform_crossover
     else:
@@ -126,11 +128,15 @@ def launch_with_param(
 
     fitness_array = np.array_str(collected_data[1])
 
-    np.warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
-    with open("array_1d.csv", "a") as csvfile:
-        np.savetxt(csvfile, [congig_memory, iteration_array], delimiter=",", fmt="%s")
-        np.savetxt(csvfile, [fitness_array], delimiter=",", fmt="%s")
+    with open("array_1d.csv", "a", newline="") as csvfile:
+        writer = csv.writer(csvfile, delimiter=",")
 
+        # Write the congig_memory and iteration_array
+        writer.writerow(congig_memory)
+        writer.writerow(iteration_array)
+
+        # Write the fitness_array
+        writer.writerow(fitness_array)
     return population, generations, collected_data
 
 
@@ -199,15 +205,17 @@ def launch_the_launcher(global_state):
     plt.plot(x, y, label=lbl)
     plt.title("AG lancé sur " + str(global_state.nb_run) + " executions")
 
-    np.warnings.filterwarnings("ignore", category=np.VisibleDeprecationWarning)
-    with open("debug/" + str(global_state.mutation_params[0]) + ".csv", "a") as csvfile:
-        # Générations
-        np.savetxt(csvfile, [collected_data[0]], delimiter=",", fmt="%s")
-        # Fitness
-        np.savetxt(csvfile, [collected_data[1]], delimiter=",", fmt="%s")
+    with open(
+        "debug/" + str(global_state.mutation_params[0]) + ".csv", "a", newline=""
+    ) as csvfile:
+        writer = csv.writer(csvfile, delimiter=",")
+
+        # Write the Generations data
+        writer.writerow(collected_data[0])
+        # Write the Fitness data
+        writer.writerow(collected_data[1])
 
     plt.legend()
-
     plt.savefig("plot")
 
     return 0

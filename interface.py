@@ -216,8 +216,9 @@ class First(QMainWindow):
 
     def on_pushButton_clicked(self):
         dialog = Second(self)
-        # self.dialogs.append(dialog)
-        # dialog.show()
+
+    # self.dialogs.append(dialog)
+    # dialog.show()
 
     def on_cleanup_button_clicked(self):
         Lanceur.cleanup_graph()
