@@ -128,7 +128,7 @@ def launch_with_param(
 
     fitness_array = np.array_str(collected_data[1])
 
-    with open("array_1d.csv", "a", newline="") as csvfile:
+    with open("debug/array_1d.csv", "a", newline="") as csvfile:
         writer = csv.writer(csvfile, delimiter=",")
 
         # Write the congig_memory and iteration_array

@@ -40,8 +40,7 @@ def check_vertically(configuration, num_queen_x=0, num_queen_y=0):
 
 
 def check_diagonally_down(configuration, num_queen_x=0, num_queen_y=0):
-    size = math.sqrt(len(configuration[num_queen_x]))
-
+    size = len(configuration[0])
     for i in range(1, len(configuration[num_queen_x])):
         if num_queen_x + i < size and num_queen_y + i < size:
             if configuration[num_queen_x + i][num_queen_y + i] == "R":
@@ -50,7 +49,7 @@ def check_diagonally_down(configuration, num_queen_x=0, num_queen_y=0):
 
 
 def check_diagonally_up(configuration, num_queen_x=0, num_queen_y=0):
-    size = math.sqrt(len(configuration[num_queen_x]))
+    size = len(configuration[0])
 
     for i in range(1, len(configuration[num_queen_x])):
         if num_queen_x - i >= 0 and num_queen_y + i < size:
