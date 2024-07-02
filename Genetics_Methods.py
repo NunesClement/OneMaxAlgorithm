@@ -54,20 +54,37 @@ def uniform_crossover(
     for i, _ in enumerate(offspring_1):
         ran_num = np.random.uniform()
         if ran_num > thresh:
-
+            # échange de 2 bits à la i-ème position
+            temp_bit = offspring_1[i]
+            offspring_1[i] = offspring_2[i]
+            offspring_2[i] = temp_bit
         else:
             continue
 
-    return [ , ]
+    return [offspring_1, offspring_2]
 
 
 op_count = [0, 0, 0]
 
 
+# 50% de chance d'effectuer une mutation
 def mutation(
     genome: List[int], num: int = 1, probability: float = 0.5, is_Aos: float = False
 ) -> List[int]:
-    return
+    # print(num)
+    if is_Aos:
+        if num == 1:
+            op_count[0] = op_count[0] + 1
+        if num == 3:
+            op_count[1] = op_count[1] + 1
+        if num == 5:
+            op_count[2] = op_count[2] + 1
+    for _ in range(num):
+        index = randrange(len(genome))
+        genome[index] = (
+            genome[index] if random() > probability else abs(genome[index] - 1)
+        )
+    return genome
 
 
 def bitflip(genome: List[int]):
@@ -80,7 +97,19 @@ def bitflip(genome: List[int]):
     return genome
 
 
-# mesure la fitness de toute la pop, on passe la fonction de fitness
+# 1/taillePop de chance d'effectuer une mutation
+def mutationPop(genome: List[int], num: int = 1, size_pop=10) -> List[int]:
+    probability = 1 / size_pop
+    for _ in range(num):
+        index = randrange(len(genome))
+        genome[index] = (
+            genome[index] if random() > probability else abs(genome[index] - 1)
+        )
+
+    return genome
+
+
+# mesurer la fitness de toute la pop, on choisi la fonctuon  de fitness
 def population_fitness(population: Population, fitness_func: FitnessFunc) -> int:
     return sum([fitness_func(genome) for genome in population])
 
@@ -92,15 +121,17 @@ def selection_pair(population: Population, fitness_func: FitnessFunc) -> Populat
     )
 
 
-# Selectionner 2 meilleurs gênomes en vu d'un croisement RANDOM
+# selectionner 2 meilleurs gênomes en vu d'un croisement RANDOM
 def selection_pair_better(
     population: Population, fitness_func: FitnessFunc
 ) -> Population:
     select_pop = sort_population(population, fitness_func)
+    # Test en gardant que les plus nuls
+    # return select_pop[len(select_pop) -1], select_pop[len(select_pop) -2]
     return select_pop[0], select_pop[1]
 
 
-# Selectionner 2 meilleurs génomes parmis S random
+# selectionner 2 meilleurs génomes parmis S random
 def selection_tournois_parmi_s_randoms(
     population: Population, fitness_func: FitnessFunc, s: int = 2
 ) -> Population:
@@ -111,6 +142,7 @@ def selection_tournois_parmi_s_randoms(
         np.random.randint(len(population), size=(1, s))
     )
     ensemble_pris_aleatoirement = []
+    # sécurité
     while index_selection_aleatoire.size < s:
         index_selection_aleatoire = np.unique(
             np.random.randint(len(population), size=(1, s))
@@ -121,7 +153,7 @@ def selection_tournois_parmi_s_randoms(
     ensemble_pris_aleatoirement = sort_population(
         ensemble_pris_aleatoirement, fitness_func
     )
-
+    # Test en gardant que les plus nuls
     return ensemble_pris_aleatoirement[0], ensemble_pris_aleatoirement[1]
 
 
@@ -130,12 +162,12 @@ def sort_population(population: Population, fitness_func: FitnessFunc) -> Popula
     return sorted(population, key=fitness_func, reverse=True)
 
 
-# Meilleur individu (utile pour debug)
+# meilleur individu (utile pour debug)
 def greatest(population: Population, fitness_func: FitnessFunc) -> Population:
     return sorted(population, key=fitness_func, reverse=True)[0]
 
 
-# Pire individu (utile pour debug)
+# pire individu (utile pour debug)
 def loosest(population: Population, fitness_func: FitnessFunc) -> Population:
     return sorted(population, key=fitness_func, reverse=False)[0]
 
@@ -198,8 +230,9 @@ def init_UCB_val(taille):
     return l
 
 
-# Calcul de l'amélioration/reward immédiate (plusieurs versions possibles)
+# calcul de l'amélioration/reward immédiate (plusieurs versions possibles)
 def improvement(val_init, val_mut):
+    # return max(0, (val_mut - val_init))
     if val_mut - val_init <= 0:
         return 0
     else:
@@ -231,8 +264,8 @@ def update_UCB_val(UCB_val, C, op_history, reward_list, i):
 
 
 # calcul de l'amélioration/reward immédiate (plusieurs versions possibles)
-# def improvement(val_init, val_mut):
-#     return (val_mut - val_init) + 10
+def improvement(val_init, val_mut):
+    return (val_mut - val_init) + 10
 
 
 def init_reward_list(taille):
@@ -266,6 +299,12 @@ def select_op_proba(proba_list):
     return i
 
 
+# sélection operateur
+# biais, on prend toujours le premier
+# on devrait prendre un au hasard qui a la valeur max et pas juste le premier
+# ex 1 2 1 3 1 3 1 2
+# faut sélectionner un 3 au hasard
+# TODO
 def select_op_UCB(UCB_val):
     return UCB_val.index(max(UCB_val))
 
@@ -273,6 +312,9 @@ def select_op_UCB(UCB_val):
 maxFitnessValues = []
 meanFitnessValues = []
 op_history = []
+# les différents flips (à mettre dans l'ordre)
+# op_list = [5, 4, 3, 2, 1, "bitflip"]
+# si modif => modif fonction de mutation AOS
 op_list = ["bitflip", 3, 5]
 op_history_stat = []
 Max_Fitness_history_stat = []
@@ -294,6 +336,7 @@ def run_evolution(
     printer: Optional[PrinterFunc] = None,
 ) -> Tuple[Population, int]:
     collected_data = []
+    # print("crossover_func" + str(crossover_func))
     print("selector_operator " + str(selector_operator))
     if selector_operator == "AOS_UCB":
         for this_run in range(0, nb_run):
