@@ -60,7 +60,7 @@ def check_diagonally_up(configuration, num_queen_x=0, num_queen_y=0):
 
 def check_nb_queens(configuration):
     nb_queen = 0
-    size = math.sqrt(len(configuration[0]))
+    size = len(configuration[0])
 
     for i in range(0, len(configuration)):
         for j in range(0, len(configuration[i])):
@@ -173,9 +173,9 @@ def convert01ToConfiguration(bandeau):
     tab = []
     sousTab = []
     compteur = 0
+
     size = math.sqrt(len(bandeau))
-    # print(len(bandeau))
-    # print(bandeau[0])
+
     for i in range(0, len(bandeau)):
         charac = "-"
         if bandeau[i] == 1:
