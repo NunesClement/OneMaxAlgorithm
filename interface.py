@@ -71,7 +71,7 @@ class Second(QMainWindow):
                 self.setWindowTitle(self.title)
 
                 label = QLabel(self)
-                pixmap = QPixmap("plot.png")
+                pixmap = QPixmap("debug/plot.png")
                 label.setPixmap(pixmap)
                 self.setCentralWidget(label)
                 self.resize(pixmap.width(), pixmap.height())

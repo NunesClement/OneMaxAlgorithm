@@ -44,7 +44,9 @@ def zero():
     return 0
 
 
-toolbox.register("individualCreator", tools.initRepeat, creator.Individual, zero, ONE_MAX_LENGTH)
+toolbox.register(
+    "individualCreator", tools.initRepeat, creator.Individual, zero, ONE_MAX_LENGTH
+)
 
 # initialisation de la population
 toolbox.register("populationCreator", tools.initRepeat, list, toolbox.individualCreator)
@@ -52,7 +54,7 @@ toolbox.register("populationCreator", tools.initRepeat, list, toolbox.individual
 
 # Calcul de la fitness/ fonction evaluate
 def oneMaxFitness(individual):
-    return sum(individual),  # return a tuple
+    return (sum(individual),)  # return a tuple
 
 
 toolbox.register("evaluate", oneMaxFitness)
@@ -97,7 +99,7 @@ toolbox.register("mutate", tools.mutFlipBit, indpb=1.0 / ONE_MAX_LENGTH)
 
 # insertion best fitness
 # sélectionner le moins bon et le remplacer éventuellement
-toolbox.register("worst", tools.selWorst, fit_attr='fitness')
+toolbox.register("worst", tools.selWorst, fit_attr="fitness")
 
 
 def insertion_best_fitness(population, offspring):
@@ -112,6 +114,7 @@ def insertion_best_fitness(population, offspring):
 #########################################
 # Outils pour la sélection d'opérateurs #
 #########################################
+
 
 # initialisation des structures de stockage des utilités
 def init_reward_list(taille):
@@ -154,13 +157,14 @@ def update_reward_sliding(reward_list, reward_history, history_size, index, valu
     else:
         reward_history[index].append(value)
     if len(reward_history[index]) > history_size:
-        reward_history[index] = reward_history[index][1:len(reward_history[index])]
+        reward_history[index] = reward_history[index][1 : len(reward_history[index])]
     reward_list[index] = sum(reward_history[index]) / len(reward_history[index])
 
 
 ########################
 # Probability matching #
 ########################
+
 
 # initialisation de la liste des probabilités
 def init_proba_list(taille):
@@ -175,7 +179,9 @@ def update_roulette_wheel(reward_list, proba_list, p_min):
     somme_util = sum(reward_list)
     if somme_util > 0:
         for i in range(len(proba_list)):
-            proba_list[i] = p_min + (1 - len(proba_list) * p_min) * (reward_list[i] / (somme_util))
+            proba_list[i] = p_min + (1 - len(proba_list) * p_min) * (
+                reward_list[i] / (somme_util)
+            )
     else:
         proba_list = init_proba_list(len(proba_list))
 
@@ -194,7 +200,15 @@ def select_op_proba(proba_list):
 
 
 # boucle principale d'évolution avec PM
-def ea_loop_PM(population, maxFitnessValues, meanFitnessValues, op_history, op_list, p_min, history_size):
+def ea_loop_PM(
+    population,
+    maxFitnessValues,
+    meanFitnessValues,
+    op_history,
+    op_list,
+    p_min,
+    history_size,
+):
     generationCounter = 0
     reward_list = init_reward_list(len(op_list))
     reward_history = init_reward_history(len(op_list))
@@ -210,7 +224,9 @@ def ea_loop_PM(population, maxFitnessValues, meanFitnessValues, op_history, op_l
     fitnessValues = [individual.fitness.values[0] for individual in population]
 
     # boucle évolutionnaire
-    while (max(fitnessValues) < ONE_MAX_LENGTH) and (generationCounter < MAX_GENERATIONS):
+    while (max(fitnessValues) < ONE_MAX_LENGTH) and (
+        generationCounter < MAX_GENERATIONS
+    ):
         # MAJ compteur
         generationCounter = generationCounter + 1
         # sélectino opérateur
@@ -235,8 +251,13 @@ def ea_loop_PM(population, maxFitnessValues, meanFitnessValues, op_history, op_l
                 # calccul nouvelle fitness
                 mutant.fitness.values = list(toolbox.evaluate(mutant))
         # MAJ des utilités
-        update_reward_sliding(reward_list, reward_history, history_size, current_op,
-                              improvement(fitness_init, mutant.fitness.values[0]))
+        update_reward_sliding(
+            reward_list,
+            reward_history,
+            history_size,
+            current_op,
+            improvement(fitness_init, mutant.fitness.values[0]),
+        )
         # MAJ roulette
         update_roulette_wheel(reward_list, proba_list, p_min)
         # on effectue la mutation uniquement si elle est améliorante
@@ -262,6 +283,7 @@ def ea_loop_PM(population, maxFitnessValues, meanFitnessValues, op_history, op_l
 # Sélection avec UCB #
 ######################
 
+
 # initialisation strutures
 # [0, 0, 0] 3 opérateurs
 def init_UCB_val(taille):
@@ -276,7 +298,8 @@ def init_UCB_val(taille):
 def update_UCB_val(UCB_val, C, op_history, reward_list, generationCounter):
     for o in range(len(op_history)):
         UCB_val[o] = reward_list[o] + C * np.sqrt(
-            generationCounter / (2 * np.log(1 + op_history[o][generationCounter]) + 1))
+            generationCounter / (2 * np.log(1 + op_history[o][generationCounter]) + 1)
+        )
 
 
 # sélection operateur
@@ -291,7 +314,15 @@ def select_op_UCB(UCB_val):
 
 # boucle évol. UCB (même structure que PM )
 # à la place on sélectionne la meilleur valeur UCB
-def ea_loop_MAB(population, maxFitnessValues, meanFitnessValues, op_history, op_list, history_size, C):
+def ea_loop_MAB(
+    population,
+    maxFitnessValues,
+    meanFitnessValues,
+    op_history,
+    op_list,
+    history_size,
+    C,
+):
     generationCounter = 0
     reward_list = init_reward_list(len(op_list))
     reward_history = init_reward_history(len(op_list))
@@ -302,7 +333,9 @@ def ea_loop_MAB(population, maxFitnessValues, meanFitnessValues, op_history, op_
     for individual, fitnessValue in zip(population, fitnessValues):
         individual.fitness.values = fitnessValue
     fitnessValues = [individual.fitness.values[0] for individual in population]
-    while (max(fitnessValues) < ONE_MAX_LENGTH) and (generationCounter < MAX_GENERATIONS):
+    while (max(fitnessValues) < ONE_MAX_LENGTH) and (
+        generationCounter < MAX_GENERATIONS
+    ):
         generationCounter = generationCounter + 1
         current_op = select_op_UCB(UCB_val)
         for o in range(len(op_list)):
@@ -324,8 +357,13 @@ def ea_loop_MAB(population, maxFitnessValues, meanFitnessValues, op_history, op_
                 del mutant.fitness.values
                 mutant.fitness.values = list(toolbox.evaluate(mutant))
 
-        update_reward_sliding(reward_list, reward_history, history_size, current_op,
-                              improvement(fitness_init, mutant.fitness.values[0]))
+        update_reward_sliding(
+            reward_list,
+            reward_history,
+            history_size,
+            current_op,
+            improvement(fitness_init, mutant.fitness.values[0]),
+        )
 
         # print(history_size)
         update_UCB_val(UCB_val, C, op_history, reward_list, generationCounter)
@@ -353,7 +391,7 @@ def main():
 
     # Choix des paramètres propres et de la méthode
     # AOS = 'PM'
-    AOS = 'PM'
+    AOS = "PM"
     p_min = 0.05
     history_size = 10
     C = 4
@@ -371,10 +409,26 @@ def main():
         init_op_history(op_history, len(op_list))
         # population initiale (generation 0):
         population = toolbox.populationCreator(n=POPULATION_SIZE)
-        if AOS == 'PM':
-            ea_loop_PM(population, maxFitnessValues, meanFitnessValues, op_history, op_list, p_min, history_size)
+        if AOS == "PM":
+            ea_loop_PM(
+                population,
+                maxFitnessValues,
+                meanFitnessValues,
+                op_history,
+                op_list,
+                p_min,
+                history_size,
+            )
         else:
-            ea_loop_MAB(population, maxFitnessValues, meanFitnessValues, op_history, op_list, history_size, C)
+            ea_loop_MAB(
+                population,
+                maxFitnessValues,
+                meanFitnessValues,
+                op_history,
+                op_list,
+                history_size,
+                C,
+            )
         # MAJ des stats
         op_history_stat.append(op_history)
         Max_Fitness_history_stat.append(maxFitnessValues)
@@ -403,8 +457,15 @@ def main():
         population = toolbox.populationCreator(n=POPULATION_SIZE)
         stats = tools.Statistics(lambda ind: ind.fitness.values)
         stats.register("max", max)
-        population, logbook = algorithms.eaSimple(population, toolbox, P_CROSSOVER, P_MUTATION, MAX_GENERATIONS,
-                                                  stats=stats, verbose=False)
+        population, logbook = algorithms.eaSimple(
+            population,
+            toolbox,
+            P_CROSSOVER,
+            P_MUTATION,
+            MAX_GENERATIONS,
+            stats=stats,
+            verbose=False,
+        )
         maxFitnessValuesClassic = logbook.select("max")
         maxFitness_history.append(maxFitnessValuesClassic)
     # préparation de data pour AG classique
@@ -416,18 +477,26 @@ def main():
         Mean_maxFitnessValues_classic.append(sum / NB_RUNS)
 
     # Génération d'un graphique
-    tab_col = ['b', 'g', 'r', 'c', 'm', 'y', 'k', 'w']
+    tab_col = ["b", "g", "r", "c", "m", "y", "k", "w"]
     sns.set_style("whitegrid")
     for o in range(len(op_list)):
-        plt.plot(op_history[o], color=tab_col[o], label=str(op_list[o]) + ' fl.')
-    plt.plot(maxFitnessValues, color='black', label='max fitness')
-    plt.plot(Mean_maxFitnessValues_classic, color='orange', label='max fitness classic EA')
+        plt.plot(op_history[o], color=tab_col[o], label=str(op_list[o]) + " fl.")
+    plt.plot(maxFitnessValues, color="black", label="max fitness")
+    plt.plot(
+        Mean_maxFitnessValues_classic, color="orange", label="max fitness classic EA"
+    )
     plt.legend()
-    plt.xlabel('Generation')
-    plt.ylabel('Max Fitness/Number of application of operators')
-    plt.title('Max Fitness over Generations and operators uses for ' + str(AOS) + ' using ' + str(NB_RUNS) + ' runs.')
+    plt.xlabel("Generation")
+    plt.ylabel("Max Fitness/Number of application of operators")
+    plt.title(
+        "Max Fitness over Generations and operators uses for "
+        + str(AOS)
+        + " using "
+        + str(NB_RUNS)
+        + " runs."
+    )
     plt.show()
 
 
-if __name__ == '__main__':
+if __name__ == "__main__":
     main()
