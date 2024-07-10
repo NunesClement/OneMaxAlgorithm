@@ -179,6 +179,7 @@ class First(QMainWindow):
         self.layout.addWidget(self.fitnessMax)
         self.fitnessMax.textChanged.connect(self.change_fitness_max)
 
+        # OneMax
         self.genomeTailleLabel = QLabel("genome taille")
         self.genomeTaille = QLineEdit()
         self.genomeTaille.setText("484")
@@ -186,7 +187,8 @@ class First(QMainWindow):
         self.layout.addWidget(self.genomeTaille)
         self.genomeTaille.textChanged.connect(self.change_genome_taille_label)
 
-        self.nreineTailleLabel = QLabel("Taille N-Reine (sera mis au carré)")
+        # N-Reine
+        self.nreineTailleLabel = QLabel("Taille N-Reine (nb de reine) ")
         self.nreineTaille = QLineEdit()
         self.nreineTaille.setText("5")
         self.layout.addWidget(self.nreineTailleLabel)
@@ -195,6 +197,17 @@ class First(QMainWindow):
 
         self.nreineTailleLabel.hide()
         self.nreineTaille.hide()
+
+        # Sudoku
+        self.sudokuTailleLabel = QLabel("Taille Sudoku (doit être un carré parfait) ")
+        self.sudokuTaille = QLineEdit()
+        self.sudokuTaille.setText("5")
+        self.layout.addWidget(self.sudokuTailleLabel)
+        self.layout.addWidget(self.sudokuTaille)
+        self.sudokuTaille.textChanged.connect(self.change_sudoku_taille_label)
+
+        self.sudokuTailleLabel.hide()
+        self.sudokuTaille.hide()
 
         self.generationNbLabel = QLabel("Itération / génération")
         self.generationNb = QLineEdit()
@@ -226,12 +239,18 @@ class First(QMainWindow):
         self.nreineTailleLabel.hide()
         self.nreineTaille.hide()
 
+        self.sudokuTailleLabel.hide()
+        self.sudokuTaille.hide()
+
         if self.selectedProblem.currentText() == "OneMax":
             self.genomeTailleLabel.show()
             self.genomeTaille.show()
         if self.selectedProblem.currentText() == "N-Reine":
             self.nreineTailleLabel.show()
             self.nreineTaille.show()
+        if self.selectedProblem.currentText() == "Sudoku":
+            self.sudokuTailleLabel.show()
+            self.sudokuTaille.show()
 
     def change_fitness_max(self, text):
         global_state.fitness_limit = text
@@ -240,7 +259,10 @@ class First(QMainWindow):
         global_state.genome_length = text
 
     def change_nreine_taille_label(self, text):
-        global_state.genome_length = int(text) ** 2
+        global_state.genome_length = int(text) ** 2  # Autosizer
+
+    def change_sudoku_taille_label(self, text):
+        global_state.genome_length = int(text) ** 2  # Autosizer
 
     def change_nb_generation(self, text):
         global_state.generation_limit = text
