@@ -137,6 +137,7 @@ class First(QMainWindow):
         self.selectedProblem = QComboBox()
         self.selectedProblem.addItem("OneMax")
         self.selectedProblem.addItem("N-Reine")
+        self.selectedProblem.addItem("Sudoku")
         self.selectedProblem.addItem("KnapSack - WIP")
         self.selectedProblem.addItem("Quadratic knapsack - WIP")
         self.selectedProblem.addItem("PPP - WIP")
@@ -185,6 +186,16 @@ class First(QMainWindow):
         self.layout.addWidget(self.genomeTaille)
         self.genomeTaille.textChanged.connect(self.change_genome_taille_label)
 
+        self.nreineTailleLabel = QLabel("Taille N-Reine (sera mis au carré)")
+        self.nreineTaille = QLineEdit()
+        self.nreineTaille.setText("5")
+        self.layout.addWidget(self.nreineTailleLabel)
+        self.layout.addWidget(self.nreineTaille)
+        self.nreineTaille.textChanged.connect(self.change_nreine_taille_label)
+
+        self.nreineTailleLabel.hide()
+        self.nreineTaille.hide()
+
         self.generationNbLabel = QLabel("Itération / génération")
         self.generationNb = QLineEdit()
         self.generationNb.setText("1000")
@@ -202,14 +213,34 @@ class First(QMainWindow):
         self.widget = QWidget()
         self.widget.setLayout(self.layout)
         self.setCentralWidget(self.widget)
+        self.selectedProblem.currentIndexChanged.connect(
+            self.update_genome_taille_visibility
+        )
 
         self.show()
+
+    def update_genome_taille_visibility(self):
+        self.genomeTailleLabel.hide()
+        self.genomeTaille.hide()
+
+        self.nreineTailleLabel.hide()
+        self.nreineTaille.hide()
+
+        if self.selectedProblem.currentText() == "OneMax":
+            self.genomeTailleLabel.show()
+            self.genomeTaille.show()
+        if self.selectedProblem.currentText() == "N-Reine":
+            self.nreineTailleLabel.show()
+            self.nreineTaille.show()
 
     def change_fitness_max(self, text):
         global_state.fitness_limit = text
 
     def change_genome_taille_label(self, text):
         global_state.genome_length = text
+
+    def change_nreine_taille_label(self, text):
+        global_state.genome_length = int(text) ** 2
 
     def change_nb_generation(self, text):
         global_state.generation_limit = text

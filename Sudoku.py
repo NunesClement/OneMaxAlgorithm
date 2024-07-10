@@ -3,9 +3,7 @@ import time
 import random
 import numpy as np
 
-size = 9
-subSize = int(size / math.sqrt(size))
-binarySize = math.ceil(math.log2(size))
+# URG: display the sudoku at the end
 
 
 def create_sudoku_grid():
@@ -48,13 +46,17 @@ def convertGridToBinary(grid):
     return binaryString
 
 
-def convertBinaryToGrid(binaryString):
+# URG: test performance
+def convertBinaryToGrid(intList):
     num_elements = size * size
+    binary_strings = [format(x, f"0{size}b") for x in intList]
+    binaryString = "".join(binary_strings)
+
     int_values = np.zeros(num_elements, dtype=int)
 
     for idx in range(num_elements):
-        start = idx * binarySize
-        end = start + binarySize
+        start = idx * size
+        end = start + size
         int_values[idx] = int(binaryString[start:end], 2)
 
     grid = int_values.reshape(size, size)
@@ -115,9 +117,21 @@ def sudoku_column_penalty(grid):
     return total_redundancy_count
 
 
-sudokuGrid = create_sudoku_grid()
+def calculate_fitness(binary):
+    grid = convertBinaryToGrid(binary)
+    sub_grids = get_sub_sudoku_grids(grid)
 
-binaries = convertGridToBinary(sudokuGrid)
+    total_penalty = 0
+    for sub_grid in sub_grids:
+        total_penalty += sub_sudoku_grid_penalty(sub_grid, grid)
+
+    total_penalty += sudoku_line_penalty(grid)
+    total_penalty += sudoku_column_penalty(grid)
+
+    print(grid)
+
+    return total_penalty
+
 
 # start_time = time.time()
 # for i in range(0, 3000000):

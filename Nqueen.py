@@ -2,11 +2,6 @@ import random
 from itertools import islice, product, starmap
 import math
 
-max_iter = 30000
-allConfigurations = []
-allConfigurationsMatrix = []
-
-
 # Fonctionnel pour 11 queens
 
 # uniform_crossover

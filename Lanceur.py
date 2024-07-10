@@ -4,6 +4,7 @@ import matplotlib.pyplot as plt
 import Genetics_Methods
 import numpy as np
 import Nqueen
+import Sudoku
 import csv
 
 
@@ -20,6 +21,12 @@ def fitness_nqueen(genome: List[int]) -> int:
     return Nqueen.calculate_fitness(Nqueen.convert01ToConfiguration(genome))
 
 
+def fitness_sudoku(genome: List[int]) -> int:
+    if len(genome) <= 0:
+        raise ValueError("Le genome doit être > 0 ")
+    return Sudoku.calculate_fitness(genome)
+
+
 def fitness(genome: List[int]) -> int:
     if len(genome) <= 0:
         raise ValueError("Le genome doit être > 0 ")
@@ -29,8 +36,11 @@ def fitness(genome: List[int]) -> int:
 def fitness_manager(problemChoice):
     if problemChoice == "OneMax":
         return fitness
-    else:
+    if problemChoice == "N-Reine":
         return fitness_nqueen
+    if problemChoice == "Sudoku":
+        return fitness_sudoku
+    return fitness
 
 
 def launch_with_param(
@@ -216,6 +226,6 @@ def launch_the_launcher(global_state):
         writer.writerow(collected_data[1])
 
     plt.legend()
-    plt.savefig("plot")
+    plt.savefig("debug/plot")
 
     return 0
