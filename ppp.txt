@@ -1,0 +1,153 @@
+Il y a [26] hotes
+
+Hotes { 0 0 0 1 1 1 1 0 0 1 1 1 1 1 1 1 0 0 1 0 1 1 1 1 0 0 1 1 0 1 1 0 1 1 1 0 1 1 1 0 0 0 }
+Los indices des bateaux hôtes sont :
+
+- Pour le yatch 0: { 18 22 14 13 30 5 }
+- Pour le yatch 1: { 6 13 38 10 3 34 }
+- Pour le yatch 2: { 12 14 15 26 5 13 }
+- Pour le yatch 7: { 4 9 33 27 22 3 }
+- Pour le yatch 8: { 13 21 15 32 27 6 }
+- Pour le yatch 16: { 5 13 9 15 20 36 }
+- Pour le yatch 17: { 29 15 13 18 22 10 }
+- Pour le yatch 19: { 14 27 20 36 11 29 }
+- Pour le yatch 24: { 33 32 6 3 36 14 }
+- Pour le yatch 25: { 38 14 22 9 4 27 }
+- Pour le yatch 28: { 14 26 29 10 6 11 }
+- Pour le yatch 31: { 15 34 26 33 29 22 }
+- Pour le yatch 35: { 27 33 21 12 10 23 }
+- Pour le yatch 39: { 26 3 20 34 23 18 }
+- Pour le yatch 40: { 30 18 12 3 33 20 }
+- Pour le yatch 41: { 20 12 30 14 11 32 }
+
+- Pour la période: 0
+
+Le yatch 0 visite le yatch18
+Le yatch 1 visite le yatch 6
+Le yatch 2 visite le yatch12
+Le yatch 7 visite le yatch 4
+Le yatch 8 visite le yatch13
+Le yatch 16 visite le yatch 5
+Le yatch 17 visite le yatch29
+Le yatch 19 visite le yatch14
+Le yatch 24 visite le yatch33
+Le yatch 25 visite le yatch38
+Le yatch 28 visite le yatch14
+Le yatch 31 visite le yatch15
+Le yatch 35 visite le yatch27
+Le yatch 39 visite le yatch26
+Le yatch 40 visite le yatch30
+Le yatch 41 visite le yatch20
+
+Membres d'équipage des yachts 28 et 19 se rencontrent
+
+- Pour la période: 1
+
+Le yatch 0 visite le yatch22
+Le yatch 1 visite le yatch13
+Le yatch 2 visite le yatch14
+Le yatch 7 visite le yatch 9
+Le yatch 8 visite le yatch21
+Le yatch 16 visite le yatch13
+Le yatch 17 visite le yatch15
+Le yatch 19 visite le yatch27
+Le yatch 24 visite le yatch32
+Le yatch 25 visite le yatch14
+Le yatch 28 visite le yatch26
+Le yatch 31 visite le yatch34
+Le yatch 35 visite le yatch33
+Le yatch 39 visite le yatch 3
+Le yatch 40 visite le yatch18
+Le yatch 41 visite le yatch12
+
+Membres d'équipage des yachts 16 et 1 se rencontrent
+Membres d'équipage des yachts 25 et 2 se rencontrent
+
+- Pour la période: 2
+
+Le yatch 0 visite le yatch14
+Le yatch 1 visite le yatch38
+Le yatch 2 visite le yatch15
+Le yatch 7 visite le yatch33
+Le yatch 8 visite le yatch15
+Le yatch 16 visite le yatch 9
+Le yatch 17 visite le yatch13
+Le yatch 19 visite le yatch20
+Le yatch 24 visite le yatch 6
+Le yatch 25 visite le yatch22
+Le yatch 28 visite le yatch29
+Le yatch 31 visite le yatch26
+Le yatch 35 visite le yatch21
+Le yatch 39 visite le yatch20
+Le yatch 40 visite le yatch12
+Le yatch 41 visite le yatch30
+
+Membres d'équipage des yachts 8 et 2 se rencontrent
+Membres d'équipage des yachts 39 et 19 se rencontrent
+
+- Pour la période: 3
+
+Le yatch 0 visite le yatch13
+Le yatch 1 visite le yatch10
+Le yatch 2 visite le yatch26
+Le yatch 7 visite le yatch27
+Le yatch 8 visite le yatch32
+Le yatch 16 visite le yatch15
+Le yatch 17 visite le yatch18
+Le yatch 19 visite le yatch36
+Le yatch 24 visite le yatch 3
+Le yatch 25 visite le yatch 9
+Le yatch 28 visite le yatch10
+Le yatch 31 visite le yatch33
+Le yatch 35 visite le yatch12
+Le yatch 39 visite le yatch34
+Le yatch 40 visite le yatch 3
+Le yatch 41 visite le yatch14
+
+Membres d'équipage des yachts 28 et 1 se rencontrent
+Membres d'équipage des yachts 40 et 24 se rencontrent
+
+- Pour la période: 4
+
+Le yatch 0 visite le yatch30
+Le yatch 1 visite le yatch 3
+Le yatch 2 visite le yatch 5
+Le yatch 7 visite le yatch22
+Le yatch 8 visite le yatch27
+Le yatch 16 visite le yatch20
+Le yatch 17 visite le yatch22
+Le yatch 19 visite le yatch11
+Le yatch 24 visite le yatch36
+Le yatch 25 visite le yatch 4
+Le yatch 28 visite le yatch 6
+Le yatch 31 visite le yatch29
+Le yatch 35 visite le yatch10
+Le yatch 39 visite le yatch23
+Le yatch 40 visite le yatch33
+Le yatch 41 visite le yatch11
+
+Membres d'équipage des yachts 17 et 7 se rencontrent
+Membres d'équipage des yachts 41 et 19 se rencontrent
+
+- Pour la période: 5
+
+Le yatch 0 visite le yatch 5
+Le yatch 1 visite le yatch34
+Le yatch 2 visite le yatch13
+Le yatch 7 visite le yatch 3
+Le yatch 8 visite le yatch 6
+Le yatch 16 visite le yatch36
+Le yatch 17 visite le yatch10
+Le yatch 19 visite le yatch29
+Le yatch 24 visite le yatch14
+Le yatch 25 visite le yatch27
+Le yatch 28 visite le yatch11
+Le yatch 31 visite le yatch22
+Le yatch 35 visite le yatch23
+Le yatch 39 visite le yatch18
+Le yatch 40 visite le yatch20
+Le yatch 41 visite le yatch32
+
+Fitness: 26
+
+La solution est faisable

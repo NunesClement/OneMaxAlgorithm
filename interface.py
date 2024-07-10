@@ -12,6 +12,7 @@ from PySide6.QtWidgets import (
     QLineEdit,
 )
 import Lanceur
+import math
 
 
 class GlobalParameter:
@@ -24,6 +25,7 @@ class GlobalParameter:
         selection_params,
         fitness_limit,
         generation_limit,
+        sudoku_size,
         genome_length,
         nb_run,
         croisement_param,
@@ -35,6 +37,7 @@ class GlobalParameter:
         self.selection_params = selection_params
         self.fitness_limit = fitness_limit
         self.generation_limit = generation_limit
+        self.sudoku_size = sudoku_size
         self.genome_length = genome_length
         self.taille_pop = taille_pop
         self.nb_run = nb_run
@@ -51,6 +54,7 @@ global_state = GlobalParameter(
     "selection_tournois_parmi_s_randoms",
     1000,
     1000,
+    4,
     484,
     10,
     "uniform_crossover",
@@ -262,16 +266,17 @@ class First(QMainWindow):
         global_state.genome_length = int(text) ** 2  # Autosizer
 
     def change_sudoku_taille_label(self, text):
-        global_state.genome_length = int(text) ** 2  # Autosizer
+        size = int(text)
+        global_state.genome_length = (
+            size * size * math.ceil(math.log2(size))
+        )  # Autosizer
+        sudoku_size = size
 
     def change_nb_generation(self, text):
         global_state.generation_limit = text
 
     def on_pushButton_clicked(self):
         dialog = Second(self)
-
-    # self.dialogs.append(dialog)
-    # dialog.show()
 
     def on_cleanup_button_clicked(self):
         Lanceur.cleanup_graph()

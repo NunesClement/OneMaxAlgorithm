@@ -5,6 +5,19 @@ import numpy as np
 
 # URG: display the sudoku at the end
 
+global_size = 0
+global_subSize = 0
+global_binarySize = 0
+
+
+def set_global_size(size, subSize, binarySize):
+    global global_size
+    global_size = size
+    global global_subSize
+    global_subSize = subSize
+    global global_binarySize
+    global_binarySize = binarySize
+
 
 def create_sudoku_grid():
     if size <= 0 or int(math.sqrt(size)) ** 2 != size:
@@ -117,7 +130,12 @@ def sudoku_column_penalty(grid):
     return total_redundancy_count
 
 
-def calculate_fitness(binary):
+def calculate_fitness(binary, size):
+    subSize = int(size / math.sqrt(size))
+    binarySize = math.ceil(math.log2(size))
+
+    set_global_size(size, subSize, binarySize)
+
     grid = convertBinaryToGrid(binary)
     sub_grids = get_sub_sudoku_grids(grid)
 
@@ -127,8 +145,6 @@ def calculate_fitness(binary):
 
     total_penalty += sudoku_line_penalty(grid)
     total_penalty += sudoku_column_penalty(grid)
-
-    print(grid)
 
     return total_penalty
 

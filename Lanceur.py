@@ -21,10 +21,10 @@ def fitness_nqueen(genome: List[int]) -> int:
     return Nqueen.calculate_fitness(Nqueen.convert01ToConfiguration(genome))
 
 
-def fitness_sudoku(genome: List[int]) -> int:
+def fitness_sudoku(genome: List[int], sudoku_size: int) -> int:
     if len(genome) <= 0:
         raise ValueError("Le genome doit être > 0 ")
-    return Sudoku.calculate_fitness(genome)
+    return Sudoku.calculate_fitness(genome, sudoku_size)
 
 
 def fitness(genome: List[int]) -> int:
@@ -51,6 +51,7 @@ def launch_with_param(
     genome_length=10,
     fitness_limit=10,
     generation_limit=10,
+    sudoku_size=4,
     nb_run=10,
     crossover_param="single_point_crossover",
     selected_problem="OneMax",
@@ -197,6 +198,12 @@ def launch_the_launcher(global_state):
             + str(
                 Nqueen.calculate_penalty(Nqueen.convert01ToConfiguration(population[0]))
             )
+        )
+    if global_state.selected_problem == "Sudoku":
+        Sudoku.displayConfiguration(Sudoku.convert01ToConfiguration(population[0]))
+        print(
+            "Fitness  : "
+            + str(Sudoku.calculate_penalty(Sudoku.convertBinaryToGrid(population[0])))
         )
 
     x = collected_data[0]

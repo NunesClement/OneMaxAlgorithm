@@ -332,6 +332,7 @@ def run_evolution(
     crossover_func: CrossoverFunc = uniform_crossover,
     mutation_func: MutationFunc = mutation,
     generation_limit: int = 100,
+    sudoku_size: int = 4,
     nb_run: int = 10,
     printer: Optional[PrinterFunc] = None,
 ) -> Tuple[Population, int]:
