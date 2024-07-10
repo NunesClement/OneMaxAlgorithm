@@ -25,8 +25,8 @@ class GlobalParameter:
         selection_params,
         fitness_limit,
         generation_limit,
-        sudoku_size,
         genome_length,
+        # sudoku_size,
         nb_run,
         croisement_param,
         selected_problem,
@@ -37,7 +37,7 @@ class GlobalParameter:
         self.selection_params = selection_params
         self.fitness_limit = fitness_limit
         self.generation_limit = generation_limit
-        self.sudoku_size = sudoku_size
+        # self.sudoku_size = sudoku_size
         self.genome_length = genome_length
         self.taille_pop = taille_pop
         self.nb_run = nb_run
@@ -54,8 +54,8 @@ global_state = GlobalParameter(
     "selection_tournois_parmi_s_randoms",
     1000,
     1000,
-    4,
     484,
+    # 4,
     10,
     "uniform_crossover",
     "OneMax",
@@ -208,7 +208,7 @@ class First(QMainWindow):
         self.sudokuTaille.setText("5")
         self.layout.addWidget(self.sudokuTailleLabel)
         self.layout.addWidget(self.sudokuTaille)
-        self.sudokuTaille.textChanged.connect(self.change_sudoku_taille_label)
+        # self.sudokuTaille.textChanged.connect(self.change_sudoku_taille_label)
 
         self.sudokuTailleLabel.hide()
         self.sudokuTaille.hide()
@@ -265,12 +265,12 @@ class First(QMainWindow):
     def change_nreine_taille_label(self, text):
         global_state.genome_length = int(text) ** 2  # Autosizer
 
-    def change_sudoku_taille_label(self, text):
-        size = int(text)
-        global_state.genome_length = (
-            size * size * math.ceil(math.log2(size))
-        )  # Autosizer
-        sudoku_size = size
+    # def change_sudoku_taille_label(self, text):
+    #     size = int(text)
+    #     global_state.genome_length = (
+    #         size * size * math.ceil(math.log2(size))
+    #     )  # Autosizer
+    #     sudoku_size = size
 
     def change_nb_generation(self, text):
         global_state.generation_limit = text
