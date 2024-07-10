@@ -49,18 +49,6 @@ def convertGridToBinary(grid):
 
 
 def convertBinaryToGrid(binaryString):
-    grid = np.zeros((size, size), dtype=int)
-
-    for i in range(size):
-        for j in range(size):
-            start = (i * size + j) * binarySize
-            end = start + binarySize
-            grid[i][j] = int(binaryString[start:end], 2)
-
-    return grid
-
-
-def convertBinaryToGrid2(binaryString):
     num_elements = size * size
     int_values = np.zeros(num_elements, dtype=int)
 
@@ -131,28 +119,9 @@ sudokuGrid = create_sudoku_grid()
 
 binaries = convertGridToBinary(sudokuGrid)
 
-start_time = time.time()
-count = 0
-for i in range(0, 3000000):
-    convertBinaryToGrid(binaries)
+# start_time = time.time()
+# for i in range(0, 3000000):
+#     convertBinaryToGrid(binaries)
+# end_time = time.time()
 
-print(count)
-end_time = time.time()
-
-print(f"Execution time: {end_time - start_time:.6f} seconds")
-
-
-start_time = time.time()
-count = 0
-for i in range(0, 3000000):
-    convertBinaryToGrid2(binaries)
-
-print(count)
-end_time = time.time()
-
-
-print(f"Execution time: {end_time - start_time:.6f} seconds")
-# print("---" + convertGridToBinary(sudokuGrid) + "---")
-
-# print(sudokuGrid)
-# print(convertBinaryToGrid(convertGridToBinary(sudokuGrid)))
+# print(f"Execution time: {end_time - start_time:.6f} seconds")
