@@ -12,21 +12,22 @@ global_binarySize = 0
 
 # URG: to be tested
 def set_global_size(size, subSize, binarySize):
-    global global_size
+    global global_size, global_subSize, global_binarySize
+
     global_size = size
-    global global_subSize
     global_subSize = subSize
-    global global_binarySize
     global_binarySize = binarySize
 
 
 def create_sudoku_grid():
-    if size <= 0 or int(math.sqrt(size)) ** 2 != size:
+    if global_subSize <= 0 or int(math.sqrt(global_subSize)) ** 2 != global_subSize:
         raise ValueError("The size must be a perfect square.")
 
-    n = int(math.sqrt(size))
+    n = int(math.sqrt(global_subSize))
 
-    grid = np.random.randint(1, size + 1, size=(size, size))
+    grid = np.random.randint(
+        1, global_subSize + 1, size=(global_subSize, global_subSize)
+    )
 
     return grid
 
@@ -49,31 +50,33 @@ def display_sudoku_grid(grid):
 
 
 def digitToBinary(digit):
-    return bin(digit)[2:].zfill(binarySize)
+    return bin(digit)[2:].zfill(global_binarySize)
 
 
 def convertGridToBinary(grid):
     binaryString = "".join(
-        digitToBinary(grid[i][j]) for i in range(size) for j in range(size)
+        digitToBinary(grid[i][j])
+        for i in range(global_subSize)
+        for j in range(global_subSize)
     )
 
     return binaryString
 
 
-# URG: test performance
-def convertBinaryToGrid(intList, size):
-    num_elements = size * size
-    binary_strings = [format(x, f"0{size}b") for x in intList]
-    binaryString = "".join(binary_strings)
+# URG: test performance and fix
+def convertBinaryToGrid(binaryString: str):
+    if len(binaryString) % global_subSize != 0:
+        raise ValueError("Length of binaryString is not a multiple of global_subSize")
 
-    int_values = np.zeros(num_elements, dtype=int)
+    int_values = np.zeros(global_size, dtype=int)
 
-    for idx in range(num_elements):
-        start = idx * size
-        end = start + size
+    for idx in range(global_size):
+        start = idx * global_binarySize
+        end = start + global_binarySize
+
         int_values[idx] = int(binaryString[start:end], 2)
 
-    grid = int_values.reshape(size, size)
+    grid = int_values.reshape(global_subSize, global_subSize)
     return grid
 
 
@@ -142,9 +145,15 @@ def calculate_fitness(binary, givenSize):
     print(size * binarySize)
 
     set_global_size(size, subSize, binarySize)
+    print("here")
 
-    grid = convertBinaryToGrid(binary, size)
+    grid = convertBinaryToGrid(binary)
+    print("grid")
+    print(grid)
+
     sub_grids = get_sub_sudoku_grids(grid)
+    print("sub_grids")
+    print(sub_grids)
 
     total_penalty = 0
     for sub_grid in sub_grids:
@@ -155,6 +164,20 @@ def calculate_fitness(binary, givenSize):
 
     return total_penalty
 
+
+set_global_size(81, 9, 4)
+
+binaries = create_sudoku_grid()
+print("binaries")
+print(len(binaries))
+print(binaries)
+
+converted = convertGridToBinary(binaries)
+print("converted")
+print(len(converted))
+print(converted)
+
+print(convertBinaryToGrid(converted))
 
 # start_time = time.time()
 # for i in range(0, 3000000):
