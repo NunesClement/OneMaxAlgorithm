@@ -202,10 +202,15 @@ def launch_the_launcher(global_state):
             )
         )
     if global_state.selected_problem == "Sudoku":
-        Sudoku.displayConfiguration(Sudoku.convert01ToConfiguration(population[0]))
+        # URG: size
+        Sudoku.display_sudoku_grid(Sudoku.convertBinaryToGrid(population[0], 9))
+
+        # URG: size
         print(
             "Fitness  : "
-            + str(Sudoku.calculate_penalty(Sudoku.convertBinaryToGrid(population[0])))
+            + str(
+                Sudoku.calculate_penalty(Sudoku.convertBinaryToGrid(population[0]), 9)
+            )
         )
 
     x = collected_data[0]

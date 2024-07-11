@@ -4,12 +4,13 @@ import random
 import numpy as np
 
 # URG: display the sudoku at the end
-
+# URG: test sudoku with a 9x9 grid
 global_size = 0
 global_subSize = 0
 global_binarySize = 0
 
 
+# URG: to be tested
 def set_global_size(size, subSize, binarySize):
     global global_size
     global_size = size
@@ -60,7 +61,7 @@ def convertGridToBinary(grid):
 
 
 # URG: test performance
-def convertBinaryToGrid(intList):
+def convertBinaryToGrid(intList, size):
     num_elements = size * size
     binary_strings = [format(x, f"0{size}b") for x in intList]
     binaryString = "".join(binary_strings)
@@ -136,7 +137,7 @@ def calculate_fitness(binary, size):
 
     set_global_size(size, subSize, binarySize)
 
-    grid = convertBinaryToGrid(binary)
+    grid = convertBinaryToGrid(binary, size)
     sub_grids = get_sub_sudoku_grids(grid)
 
     total_penalty = 0
