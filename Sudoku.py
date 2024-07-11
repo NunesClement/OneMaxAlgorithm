@@ -5,9 +5,9 @@ import numpy as np
 
 # URG: display the sudoku at the end
 # URG: test sudoku with a 9x9 grid
-global_size = 0
-global_subSize = 0
-global_binarySize = 0
+global_size = 81
+global_subSize = 9
+global_binarySize = 4
 
 
 # URG: to be tested
@@ -68,8 +68,10 @@ def convertBinaryToGrid(binaryString: str):
     if len(binaryString) % global_subSize != 0:
         raise ValueError("Length of binaryString is not a multiple of global_subSize")
 
-    int_values = np.zeros(global_size, dtype=int)
+    print("len" + str(len(binaryString)))
 
+    int_values = np.zeros(global_size, dtype=int)
+    print(int_values)
     for idx in range(global_size):
         start = idx * global_binarySize
         end = start + global_binarySize
@@ -77,6 +79,7 @@ def convertBinaryToGrid(binaryString: str):
         int_values[idx] = int(binaryString[start:end], 2)
 
     grid = int_values.reshape(global_subSize, global_subSize)
+    print(grid)
     return grid
 
 
@@ -134,23 +137,10 @@ def sudoku_column_penalty(grid):
     return total_redundancy_count
 
 
-def calculate_fitness(binary, givenSize):
-    print("#######")
-    size = givenSize**2
-    subSize = int(size / math.sqrt(size))
-    binarySize = math.ceil(math.log2(subSize))
-    print(size)
-    print(subSize)
-    print(binarySize)
-    print(size * binarySize)
-
-    set_global_size(size, subSize, binarySize)
-    print("here")
+def calculate_fitness(binary):
 
     grid = convertBinaryToGrid(binary)
-    print("grid")
     print(grid)
-
     sub_grids = get_sub_sudoku_grids(grid)
     print("sub_grids")
     print(sub_grids)
@@ -165,19 +155,19 @@ def calculate_fitness(binary, givenSize):
     return total_penalty
 
 
-set_global_size(81, 9, 4)
+# set_global_size(81, 9, 4)
 
-binaries = create_sudoku_grid()
-print("binaries")
-print(len(binaries))
-print(binaries)
+# binaries = create_sudoku_grid()
+# print("binaries")
+# print(len(binaries))
+# print(binaries)
 
-converted = convertGridToBinary(binaries)
-print("converted")
-print(len(converted))
-print(converted)
+# converted = convertGridToBinary(binaries)
+# print("converted")
+# print(len(converted))
+# print(converted)
 
-print(convertBinaryToGrid(converted))
+# print(convertBinaryToGrid(converted))
 
 # start_time = time.time()
 # for i in range(0, 3000000):

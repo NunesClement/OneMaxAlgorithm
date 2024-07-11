@@ -26,7 +26,7 @@ def fitness_sudoku(genome: List[int]) -> int:
         raise ValueError("Le genome doit être > 0 ")
     # URG SIZE
     print("len" + str(len(genome)))
-    return Sudoku.calculate_fitness(genome, 9)
+    return Sudoku.calculate_fitness(genome)
 
 
 def fitness(genome: List[int]) -> int:
