@@ -131,9 +131,15 @@ def sudoku_column_penalty(grid):
     return total_redundancy_count
 
 
-def calculate_fitness(binary, size):
+def calculate_fitness(binary, givenSize):
+    print("#######")
+    size = givenSize**2
     subSize = int(size / math.sqrt(size))
-    binarySize = math.ceil(math.log2(size))
+    binarySize = math.ceil(math.log2(subSize))
+    print(size)
+    print(subSize)
+    print(binarySize)
+    print(size * binarySize)
 
     set_global_size(size, subSize, binarySize)
 

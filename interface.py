@@ -63,6 +63,7 @@ global_state = GlobalParameter(
 
 
 class Second(QMainWindow):
+
     def __init__(self, parent=None):
         super(Second, self).__init__(parent)
         Lanceur.launch_the_launcher(global_state)
@@ -208,7 +209,7 @@ class First(QMainWindow):
         self.sudokuTaille.setText("5")
         self.layout.addWidget(self.sudokuTailleLabel)
         self.layout.addWidget(self.sudokuTaille)
-        # self.sudokuTaille.textChanged.connect(self.change_sudoku_taille_label)
+        self.sudokuTaille.textChanged.connect(self.change_sudoku_taille_label)
 
         self.sudokuTailleLabel.hide()
         self.sudokuTaille.hide()
@@ -262,15 +263,17 @@ class First(QMainWindow):
     def change_genome_taille_label(self, text):
         global_state.genome_length = text
 
+    # URG: the modification is not taken into account directly, fix it
     def change_nreine_taille_label(self, text):
         global_state.genome_length = int(text) ** 2  # Autosizer
 
-    # def change_sudoku_taille_label(self, text):
-    #     size = int(text)
-    #     global_state.genome_length = (
-    #         size * size * math.ceil(math.log2(size))
-    #     )  # Autosizer
-    #     sudoku_size = size
+    # URG: the modification is not taken into account directly, fix it
+    def change_sudoku_taille_label(self, text):
+        size = int(text)
+        global_state.genome_length = (
+            size * size * math.ceil(math.log2(size))
+        )  # Autosizer
+        sudoku_size = size
 
     def change_nb_generation(self, text):
         global_state.generation_limit = text

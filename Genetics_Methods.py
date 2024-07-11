@@ -484,7 +484,7 @@ def run_evolution(
                     population, key=lambda genome: fitness_func(genome), reverse=True
                 )
                 # print("Meilleur : " + str(fitness_func(greatest(population, fitness_func))))
-                # print("Plus nulle : " + str(fitness_func(loosest(population, fitness_func))))
+                # print("Plus nul : " + str(fitness_func(loosest(population, fitness_func))))
                 # print(fitness_func(sort_population(population, fitness_func)[len(population)-1]))
                 if printer is not None:
                     printer(population, i, fitness_func)
