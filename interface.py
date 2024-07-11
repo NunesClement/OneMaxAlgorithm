@@ -162,7 +162,7 @@ class First(QMainWindow):
         self.layout.addWidget(self.selectedProblem)
         self.layout.addWidget(self.cleanupButton)
 
-        self.sizePopLabel = QLabel("nb d'individus")
+        self.sizePopLabel = QLabel("nb d'individus (conseillé - minimum 10)")
         self.sizePop = QLineEdit()
         self.sizePop.setText("10")
         self.layout.addWidget(self.sizePopLabel)

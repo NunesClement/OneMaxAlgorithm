@@ -445,7 +445,6 @@ def run_evolution(
         for this_run in range(0, nb_run):
             print("Run actuel : " + str(this_run + 1))
             # meanFitnessValues = []
-            op_history: List[List[int]] = []
             init_op_history(op_history, len(op_list))
 
             reward_list = init_reward_list(len(op_list))
