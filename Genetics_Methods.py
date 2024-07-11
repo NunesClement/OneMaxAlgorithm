@@ -431,12 +431,10 @@ def run_evolution(
             for i in range(0, nb_run):
                 moy = moy + collected_data[i][a]
             moy = round(moy / len(collected_data))
-            # collected_data_means.append(moy)
-            collected_data_means = np.append(collected_data_means, moy)
+            collected_data_means[a] = moy
 
         # print([collected_iteration, collected_data_means])
         # print(str(len(collected_iteration)) + " " + str(len(collected_data_means)))
-
         collected_data_means = np.asarray(collected_data_means)
         # print(collected_data)
         # print(collected_data_means)
@@ -528,7 +526,8 @@ def run_evolution(
             for i in range(0, nb_run):
                 moy = moy + collected_data[i][a]
             moy = round(moy / len(collected_data))
-            collected_data_means = np.append(collected_data_means, moy)
+            collected_data_means[a] = moy
+
         collected_data_means = np.asarray(collected_data_means)
 
     if selector_operator == "OS_MANUAL":
@@ -669,11 +668,12 @@ def run_evolution(
                 population = next_generation
 
             collected_data.append(collected_fitness)
+    collected_data_means = np.zeros(len(collected_data[0]), dtype=int)
     for a in range(0, len(collected_data[0])):
         moy = 0
         for i in range(0, nb_run):
             moy = moy + collected_data[i][a]
         moy = round(moy / len(collected_data))
-        collected_data_means = np.append(collected_data_means, moy)
+        collected_data_means[a] = moy
     collected_data_means = np.asarray(collected_data_means)
     return population, i, [collected_iteration, collected_data_means]
