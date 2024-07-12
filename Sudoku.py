@@ -3,8 +3,6 @@ import time
 import random
 import numpy as np
 
-# URG: display the sudoku at the end
-# URG: test sudoku with a 9x9 grid
 global_total_case = 256
 global_sudoku_n = 16
 global_subSize = 4
@@ -42,7 +40,7 @@ def display_sudoku_grid(grid):
         for j in range(global_sudoku_n):
             if j % global_subSize == 0 and j != 0:
                 print("|", end=" ")
-            print(f"{grid[i][j]:2}", end=" ")
+            print(f"{grid[i][j]+1:2}", end=" ")
 
         print("|")
 
@@ -150,13 +148,15 @@ def sudoku_column_penalty(grid):
     return total_redundancy_count
 
 
+# URG: check a better way to calculate penalty
 def calculate_fitness(binary):
     grid = convertBinaryToGrid(binary)
     sub_grids = get_sub_sudoku_grids(grid)
+
     total_penalty = 0
 
-    for sub_grid in sub_grids:
-        total_penalty += sub_sudoku_grid_penalty(sub_grid, grid)
+    # for sub_grid in sub_grids:
+    #     total_penalty += sub_sudoku_grid_penalty(sub_grid, grid)
 
     total_penalty += sudoku_line_penalty(grid)
     total_penalty += sudoku_column_penalty(grid)

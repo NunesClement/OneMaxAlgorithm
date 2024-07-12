@@ -339,10 +339,10 @@ def run_evolution(
     if selector_operator == "AOS_UCB":
         for this_run in range(0, nb_run):
             print(
-                "* Run "
+                "Run "
                 + str(this_run + 1)
-                + " "
-                + str((nb_run / (this_run + 1)) * 10)
+                + " - "
+                + str(((this_run + 1) / nb_run) * 100)
                 + "%"
             )
             # meanFitnessValues = []
@@ -448,12 +448,13 @@ def run_evolution(
     if selector_operator == "AOS_PM":
         for this_run in range(0, nb_run):
             print(
-                "* Run "
+                "Run "
                 + str(this_run + 1)
-                + " "
-                + str((nb_run / (this_run + 1)) * 10)
+                + " - "
+                + str(((this_run + 1) / nb_run) * 100)
                 + "%"
-            )  # meanFitnessValues = []
+            )
+            # meanFitnessValues = []
             init_op_history(op_history, len(op_list))
 
             reward_list = init_reward_list(len(op_list))
@@ -550,10 +551,10 @@ def run_evolution(
 
         for this_run in range(0, nb_run):
             print(
-                "* Run "
+                "Run "
                 + str(this_run + 1)
-                + " "
-                + str((nb_run / (this_run + 1)) * 10)
+                + " - "
+                + str(((this_run + 1) / nb_run) * 100)
                 + "%"
             )
             population = populate_func()
@@ -600,10 +601,10 @@ def run_evolution(
     if selector_operator == "OS_RANDOM_AVEUGLE":
         for this_run in range(0, nb_run):
             print(
-                "* Run "
+                "Run "
                 + str(this_run + 1)
-                + " "
-                + str((nb_run / (this_run + 1)) * 10)
+                + " - "
+                + str(((this_run + 1) / nb_run) * 100)
                 + "%"
             )
 
@@ -658,10 +659,10 @@ def run_evolution(
     ):
         for this_run in range(0, nb_run):
             print(
-                "* Run "
+                "Run "
                 + str(this_run + 1)
-                + " "
-                + str((nb_run / (this_run + 1)) * 10)
+                + " - "
+                + str(((this_run + 1) / nb_run) * 100)
                 + "%"
             )
 

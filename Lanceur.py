@@ -1,6 +1,8 @@
 # URG fix run percentage
 # URG fix sudoku numbers displayed
 # URG improve intern methods calculations to 10x
+# URG place measurement to delect slower portions of code
+# URG fix differents sudoku sizes
 
 from functools import partial
 from typing import List
