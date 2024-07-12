@@ -3,10 +3,10 @@ import time
 import random
 import numpy as np
 
-global_total_case = 256
-global_sudoku_n = 16
-global_subSize = 4
-global_binarySize = 4
+global_total_case = 16
+global_sudoku_n = 4
+global_subSize = 2
+global_binarySize = 2
 
 
 # URG: to be tested
@@ -31,7 +31,6 @@ def create_sudoku_grid():
     return grid
 
 
-# URG: this one is not good
 def display_sudoku_grid(grid):
     for i in range(global_sudoku_n):
         if i % global_subSize == 0 and i != 0:
@@ -71,14 +70,8 @@ def convertBinaryToGrid(binaryString: str):
         start = idx * global_binarySize
         end = start + global_binarySize
 
-        # print("S/E" + str(binaryString[start:end]))
-        # URG: generalize
         int_values[idx] = int(
-            str(binaryString[start:end][0])
-            + str(binaryString[start:end][1])
-            + str(binaryString[start:end][2])
-            + str(binaryString[start:end][3]),
-            2,
+            "".join(str(bit) for bit in binaryString[start:end][:global_binarySize]), 2
         )
         # print(int_values[idx])
 

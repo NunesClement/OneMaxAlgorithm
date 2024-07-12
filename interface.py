@@ -141,8 +141,8 @@ class First(QMainWindow):
 
         self.selectedProblem = QComboBox()
         self.selectedProblem.addItem("OneMax")
-        self.selectedProblem.addItem("N-Reine")
         self.selectedProblem.addItem("Sudoku")
+        self.selectedProblem.addItem("N-Reine")
         self.selectedProblem.addItem("KnapSack - WIP")
         self.selectedProblem.addItem("Quadratic knapsack - WIP")
         self.selectedProblem.addItem("PPP - WIP")
@@ -177,7 +177,7 @@ class First(QMainWindow):
         self.layout.addWidget(self.nbRun)
         self.nbRun.textChanged.connect(change_nb_run)
 
-        self.fitnessMaxLabel = QLabel("set fitness max")
+        self.fitnessMaxLabel = QLabel("Fitness maximum - (stop if reached)")
         self.fitnessMax = QLineEdit()
         self.fitnessMax.setText("20000")
         self.layout.addWidget(self.fitnessMaxLabel)

@@ -1,5 +1,3 @@
-# URG fix run percentage
-# URG fix sudoku numbers displayed
 # URG improve intern methods calculations to 10x
 # URG place measurement to delect slower portions of code
 # URG fix differents sudoku sizes
@@ -30,8 +28,6 @@ def fitness_nqueen(genome: List[int]) -> int:
 def fitness_sudoku(genome: List[int]) -> int:
     if len(genome) <= 0:
         raise ValueError("Le genome doit être > 0 ")
-    # URG SIZE
-    # print("len" + str(len(genome)))
     return Sudoku.calculate_fitness(genome)
 
 
@@ -168,14 +164,19 @@ def debugGlobalState(global_state):
         + " avec une proba de "
         + str(global_state.mutation_params[1])
     )
-    print("Choix du problème" + str(global_state.selected_problem))
-    print("Paramètre de croisemement " + str(global_state.croisement_param))
-    print("Paramètre de sélection " + str(global_state.selection_params))
-    print("Limit de fitness " + str(global_state.fitness_limit))
-    print("Nb d'itération/génération " + str(global_state.generation_limit))
-    print("Taille d'un genome " + str(global_state.genome_length))
-    print("Taille d'une population " + str(global_state.taille_pop))
-    print("Type d'AOS " + str(global_state.selector_operator))
+
+    print(
+        f"""
+    Choix du problème        : {global_state.selected_problem}
+    Paramètre de croisement  : {global_state.croisement_param}
+    Paramètre de sélection   : {global_state.selection_params}
+    Limite de fitness        : {global_state.fitness_limit}
+    Nb d'itération/génération: {global_state.generation_limit}
+    Taille d'un genome       : {global_state.genome_length}
+    Taille d'une population  : {global_state.taille_pop}
+    Type d'AOS               : {global_state.selector_operator}
+    """
+    )
 
 
 def cleanup_graph():

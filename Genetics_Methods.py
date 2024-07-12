@@ -342,7 +342,7 @@ def run_evolution(
                 "Run "
                 + str(this_run + 1)
                 + " - "
-                + str(((this_run + 1) / nb_run) * 100)
+                + str(round(((this_run + 1) / nb_run) * 100, 2))
                 + "%"
             )
             # meanFitnessValues = []
@@ -379,10 +379,13 @@ def run_evolution(
                 if i % 5 == 0:
                     # print("Le programme a l'efficacité : " + str(fitness_func(population[0])) + " / " + str(fitness_limit)
                     # + " à l'itération " + str(i))
+                    fitness_collect_and_break = fitness_func(population[0])
+
                     collected_iteration = np.append(collected_iteration, i)
                     collected_fitness = np.append(
-                        collected_fitness, fitness_func(population[0])
+                        collected_fitness, fitness_collect_and_break
                     )
+
                 population = sorted(
                     population, key=lambda genome: fitness_func(genome), reverse=True
                 )
@@ -403,7 +406,7 @@ def run_evolution(
                     next_generation += [offspring_a, offspring_b]
 
                 fitness_now = Lanceur.fitness(greatest(next_generation, fitness_func))
-                # fitness_now = Lanceur.fitness(greatest(population, fitness_func))
+
                 reward_history, reward_list = update_reward_sliding(
                     reward_list,
                     reward_history,
@@ -451,7 +454,7 @@ def run_evolution(
                 "Run "
                 + str(this_run + 1)
                 + " - "
-                + str(((this_run + 1) / nb_run) * 100)
+                + str(round(((this_run + 1) / nb_run) * 100, 2))
                 + "%"
             )
             # meanFitnessValues = []
@@ -554,7 +557,7 @@ def run_evolution(
                 "Run "
                 + str(this_run + 1)
                 + " - "
-                + str(((this_run + 1) / nb_run) * 100)
+                + str(round(((this_run + 1) / nb_run) * 100, 2))
                 + "%"
             )
             population = populate_func()
@@ -604,7 +607,7 @@ def run_evolution(
                 "Run "
                 + str(this_run + 1)
                 + " - "
-                + str(((this_run + 1) / nb_run) * 100)
+                + str(round(((this_run + 1) / nb_run) * 100, 2))
                 + "%"
             )
 
@@ -662,7 +665,7 @@ def run_evolution(
                 "Run "
                 + str(this_run + 1)
                 + " - "
-                + str(((this_run + 1) / nb_run) * 100)
+                + str(round(((this_run + 1) / nb_run) * 100, 2))
                 + "%"
             )
 
