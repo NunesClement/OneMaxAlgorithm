@@ -205,10 +205,7 @@ def launch_the_launcher(global_state):
     if global_state.selected_problem == "Sudoku":
         Sudoku.display_sudoku_grid(Sudoku.convertBinaryToGrid(population[0]))
 
-        print(
-            "Fitness  : "
-            + str(Sudoku.calculate_fitness(Sudoku.convertBinaryToGrid(population[0])))
-        )
+        print("Fitness  : " + str(Sudoku.calculate_fitness(population[0])))
 
     x = collected_data[0]
     y = collected_data[1]

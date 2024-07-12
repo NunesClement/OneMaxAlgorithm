@@ -34,17 +34,22 @@ def create_sudoku_grid():
 
 
 def display_sudoku_grid(grid):
-    size = len(grid)
-    subSize = int(math.sqrt(size))
+    print("grid")
+    print(grid)
+    print(len(grid))
 
-    for i in range(size):
-        if i % subSize == 0 and i != 0:
-            print("- " * (size * 2 + 1))
+    print(global_total_case)
+    print(global_sudoku_n)
 
-        for j in range(size):
-            if j % subSize == 0 and j != 0:
+    for i in range(global_total_case):
+        if i % global_sudoku_n == 0 and i != 0:
+            print("- " * (global_total_case * 2 + 1))
+
+        for j in range(global_total_case):
+            if j % global_sudoku_n == 0 and j != 0:
                 print("|", end=" ")
 
+            print("i" + str(i) + "-" + "j" + str(j))
             print(f"{grid[i][j]:2}", end=" ")
 
         print("|")
@@ -66,9 +71,6 @@ def convertGridToBinary(grid):
 
 # URG: test performance and fix
 def convertBinaryToGrid(binaryString: str):
-    # print("len2")
-    # print(len(binaryString))
-
     if len(binaryString) % global_sudoku_n != 0:
         raise ValueError("Length of binaryString is not a multiple of global_sudoku_n")
 
@@ -167,7 +169,7 @@ def calculate_fitness(binary):
     total_penalty += sudoku_line_penalty(grid)
     total_penalty += sudoku_column_penalty(grid)
 
-    return total_penalty
+    return total_penalty / 1 - total_penalty
 
 
 # binaries = create_sudoku_grid()
