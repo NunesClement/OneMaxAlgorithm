@@ -334,8 +334,8 @@ def run_evolution(
     printer: Optional[PrinterFunc] = None,
 ):
     collected_data = []
-    # print("crossover_func" + str(crossover_func))
-    print("selector_operator " + str(selector_operator))
+    currentFitness = -10000
+
     if selector_operator == "AOS_UCB":
         for this_run in range(0, nb_run):
             print(
@@ -344,6 +344,8 @@ def run_evolution(
                 + " - "
                 + str(round(((this_run + 1) / nb_run) * 100, 2))
                 + "%"
+                + " - Fitness : "
+                + str(currentFitness)
             )
             # meanFitnessValues = []
             op_history: List[List[int]] = []
@@ -376,15 +378,13 @@ def run_evolution(
                 if generation_limit > 1000:
                     if i % 500 == 0 and i != 0:
                         print("Itération " + str(i) + " ...")
-                if i % 5 == 0:
+                if i % 125 == 0:
                     # print("Le programme a l'efficacité : " + str(fitness_func(population[0])) + " / " + str(fitness_limit)
                     # + " à l'itération " + str(i))
-                    fitness_collect_and_break = fitness_func(population[0])
+                    currentFitness = fitness_func(population[0])
 
                     collected_iteration = np.append(collected_iteration, i)
-                    collected_fitness = np.append(
-                        collected_fitness, fitness_collect_and_break
-                    )
+                    collected_fitness = np.append(collected_fitness, currentFitness)
 
                 population = sorted(
                     population, key=lambda genome: fitness_func(genome), reverse=True
@@ -428,11 +428,14 @@ def run_evolution(
                 # collected_fitness.append(maxFitness)
                 # collected_fitness.append(meanFitness)
             collected_data.append(collected_fitness)
+
+            if currentFitness >= fitness_limit:
+                return population, i, [collected_iteration, collected_fitness]
         # print([fitness_func(genome) for genome in population])
         # print(" taille collected data : " + str(len(collected_data)))
-        print(reward_history)
-        print(reward_list)
-        print(op_count)
+        # print(reward_history)
+        # print(reward_list)
+        # print(op_count)
         collected_data_means = np.zeros(len(collected_data[0]), dtype=int)
 
         for a in range(0, len(collected_data[0])):

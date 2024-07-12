@@ -1,3 +1,5 @@
+# URG cut if fitness is reached
+# URG generalize cut for all operator
 # URG improve intern methods calculations to 10x
 # URG place measurement to delect slower portions of code
 # URG fix differents sudoku sizes

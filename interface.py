@@ -256,6 +256,7 @@ class First(QMainWindow):
         if self.selectedProblem.currentText() == "Sudoku":
             self.sudokuTailleLabel.show()
             self.sudokuTaille.show()
+            self.fitnessMax.setText("0")
 
     def change_fitness_max(self, text):
         global_state.fitness_limit = text
