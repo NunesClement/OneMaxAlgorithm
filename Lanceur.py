@@ -25,7 +25,7 @@ def fitness_sudoku(genome: List[int]) -> int:
     if len(genome) <= 0:
         raise ValueError("Le genome doit être > 0 ")
     # URG SIZE
-    print("len" + str(len(genome)))
+    # print("len" + str(len(genome)))
     return Sudoku.calculate_fitness(genome)
 
 
@@ -203,15 +203,11 @@ def launch_the_launcher(global_state):
             )
         )
     if global_state.selected_problem == "Sudoku":
-        # URG: size
-        Sudoku.display_sudoku_grid(Sudoku.convertBinaryToGrid(population[0], 9))
+        Sudoku.display_sudoku_grid(Sudoku.convertBinaryToGrid(population[0]))
 
-        # URG: size
         print(
             "Fitness  : "
-            + str(
-                Sudoku.calculate_penalty(Sudoku.convertBinaryToGrid(population[0]), 9)
-            )
+            + str(Sudoku.calculate_fitness(Sudoku.convertBinaryToGrid(population[0])))
         )
 
     x = collected_data[0]
