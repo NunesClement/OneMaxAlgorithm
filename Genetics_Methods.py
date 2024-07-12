@@ -344,8 +344,7 @@ def run_evolution(
                 + " - "
                 + str(round(((this_run + 1) / nb_run) * 100, 2))
                 + "%"
-                + " - Fitness : "
-                + str(currentFitness)
+                + (" - Fitness: " + str(currentFitness) if this_run > 0 else "")
             )
             # meanFitnessValues = []
             op_history: List[List[int]] = []
@@ -377,7 +376,12 @@ def run_evolution(
 
                 if generation_limit > 1000:
                     if i % 500 == 0 and i != 0:
-                        print("Itération " + str(i) + " ...")
+                        print(
+                            "Itération "
+                            + str(i)
+                            + " - Fitness : "
+                            + str(currentFitness)
+                        )
                 if i % 125 == 0:
                     # print("Le programme a l'efficacité : " + str(fitness_func(population[0])) + " / " + str(fitness_limit)
                     # + " à l'itération " + str(i))

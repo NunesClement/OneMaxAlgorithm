@@ -3,10 +3,21 @@ import time
 import random
 import numpy as np
 
-global_total_case = 16
-global_sudoku_n = 4
-global_subSize = 2
-global_binarySize = 2
+# global_total_case = 16
+# global_sudoku_n = 4
+# global_subSize = 2
+# global_binarySize = 2
+
+# URG: Should born auto
+# global_total_case = 81
+# global_sudoku_n = 9
+# global_subSize = 3
+# global_binarySize = 4
+
+global_total_case = 256
+global_sudoku_n = 16
+global_subSize = 4
+global_binarySize = 4
 
 
 # URG: to be tested
