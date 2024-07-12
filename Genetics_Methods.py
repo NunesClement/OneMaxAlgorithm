@@ -338,7 +338,13 @@ def run_evolution(
     print("selector_operator " + str(selector_operator))
     if selector_operator == "AOS_UCB":
         for this_run in range(0, nb_run):
-            print("Run actuel : " + str(this_run + 1))
+            print(
+                "* Run "
+                + str(this_run + 1)
+                + " "
+                + str((nb_run / (this_run + 1)) * 10)
+                + "%"
+            )
             # meanFitnessValues = []
             op_history: List[List[int]] = []
             init_op_history(op_history, len(op_list))
@@ -441,8 +447,13 @@ def run_evolution(
 
     if selector_operator == "AOS_PM":
         for this_run in range(0, nb_run):
-            print("Run actuel : " + str(this_run + 1))
-            # meanFitnessValues = []
+            print(
+                "* Run "
+                + str(this_run + 1)
+                + " "
+                + str((nb_run / (this_run + 1)) * 10)
+                + "%"
+            )  # meanFitnessValues = []
             init_op_history(op_history, len(op_list))
 
             reward_list = init_reward_list(len(op_list))
@@ -538,7 +549,13 @@ def run_evolution(
         genome_length_1_on_10 = 10
 
         for this_run in range(0, nb_run):
-            print("Run actuel : " + str(this_run + 1))
+            print(
+                "* Run "
+                + str(this_run + 1)
+                + " "
+                + str((nb_run / (this_run + 1)) * 10)
+                + "%"
+            )
             population = populate_func()
             i = 0
             collected_iteration = np.array([])
@@ -582,7 +599,13 @@ def run_evolution(
 
     if selector_operator == "OS_RANDOM_AVEUGLE":
         for this_run in range(0, nb_run):
-            print("Run actuel : " + str(this_run + 1))
+            print(
+                "* Run "
+                + str(this_run + 1)
+                + " "
+                + str((nb_run / (this_run + 1)) * 10)
+                + "%"
+            )
 
             population = populate_func()
             i = 0
@@ -634,7 +657,13 @@ def run_evolution(
         and selector_operator != "OS_RANDOM_AVEUGLE"
     ):
         for this_run in range(0, nb_run):
-            print("Run actuel : " + str(this_run + 1))
+            print(
+                "* Run "
+                + str(this_run + 1)
+                + " "
+                + str((nb_run / (this_run + 1)) * 10)
+                + "%"
+            )
 
             population = populate_func()
             i = 0

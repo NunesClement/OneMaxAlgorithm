@@ -5,9 +5,9 @@ import numpy as np
 
 # URG: display the sudoku at the end
 # URG: test sudoku with a 9x9 grid
-global_total_case = 81
-global_sudoku_n = 9
-global_subSize = 3
+global_total_case = 256
+global_sudoku_n = 16
+global_subSize = 4
 global_binarySize = 4
 
 
@@ -33,23 +33,15 @@ def create_sudoku_grid():
     return grid
 
 
+# URG: this one is not good
 def display_sudoku_grid(grid):
-    print("grid")
-    print(grid)
-    print(len(grid))
+    for i in range(global_sudoku_n):
+        if i % global_subSize == 0 and i != 0:
+            print("- " * (global_sudoku_n * 2 + 1))
 
-    print(global_total_case)
-    print(global_sudoku_n)
-
-    for i in range(global_total_case):
-        if i % global_sudoku_n == 0 and i != 0:
-            print("- " * (global_total_case * 2 + 1))
-
-        for j in range(global_total_case):
-            if j % global_sudoku_n == 0 and j != 0:
+        for j in range(global_sudoku_n):
+            if j % global_subSize == 0 and j != 0:
                 print("|", end=" ")
-
-            print("i" + str(i) + "-" + "j" + str(j))
             print(f"{grid[i][j]:2}", end=" ")
 
         print("|")
@@ -169,7 +161,7 @@ def calculate_fitness(binary):
     total_penalty += sudoku_line_penalty(grid)
     total_penalty += sudoku_column_penalty(grid)
 
-    return total_penalty / 1 - total_penalty
+    return -total_penalty
 
 
 # binaries = create_sudoku_grid()
