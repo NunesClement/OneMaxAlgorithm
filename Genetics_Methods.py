@@ -14,7 +14,6 @@ FitnessFunc = Callable[[List[int]], int]
 SelectionFunc = Callable[[Population, FitnessFunc], Tuple[List[int], List[int]]]
 CrossoverFunc = Callable[[List[int], List[int]], Tuple[List[int], List[int]]]
 MutationFunc = Callable[[List[int]], List[int]]
-PrinterFunc = Callable[[Population, int, FitnessFunc], None]
 
 
 # Génération d'un génome personnalisé
@@ -329,9 +328,7 @@ def run_evolution(
     crossover_func: CrossoverFunc = uniform_crossover,
     mutation_func: MutationFunc = mutation,
     generation_limit: int = 100,
-    # sudoku_size: int = 4,
     nb_run: int = 10,
-    printer: Optional[PrinterFunc] = None,
 ):
     collected_data = []
     currentFitness = -10000
@@ -396,8 +393,6 @@ def run_evolution(
                 # print("Meilleur : " + str(fitness_func(greatest(population, fitness_func))))
                 # print("Plus nulle : " + str(fitness_func(loosest(population, fitness_func))))
                 # print(fitness_func(sort_population(population, fitness_func)[len(population)-1]))
-                if printer is not None:
-                    printer(population, i, fitness_func)
 
                 next_generation = population[0:2]
 
@@ -514,8 +509,6 @@ def run_evolution(
                 # print("Meilleur : " + str(fitness_func(greatest(population, fitness_func))))
                 # print("Plus nul : " + str(fitness_func(loosest(population, fitness_func))))
                 # print(fitness_func(sort_population(population, fitness_func)[len(population)-1]))
-                if printer is not None:
-                    printer(population, i, fitness_func)
 
                 next_generation = population[0:2]
 
@@ -545,9 +538,9 @@ def run_evolution(
             collected_data.append(collected_fitness)
             if currentFitness >= fitness_limit:
                 return population, i, [collected_iteration, collected_fitness]
-        print(reward_history)
-        print(reward_list)
-        print(op_count)
+        # print(reward_history)
+        # print(reward_list)
+        # print(op_count)
         collected_data_means = np.zeros(len(collected_data[0]), dtype=int)
 
         for a in range(0, len(collected_data[0])):
@@ -603,8 +596,6 @@ def run_evolution(
                 population = sorted(
                     population, key=lambda genome: fitness_func(genome), reverse=True
                 )
-                if printer is not None:
-                    printer(population, i, fitness_func)
 
                 next_generation = population[0:2]
 
@@ -662,8 +653,6 @@ def run_evolution(
                 population = sorted(
                     population, key=lambda genome: fitness_func(genome), reverse=True
                 )
-                if printer is not None:
-                    printer(population, i, fitness_func)
 
                 next_generation = population[0:2]
 
@@ -717,8 +706,6 @@ def run_evolution(
                 population = sorted(
                     population, key=lambda genome: fitness_func(genome), reverse=True
                 )
-                if printer is not None:
-                    printer(population, i, fitness_func)
 
                 next_generation = population[0:2]
 

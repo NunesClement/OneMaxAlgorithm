@@ -58,7 +58,6 @@ def launch_with_param(
     genome_length=10,
     fitness_limit=10,
     generation_limit=10,
-    # sudoku_size=4,
     nb_run=10,
     crossover_param="single_point_crossover",
     selected_problem="OneMax",
@@ -127,7 +126,6 @@ def launch_with_param(
         fitness_limit=fitness_limit,
         # nombre de générations
         generation_limit=generation_limit,
-        # sudoku_size=sudoku_size,
         nb_run=nb_run,
     )
     print(selector_operator)
