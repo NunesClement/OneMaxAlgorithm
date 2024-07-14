@@ -13,6 +13,7 @@ from PySide6.QtWidgets import (
 )
 import Lanceur
 import math
+import random
 
 
 class GlobalParameter:
@@ -47,7 +48,7 @@ class GlobalParameter:
 
 # 1-flip etc... AOS_UCB AOS_PM
 global_state = GlobalParameter(
-    13,
+    random.randint(0, 10000),
     10,
     ["1-flip", 0.5],
     "1-flip",
@@ -163,7 +164,7 @@ class First(QMainWindow):
         self.layout.addWidget(self.selectedProblem)
         self.layout.addWidget(self.cleanupButton)
 
-        self.sizePopLabel = QLabel("nb d'individus (conseillé - minimum 10)")
+        self.sizePopLabel = QLabel("nb d'individus (conseillé - minimum 4)")
         self.sizePop = QLineEdit()
         self.sizePop.setText("10")
         self.layout.addWidget(self.sizePopLabel)
@@ -225,8 +226,8 @@ class First(QMainWindow):
         self.cleanupButton.clicked.connect(self.on_cleanup_button_clicked)
         self.mutationChoix.currentTextChanged.connect(self.setMutationFlip)
         self.croisementChoix.currentTextChanged.connect(self.setCroisementChoix)
-        self.selectedProblem.currentTextChanged.connect(self.setselectedProblem)
-        self.selectedProblem.currentTextChanged.connect(self.setselectedProblem)
+        self.selectedProblem.currentTextChanged.connect(self.setSelectedProblem)
+        self.selectionChoix.currentTextChanged.connect(self.setSelectionChoix)
 
         self.widget = QWidget()
         self.widget.setLayout(self.layout)
@@ -295,7 +296,7 @@ class First(QMainWindow):
     def setCroisementChoix(self, s):
         global_state.croisement_param = s
 
-    def setselectedProblem(self, s):
+    def setSelectedProblem(self, s):
         global_state.selected_problem = s
 
 

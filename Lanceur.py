@@ -1,4 +1,4 @@
-# URG cut if fitness is reached
+# URG cut if fitness is reached - directly in the iteration loop
 # URG generalize cut for all operator
 # URG refactor operators to have common parts + optimize thoses common parts
 # URG improve intern methods calculations to 10x
@@ -174,6 +174,7 @@ def debugGlobalState(global_state):
     Paramètre de croisement  : {global_state.croisement_param}
     Paramètre de sélection   : {global_state.selection_params}
     Limite de fitness        : {global_state.fitness_limit}
+    Nb de run                : {global_state.nb_run}
     Nb d'itération/génération: {global_state.generation_limit}
     Taille d'un genome       : {global_state.genome_length}
     Taille d'une population  : {global_state.taille_pop}

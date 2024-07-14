@@ -494,14 +494,20 @@ def run_evolution(
 
                 if generation_limit > 1000:
                     if i % 500 == 0 and i != 0:
-                        print("Itération " + str(i) + " ...")
-                if i % 5 == 0:
+                        print(
+                            "Itération "
+                            + str(i)
+                            + " - Fitness : "
+                            + str(currentFitness)
+                        )
+                if i % 125 == 0:
                     # print("Le programme a l'efficacité : " + str(fitness_func(population[0])) + " / " + str(fitness_limit)
                     # + " à l'itération " + str(i))
+                    currentFitness = fitness_func(population[0])
+
                     collected_iteration = np.append(collected_iteration, i)
-                    collected_fitness = np.append(
-                        collected_fitness, fitness_func(population[0])
-                    )
+                    collected_fitness = np.append(collected_fitness, currentFitness)
+
                 population = sorted(
                     population, key=lambda genome: fitness_func(genome), reverse=True
                 )
@@ -537,7 +543,8 @@ def run_evolution(
                 # collected_fitness.append(maxFitness)
                 # collected_fitness.append(meanFitness)
             collected_data.append(collected_fitness)
-
+            if currentFitness >= fitness_limit:
+                return population, i, [collected_iteration, collected_fitness]
         print(reward_history)
         print(reward_list)
         print(op_count)
@@ -583,12 +590,16 @@ def run_evolution(
 
                 if generation_limit > 1000:
                     if i % 500 == 0 and i != 0:
-                        print("Itération " + str(i) + " ...")
-                if i % 5 == 0:
+                        print(
+                            "Itération "
+                            + str(i)
+                            + " - Fitness : "
+                            + str(currentFitness)
+                        )
+                if i % 125 == 0:
+                    currentFitness = fitness_func(population[0])
                     collected_iteration = np.append(collected_iteration, i)
-                    collected_fitness = np.append(
-                        collected_fitness, fitness_func(population[0])
-                    )
+                    collected_fitness = np.append(collected_fitness, currentFitness)
                 population = sorted(
                     population, key=lambda genome: fitness_func(genome), reverse=True
                 )
@@ -607,6 +618,8 @@ def run_evolution(
                 population = next_generation
 
             collected_data.append(collected_fitness)
+            if currentFitness >= fitness_limit:
+                return population, i, [collected_iteration, collected_fitness]
 
     if selector_operator == "OS_RANDOM_AVEUGLE":
         for this_run in range(0, nb_run):
@@ -636,12 +649,16 @@ def run_evolution(
             for i in range(generation_limit):
                 if generation_limit > 1000:
                     if i % 500 == 0 and i != 0:
-                        print("Itération " + str(i) + " ...")
-                if i % 5 == 0:
+                        print(
+                            "Itération "
+                            + str(i)
+                            + " - Fitness : "
+                            + str(currentFitness)
+                        )
+                if i % 125 == 0:
+                    currentFitness = fitness_func(population[0])
                     collected_iteration = np.append(collected_iteration, i)
-                    collected_fitness = np.append(
-                        collected_fitness, fitness_func(population[0])
-                    )
+                    collected_fitness = np.append(collected_fitness, currentFitness)
                 population = sorted(
                     population, key=lambda genome: fitness_func(genome), reverse=True
                 )
@@ -660,6 +677,8 @@ def run_evolution(
                 population = next_generation
 
             collected_data.append(collected_fitness)
+            if currentFitness >= fitness_limit:
+                return population, i, [collected_iteration, collected_fitness]
 
     if (
         selector_operator != "OS_MANUAL"
@@ -684,12 +703,17 @@ def run_evolution(
             for i in range(generation_limit):
                 if generation_limit > 1000:
                     if i % 500 == 0 and i != 0:
-                        print("Itération " + str(i) + " ...")
-                if i % 5 == 0:
+                        print(
+                            "Itération "
+                            + str(i)
+                            + " - Fitness : "
+                            + str(currentFitness)
+                        )
+                if i % 125 == 0:
+                    currentFitness = fitness_func(population[0])
                     collected_iteration = np.append(collected_iteration, i)
-                    collected_fitness = np.append(
-                        collected_fitness, fitness_func(population[0])
-                    )
+                    collected_fitness = np.append(collected_fitness, currentFitness)
+
                 population = sorted(
                     population, key=lambda genome: fitness_func(genome), reverse=True
                 )
@@ -708,6 +732,9 @@ def run_evolution(
                 population = next_generation
 
             collected_data.append(collected_fitness)
+            if currentFitness >= fitness_limit:
+                return population, i, [collected_iteration, collected_fitness]
+
     collected_data_means = np.zeros(len(collected_data[0]), dtype=int)
     for a in range(0, len(collected_data[0])):
         moy = 0
