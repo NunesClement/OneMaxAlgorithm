@@ -69,27 +69,27 @@ def check_nb_queens(configuration):
 def fitness_function(configuration, num_queen_x, num_queen_y):
     fitness = 0
     if not check_horizontally(configuration, num_queen_x, num_queen_y):
-        fitness = fitness - 300
+        fitness = fitness - 600
     else:
         fitness = fitness + 10
     if not check_vertically(configuration, num_queen_x, num_queen_y):
         # print('2')
-        fitness = fitness - 300
+        fitness = fitness - 600
     else:
         fitness = fitness + 10
     if not check_diagonally_up(configuration, num_queen_x, num_queen_y):
         # print('3')
-        fitness = fitness - 300
+        fitness = fitness - 600
     else:
         fitness = fitness + 10
     if not check_diagonally_down(configuration, num_queen_x, num_queen_y):
         # print('4>')
-        fitness = fitness - 300
+        fitness = fitness - 600
     else:
         fitness = fitness + 10
     if not check_nb_queens(configuration):
         # print('4>')
-        fitness = fitness - 10000
+        fitness = fitness - 1000
     return fitness
 
 
@@ -188,15 +188,3 @@ def convert01ToConfiguration(bandeau):
                 compteur = 0
     # print(len(tab))
     return tab
-
-
-def convertAConfigurationTo01(configuration):
-    bandeau = ""
-    for i in range(0, len(configuration)):
-        for j in range(0, len(configuration[i])):
-            if configuration[i][j] == "-":
-                bandeau = bandeau + "0"
-            else:
-                bandeau = bandeau + "1"
-    # print(len(bandeau))
-    return bandeau

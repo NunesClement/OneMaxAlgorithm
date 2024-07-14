@@ -1,3 +1,10 @@
+# URG cut if fitness is reached - directly in the iteration loop
+# URG generalize cut for all operator
+# URG refactor operators to have common parts + optimize thoses common parts
+# URG improve intern methods calculations to 10x
+# URG place measurement to delect slower portions of code
+# URG fix differents sudoku sizes
+
 from functools import partial
 from typing import List
 import matplotlib.pyplot as plt
@@ -21,10 +28,10 @@ def fitness_nqueen(genome: List[int]) -> int:
     return Nqueen.calculate_fitness(Nqueen.convert01ToConfiguration(genome))
 
 
-def fitness_sudoku(genome: List[int], sudoku_size: int) -> int:
+def fitness_sudoku(genome: List[int]) -> int:
     if len(genome) <= 0:
         raise ValueError("Le genome doit être > 0 ")
-    return Sudoku.calculate_fitness(genome, sudoku_size)
+    return Sudoku.calculate_fitness(genome)
 
 
 def fitness(genome: List[int]) -> int:
@@ -51,7 +58,7 @@ def launch_with_param(
     genome_length=10,
     fitness_limit=10,
     generation_limit=10,
-    sudoku_size=4,
+    # sudoku_size=4,
     nb_run=10,
     crossover_param="single_point_crossover",
     selected_problem="OneMax",
@@ -120,6 +127,7 @@ def launch_with_param(
         fitness_limit=fitness_limit,
         # nombre de générations
         generation_limit=generation_limit,
+        # sudoku_size=sudoku_size,
         nb_run=nb_run,
     )
     print(selector_operator)
@@ -159,14 +167,20 @@ def debugGlobalState(global_state):
         + " avec une proba de "
         + str(global_state.mutation_params[1])
     )
-    print("Choix du problème" + str(global_state.selected_problem))
-    print("Paramètre de croisemement " + str(global_state.croisement_param))
-    print("Paramètre de sélection " + str(global_state.selection_params))
-    print("Limit de fitness " + str(global_state.fitness_limit))
-    print("Nb d'itération/génération " + str(global_state.generation_limit))
-    print("Taille d'un genome " + str(global_state.genome_length))
-    print("Taille d'une population " + str(global_state.taille_pop))
-    print("Type d'AOS " + str(global_state.selector_operator))
+
+    print(
+        f"""
+    Choix du problème        : {global_state.selected_problem}
+    Paramètre de croisement  : {global_state.croisement_param}
+    Paramètre de sélection   : {global_state.selection_params}
+    Limite de fitness        : {global_state.fitness_limit}
+    Nb de run                : {global_state.nb_run}
+    Nb d'itération/génération: {global_state.generation_limit}
+    Taille d'un genome       : {global_state.genome_length}
+    Taille d'une population  : {global_state.taille_pop}
+    Type d'AOS               : {global_state.selector_operator}
+    """
+    )
 
 
 def cleanup_graph():
@@ -200,11 +214,8 @@ def launch_the_launcher(global_state):
             )
         )
     if global_state.selected_problem == "Sudoku":
-        Sudoku.displayConfiguration(Sudoku.convert01ToConfiguration(population[0]))
-        print(
-            "Fitness  : "
-            + str(Sudoku.calculate_penalty(Sudoku.convertBinaryToGrid(population[0])))
-        )
+        Sudoku.display_sudoku_grid(Sudoku.convertBinaryToGrid(population[0]))
+        print("Fitness : " + str(Sudoku.calculate_fitness(population[0])))
 
     x = collected_data[0]
     y = collected_data[1]

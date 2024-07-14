@@ -13,6 +13,7 @@ from PySide6.QtWidgets import (
 )
 import Lanceur
 import math
+import random
 
 
 class GlobalParameter:
@@ -25,8 +26,8 @@ class GlobalParameter:
         selection_params,
         fitness_limit,
         generation_limit,
-        sudoku_size,
         genome_length,
+        # sudoku_size,
         nb_run,
         croisement_param,
         selected_problem,
@@ -37,7 +38,7 @@ class GlobalParameter:
         self.selection_params = selection_params
         self.fitness_limit = fitness_limit
         self.generation_limit = generation_limit
-        self.sudoku_size = sudoku_size
+        # self.sudoku_size = sudoku_size
         self.genome_length = genome_length
         self.taille_pop = taille_pop
         self.nb_run = nb_run
@@ -47,15 +48,15 @@ class GlobalParameter:
 
 # 1-flip etc... AOS_UCB AOS_PM
 global_state = GlobalParameter(
-    13,
+    random.randint(0, 10000),
     10,
     ["1-flip", 0.5],
     "1-flip",
     "selection_tournois_parmi_s_randoms",
     1000,
     1000,
-    4,
     484,
+    # 4,
     10,
     "uniform_crossover",
     "OneMax",
@@ -63,6 +64,7 @@ global_state = GlobalParameter(
 
 
 class Second(QMainWindow):
+
     def __init__(self, parent=None):
         super(Second, self).__init__(parent)
         Lanceur.launch_the_launcher(global_state)
@@ -140,8 +142,8 @@ class First(QMainWindow):
 
         self.selectedProblem = QComboBox()
         self.selectedProblem.addItem("OneMax")
-        self.selectedProblem.addItem("N-Reine")
         self.selectedProblem.addItem("Sudoku")
+        self.selectedProblem.addItem("N-Reine")
         self.selectedProblem.addItem("KnapSack - WIP")
         self.selectedProblem.addItem("Quadratic knapsack - WIP")
         self.selectedProblem.addItem("PPP - WIP")
@@ -162,7 +164,7 @@ class First(QMainWindow):
         self.layout.addWidget(self.selectedProblem)
         self.layout.addWidget(self.cleanupButton)
 
-        self.sizePopLabel = QLabel("nb d'individus")
+        self.sizePopLabel = QLabel("nb d'individus (conseillé - minimum 4)")
         self.sizePop = QLineEdit()
         self.sizePop.setText("10")
         self.layout.addWidget(self.sizePopLabel)
@@ -176,7 +178,7 @@ class First(QMainWindow):
         self.layout.addWidget(self.nbRun)
         self.nbRun.textChanged.connect(change_nb_run)
 
-        self.fitnessMaxLabel = QLabel("set fitness max")
+        self.fitnessMaxLabel = QLabel("Fitness maximum - (stop if reached)")
         self.fitnessMax = QLineEdit()
         self.fitnessMax.setText("20000")
         self.layout.addWidget(self.fitnessMaxLabel)
@@ -224,8 +226,8 @@ class First(QMainWindow):
         self.cleanupButton.clicked.connect(self.on_cleanup_button_clicked)
         self.mutationChoix.currentTextChanged.connect(self.setMutationFlip)
         self.croisementChoix.currentTextChanged.connect(self.setCroisementChoix)
-        self.selectedProblem.currentTextChanged.connect(self.setselectedProblem)
-        self.selectedProblem.currentTextChanged.connect(self.setselectedProblem)
+        self.selectedProblem.currentTextChanged.connect(self.setSelectedProblem)
+        self.selectionChoix.currentTextChanged.connect(self.setSelectionChoix)
 
         self.widget = QWidget()
         self.widget.setLayout(self.layout)
@@ -255,6 +257,7 @@ class First(QMainWindow):
         if self.selectedProblem.currentText() == "Sudoku":
             self.sudokuTailleLabel.show()
             self.sudokuTaille.show()
+            self.fitnessMax.setText("0")
 
     def change_fitness_max(self, text):
         global_state.fitness_limit = text
@@ -262,9 +265,11 @@ class First(QMainWindow):
     def change_genome_taille_label(self, text):
         global_state.genome_length = text
 
+    # URG: the modification is not taken into account directly, fix it
     def change_nreine_taille_label(self, text):
         global_state.genome_length = int(text) ** 2  # Autosizer
 
+    # URG: the modification is not taken into account directly, fix it
     def change_sudoku_taille_label(self, text):
         size = int(text)
         global_state.genome_length = (
@@ -291,7 +296,7 @@ class First(QMainWindow):
     def setCroisementChoix(self, s):
         global_state.croisement_param = s
 
-    def setselectedProblem(self, s):
+    def setSelectedProblem(self, s):
         global_state.selected_problem = s
 
 

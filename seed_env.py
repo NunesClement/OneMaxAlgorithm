@@ -6,8 +6,9 @@ class Seed:
         self.seed = seed
 
 
-a = Seed(round(random()*10))
+a = Seed(round(random() * 10))
 # a = 17
+
 
 def getSeed():
     return a.seed
